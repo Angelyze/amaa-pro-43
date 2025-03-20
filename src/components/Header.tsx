@@ -10,20 +10,23 @@ interface HeaderProps {
   mainSearchVisible: boolean;
   onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
   onScrollToTop: () => void;
+  isLoggedIn: boolean;
+  onLogin: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ mainSearchVisible, onSendMessage, onScrollToTop }) => {
+const Header: React.FC<HeaderProps> = ({ 
+  mainSearchVisible, 
+  onSendMessage, 
+  onScrollToTop,
+  isLoggedIn,
+  onLogin
+}) => {
   const [visible, setVisible] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulating auth state
   
   useEffect(() => {
     // Show header when mainSearchVisible is false (scrolled past the main search box)
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
-
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
-  };
 
   return (
     <header 
@@ -43,14 +46,14 @@ const Header: React.FC<HeaderProps> = ({ mainSearchVisible, onSendMessage, onScr
         
         <div className="w-32 flex items-center justify-end gap-2">
           {isLoggedIn ? (
-            <UserMenu onLogout={toggleLogin} />
+            <UserMenu onLogout={onLogin} />
           ) : (
             <>
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={toggleLogin}
-                className="text-sm gap-1.5"
+                onClick={onLogin}
+                className="text-sm gap-1.5 hover:bg-teal/10 hover:text-teal transition-all"
               >
                 <LogIn size={16} />
                 <span className="hidden sm:inline">Log in</span>
@@ -58,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ mainSearchVisible, onSendMessage, onScr
               <Button 
                 variant="default" 
                 size="sm"
-                className="bg-teal text-white hover:bg-teal-light text-sm gap-1.5"
+                className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
               >
                 <CreditCard size={16} />
                 <span className="hidden sm:inline">Subscribe</span>
@@ -71,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ mainSearchVisible, onSendMessage, onScr
             variant="ghost" 
             size="icon" 
             onClick={onScrollToTop}
-            className="rounded-full w-9 h-9"
+            className="rounded-full w-9 h-9 hover:bg-teal/10 hover:text-teal transition-all"
           >
             <ArrowUp size={18} />
           </Button>

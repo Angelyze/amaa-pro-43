@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -169,14 +168,16 @@ const Index = () => {
   const displayMessages = [...messages].reverse();
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 flex flex-col">
       <Header 
         mainSearchVisible={mainSearchVisible}
         onSendMessage={handleSendMessage}
         onScrollToTop={scrollToTop}
+        isLoggedIn={isLoggedIn}
+        onLogin={toggleLogin}
       />
       
-      <main className="container mx-auto px-4 pt-12">
+      <main className="container mx-auto px-4 pt-12 flex-grow">
         <div className="relative">
           {/* Top right corner buttons on landing page */}
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -188,7 +189,7 @@ const Index = () => {
                   variant="ghost" 
                   size="sm"
                   onClick={toggleLogin}
-                  className="text-sm gap-1.5"
+                  className="text-sm gap-1.5 hover:bg-teal/10 hover:text-teal transition-all"
                 >
                   <LogIn size={16} />
                   <span className="hidden sm:inline">Log in</span>
@@ -196,7 +197,7 @@ const Index = () => {
                 <Button 
                   variant="default" 
                   size="sm"
-                  className="bg-teal text-white hover:bg-teal-light text-sm gap-1.5"
+                  className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
                 >
                   <CreditCard size={16} />
                   <span className="hidden sm:inline">Subscribe</span>
@@ -256,11 +257,37 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="container mx-auto px-4 py-6 mt-auto">
-        <div className="flex justify-center items-center text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            Made with <Heart size={14} className="text-teal animate-pulse-gentle" /> by AMAA
-          </span>
+      <footer className="w-full py-8 bg-background/50 border-t border-border backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+            <div className="text-sm mb-4 md:mb-0">
+              <a href="https://amaa.pro" className="text-foreground hover:text-teal mr-6 transition-colors">Home</a>
+              <a href="https://amaa.pro/about" className="text-foreground hover:text-teal mr-6 transition-colors">About</a>
+              <a href="https://amaa.pro/terms" className="text-foreground hover:text-teal mr-6 transition-colors">Terms</a>
+              <a href="https://amaa.pro/privacy" className="text-foreground hover:text-teal transition-colors">Privacy</a>
+            </div>
+            <div className="flex items-center">
+              <Button 
+                variant="outline"
+                size="sm"
+                className="mr-2 hover:bg-teal/10 hover:text-teal transition-colors"
+              >
+                Contact Us
+              </Button>
+              <Button 
+                variant="default"
+                size="sm"
+                className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
+              >
+                Get Started
+              </Button>
+            </div>
+          </div>
+          <div className="text-center text-sm text-muted-foreground">
+            <p className="flex justify-center items-center">
+              © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+            </p>
+          </div>
         </div>
       </footer>
     </div>

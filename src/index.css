@@ -116,19 +116,19 @@
   }
 
   .message-bubble {
-    @apply p-6 rounded-2xl max-w-[85%] md:max-w-[70%] backdrop-blur-sm animate-scale-in;
+    @apply p-6 rounded-2xl max-w-[85%] md:max-w-[70%] backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300;
   }
 
   .user-message {
-    @apply message-bubble ml-auto bg-teal/10 text-foreground;
+    @apply message-bubble ml-auto bg-teal/10 text-foreground border border-teal/10;
   }
 
   .assistant-message {
-    @apply message-bubble mr-auto bg-foreground/5 dark:bg-foreground/10 text-foreground;
+    @apply message-bubble mr-auto bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10;
   }
 
   .header-container {
-    @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border;
+    @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border shadow-glass-sm;
   }
 }
 
@@ -143,5 +143,13 @@
   
   .text-gradient {
     @apply bg-gradient-to-r from-teal to-teal-light bg-clip-text text-transparent;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-glass;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,151,178,0.3)];
   }
 }

@@ -61,7 +61,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           className={`amaa-input pr-[130px] ${isMinimized ? 'py-3 text-sm' : 'py-4'}`}
         />
         
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
           <input
             type="file"
             ref={fileInputRef}
@@ -71,49 +71,41 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           />
           
           {/* Reordered buttons: Mic, Upload, Web, Ask (Bot) */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <button 
             onClick={onVoiceInput}
-            className="rounded-full w-9 h-9 text-muted-foreground hover:text-teal hover:bg-teal/10"
+            className="p-2 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
           >
             <Mic size={18} />
-          </Button>
+          </button>
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <button
             onClick={triggerFileUpload}
-            className="rounded-full w-9 h-9 text-muted-foreground hover:text-teal hover:bg-teal/10"
+            className="p-2 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
           >
             <Upload size={18} />
-          </Button>
+          </button>
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <button
             onClick={() => setActiveOption('web-search')}
-            className={`rounded-full w-9 h-9 ${activeOption === 'web-search' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
+            className={`p-2 transition-colors focus:outline-none ${activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
           >
             <Globe size={18} />
-          </Button>
+          </button>
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <button
             onClick={() => setActiveOption('regular')}
-            className={`rounded-full w-9 h-9 ${activeOption === 'regular' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
+            className={`p-2 transition-colors focus:outline-none ${activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
           >
             <Bot size={18} />
-          </Button>
+          </button>
           
           <Button 
             size="icon"
             onClick={handleSend}
             disabled={!message.trim()}
-            className="rounded-full w-9 h-9 bg-teal text-white hover:bg-teal-light"
+            className="ml-1 rounded-full w-8 h-8 bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
           >
-            <Send size={18} />
+            <Send size={16} />
           </Button>
         </div>
       </div>
