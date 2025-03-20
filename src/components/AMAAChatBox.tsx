@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Upload, Globe, Bot } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -19,8 +19,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload'>('regular');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [voiceInputActive, setVoiceInputActive] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     if (message.trim()) {
@@ -66,14 +68,25 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     return "Ask me anything...";
   };
 
+  const handleFocus = () => {
+    setInputFocused(true);
+  };
+
+  const handleBlur = () => {
+    setInputFocused(false);
+  };
+
   return (
     <div className={`w-full ${isMinimized ? 'max-w-lg' : 'max-w-3xl'} mx-auto`}>
       <div className="relative">
         <input
           type="text"
+          ref={inputRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder={getPlaceholder()}
           className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'}`}
         />
@@ -125,9 +138,15 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button
               onClick={handleSend}
               disabled={!message.trim()}
-              className="ml-1 p-1.5 transition-all duration-300 focus:outline-none text-teal hover:text-teal-light hover:scale-110 hover:drop-shadow-md"
+              className="ml-1 p-1.5 transition-all duration-300 focus:outline-none hover:text-teal-light hover:scale-110 hover:drop-shadow-md"
             >
-              <img src="/AskIcon.png" alt="Ask" className="w-6 h-6" />
+              <img 
+                src="/AskIcon.png" 
+                alt="Ask" 
+                className={`w-6 h-6 transition-opacity duration-300 ${
+                  inputFocused ? 'opacity-80' : 'opacity-50'
+                } hover:opacity-100`} 
+              />
             </button>
           </div>
         </div>

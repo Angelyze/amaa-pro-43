@@ -1,2 +1,54 @@
 
-/* This file is intentionally empty. We're using Tailwind CSS for styling. */
+/* Dynamic opacity changes to the AskIcon are now handled in the component via Tailwind classes */
+
+.amaa-input {
+  width: 100%;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  background-color: hsl(var(--muted));
+  padding-left: 1.25rem;
+  padding-right: 6rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.amaa-input:focus {
+  border-color: var(--teal, #0097b2);
+  background-color: hsl(var(--background));
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Footer styles */
+.footer-container {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  background-color: hsl(var(--muted) / 0.5);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid hsl(var(--border));
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-link {
+  color: hsl(var(--foreground) / 0.7);
+  transition: color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.footer-link:hover {
+  color: var(--teal, #0097b2);
+}
+
+.copyright {
+  font-size: 0.8rem;
+  color: hsl(var(--foreground) / 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
