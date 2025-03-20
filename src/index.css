@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -170,7 +171,7 @@
   }
 
   .message-bubble {
-    @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300;
+    @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300 backdrop-blur-md;
   }
 
   .user-message {
@@ -183,6 +184,22 @@
 
   .header-container {
     @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border shadow-glass-sm;
+  }
+  
+  .footer-container {
+    @apply w-full py-4 backdrop-blur-md bg-background/70 border-t border-border shadow-glass-sm;
+  }
+  
+  .footer-nav {
+    @apply flex flex-wrap items-center justify-center gap-6 mb-2;
+  }
+  
+  .footer-link {
+    @apply text-foreground hover:text-teal transition-colors;
+  }
+  
+  .copyright {
+    @apply text-xs text-muted-foreground flex justify-center items-center;
   }
 }
 

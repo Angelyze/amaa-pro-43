@@ -318,7 +318,7 @@ const Index = () => {
             <div 
               id="messages-section" 
               ref={messagesContainerRef} 
-              className="w-full mx-auto mt-12 mb-8"
+              className="w-full mx-auto mt-4 mb-8"
             >
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
@@ -343,19 +343,17 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="w-full py-2 mt-auto bg-background relative z-10">
+      <footer className="footer-container">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
-            <div className="text-sm">
-              <a href="https://amaa.pro" className="text-foreground hover:text-teal mr-6 transition-colors">Home</a>
-              <a href="https://amaa.pro/about" className="text-foreground hover:text-teal mr-6 transition-colors">About</a>
-              <a href="https://amaa.pro/terms" className="text-foreground hover:text-teal mr-6 transition-colors">Terms</a>
-              <a href="https://amaa.pro/privacy" className="text-foreground hover:text-teal transition-colors">Privacy</a>
+            <div className="footer-nav">
+              <a href="https://amaa.pro" className="footer-link">Home</a>
+              <a href="https://amaa.pro/about" className="footer-link">About</a>
+              <a href="https://amaa.pro/terms" className="footer-link">Terms</a>
+              <a href="https://amaa.pro/privacy" className="footer-link">Privacy</a>
             </div>
-            <div className="text-xs text-muted-foreground">
-              <p className="flex justify-center items-center">
-                © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
-              </p>
+            <div className="copyright">
+              © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
             </div>
           </div>
         </div>
