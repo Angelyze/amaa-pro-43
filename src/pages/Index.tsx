@@ -272,11 +272,11 @@ const Index = () => {
           
           <div 
             ref={mainSearchRef}
-            className="min-h-[60vh] flex flex-col items-center justify-center py-8"
+            className="min-h-[50vh] flex flex-col items-center justify-center py-6"
           >
             <Logo />
             
-            <div className="w-full max-w-3xl mt-12">
+            <div className="w-full max-w-3xl mt-8">
               <AMAAChatBox 
                 onSendMessage={handleSendMessage}
                 onUploadFile={handleUploadFile}
@@ -284,7 +284,7 @@ const Index = () => {
               />
             </div>
             
-            <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
               <Info size={12} />
               {isLoggedIn ? (
                 <span>Thank you for using Premium!</span>
@@ -318,7 +318,7 @@ const Index = () => {
             <div 
               id="messages-section" 
               ref={messagesContainerRef} 
-              className="w-full mx-auto mt-4 mb-8"
+              className="w-full mx-auto mt-0 mb-8"
             >
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
