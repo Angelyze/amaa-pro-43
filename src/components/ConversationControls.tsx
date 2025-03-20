@@ -1,20 +1,18 @@
 
 import React from 'react';
 import { Button } from './ui/button';
-import { Plus, Save, Folder, Edit } from 'lucide-react';
+import { Plus, Save, Folder } from 'lucide-react';
 
 interface ConversationControlsProps {
   onNewConversation: () => void;
   onSaveConversation: () => void;
   onLoadConversation: () => void;
-  onEditConversations: () => void;
 }
 
 const ConversationControls: React.FC<ConversationControlsProps> = ({
   onNewConversation,
   onSaveConversation,
-  onLoadConversation,
-  onEditConversations
+  onLoadConversation
 }) => {
   return (
     <div className="flex items-center justify-center gap-2 my-4">
@@ -45,17 +43,7 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
         className="gap-1.5"
       >
         <Folder size={16} />
-        <span>Load</span>
-      </Button>
-      
-      <Button 
-        variant="outline" 
-        size="sm" 
-        onClick={onEditConversations}
-        className="gap-1.5"
-      >
-        <Edit size={16} />
-        <span>Edit</span>
+        <span>Load AMAA</span>
       </Button>
     </div>
   );

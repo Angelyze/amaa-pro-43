@@ -23,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({
   const [visible, setVisible] = useState(false);
   
   useEffect(() => {
-    // Show header when mainSearchVisible is false (scrolled past the main search box)
+    // Only show header when the main search box is completely out of view
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
 

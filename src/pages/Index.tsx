@@ -41,9 +41,9 @@ const Index = () => {
     if (!mainSearchRef.current) return;
     
     const mainSearchRect = mainSearchRef.current.getBoundingClientRect();
-    const isVisible = mainSearchRect.top <= 0;
+    const isVisible = mainSearchRect.bottom > 0;
     
-    setMainSearchVisible(!isVisible);
+    setMainSearchVisible(isVisible);
   };
   
   const scrollToTop = () => {
@@ -89,6 +89,8 @@ const Index = () => {
       
       setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
+      
+      document.getElementById('messages-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 2000);
   };
   
@@ -215,18 +217,15 @@ const Index = () => {
               <span>Free users have 5 queries. Go Premium for unlimited access.</span>
             </div>
 
-            {messages.length > 0 && (
-              <ConversationControls 
-                onNewConversation={handleNewConversation}
-                onSaveConversation={handleSaveConversation}
-                onLoadConversation={handleLoadConversation}
-                onEditConversations={handleEditConversations}
-              />
-            )}
+            <ConversationControls 
+              onNewConversation={handleNewConversation}
+              onSaveConversation={handleSaveConversation}
+              onLoadConversation={handleLoadConversation}
+            />
           </div>
           
           {displayMessages.length > 0 && (
-            <div className="max-w-3xl mx-auto mt-12 mb-8">
+            <div id="messages-section" className="max-w-3xl mx-auto mt-12 mb-8">
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
                 
@@ -246,10 +245,10 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="w-full py-3 mt-auto bg-background/50 backdrop-blur-sm">
+      <footer className="w-full py-2 mt-auto bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
-            <div className="text-sm mb-1">
+            <div className="text-sm">
               <a href="https://amaa.pro" className="text-foreground hover:text-teal mr-6 transition-colors">Home</a>
               <a href="https://amaa.pro/about" className="text-foreground hover:text-teal mr-6 transition-colors">About</a>
               <a href="https://amaa.pro/terms" className="text-foreground hover:text-teal mr-6 transition-colors">Terms</a>
