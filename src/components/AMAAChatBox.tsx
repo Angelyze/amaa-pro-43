@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Mic, Send, Upload, Globe, Bot } from 'lucide-react';
+import { Mic, Upload, Globe, Bot } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface AMAAChatBoxProps {
@@ -129,7 +129,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
               disabled={!message.trim()}
               className="ml-1 rounded-full w-8 h-8 bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
             >
-              <Send size={16} />
+              <img src="/AskIcon.png" alt="Ask" className="w-4 h-4" />
             </Button>
           </div>
         </div>
