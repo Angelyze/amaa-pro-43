@@ -27,6 +27,7 @@ const Index = () => {
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const activeMessageRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
   
   const MAX_FREE_QUERIES = 5;
@@ -41,6 +42,12 @@ const Index = () => {
   const scrollToMessages = () => {
     if (messagesContainerRef.current && messages.length > 0) {
       messagesContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const scrollToLatestMessage = () => {
+    if (activeMessageRef.current) {
+      activeMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
   
@@ -64,7 +71,7 @@ const Index = () => {
   
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToMessages();
+      scrollToLatestMessage();
     }
   }, [messages]);
   
@@ -108,7 +115,7 @@ const Index = () => {
       setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
       
-      scrollToMessages();
+      setTimeout(scrollToLatestMessage, 100);
     }, 2000);
   };
   
@@ -209,6 +216,11 @@ const Index = () => {
     }
   };
 
+  const handleSubscribe = () => {
+    toast.success('Opening subscription page');
+    // Subscription page would be opened here in a real application
+  };
+
   const toggleLogin = () => {
     setIsLoggedIn(!isLoggedIn);
     toast.success(isLoggedIn ? 'Logged out successfully' : 'Logged in successfully');
@@ -251,6 +263,7 @@ const Index = () => {
                 <Button 
                   variant="default" 
                   size="sm"
+                  onClick={handleSubscribe}
                   className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
                 >
                   <CreditCard size={16} />
@@ -276,7 +289,29 @@ const Index = () => {
             
             <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
               <Info size={12} />
-              <span>{isLoggedIn ? "Thank you for using Premium!" : `Free users have ${MAX_FREE_QUERIES} queries. Go Premium for unlimited access.`}</span>
+              {isLoggedIn ? (
+                <span>Thank you for using Premium!</span>
+              ) : (
+                <span>
+                  Free users have {MAX_FREE_QUERIES} queries. {' '}
+                  <button 
+                    onClick={handleSubscribe} 
+                    className="text-teal hover:text-teal-light hover:underline transition-all"
+                  >
+                    Go Premium
+                  </button> {' '}
+                  for <a 
+                    href="#subscribe" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSubscribe();
+                    }}
+                    className="text-teal hover:text-teal-light hover:underline transition-all"
+                  >
+                    unlimited access
+                  </a> and more.
+                </span>
+              )}
             </div>
 
             {isLoggedIn && (
@@ -300,13 +335,17 @@ const Index = () => {
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
                 
-                {displayMessages.map((message) => (
-                  <Message
-                    key={message.id}
-                    content={message.content}
-                    type={message.type}
-                    timestamp={message.timestamp}
-                  />
+                {displayMessages.map((message, index) => (
+                  <div 
+                    key={message.id} 
+                    ref={index === 0 ? activeMessageRef : null}
+                  >
+                    <Message
+                      content={message.content}
+                      type={message.type}
+                      timestamp={message.timestamp}
+                    />
+                  </div>
                 ))}
                 
                 <div ref={messagesEndRef} />

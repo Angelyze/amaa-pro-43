@@ -102,6 +102,11 @@ export default {
 				'spin-slow': {
 					from: { transform: 'rotate(0deg)' },
 					to: { transform: 'rotate(360deg)' }
+				},
+				'pattern-float': {
+					'0%': { transform: 'translate(0%, 0%) rotate(0deg)' },
+					'50%': { transform: 'translate(2%, 1%) rotate(1deg)' },
+					'100%': { transform: 'translate(-2%, -1%) rotate(-1deg)' }
 				}
 			},
 			animation: {
@@ -114,7 +119,8 @@ export default {
 				'scale-in': 'scale-in 0.3s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-gentle': 'pulse-gentle 3s ease-in-out infinite',
-				'spin-slow': 'spin-slow 8s linear infinite'
+				'spin-slow': 'spin-slow 8s linear infinite',
+				'pattern-float': 'pattern-float 20s ease-in-out infinite alternate'
 			},
 			boxShadow: {
 				'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
