@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Copy, Share2, Volume2, VolumeX, ExternalLink } from 'lucide-react';
+import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 
@@ -61,8 +61,8 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
   };
 
   return (
-    <div className={`flex ${type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div className={type === 'user' ? 'user-message' : 'assistant-message'}>
+    <div className="flex justify-center mb-4">
+      <div className={`${type === 'user' ? 'user-message' : 'assistant-message'} w-[90%]`}>
         <div className={`${getFontSize()} whitespace-pre-wrap`}>
           {content}
         </div>

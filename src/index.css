@@ -170,15 +170,15 @@
   }
 
   .message-bubble {
-    @apply p-6 rounded-2xl max-w-[85%] md:max-w-[70%] backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300;
+    @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300;
   }
 
   .user-message {
-    @apply message-bubble ml-auto bg-teal/10 text-foreground border border-teal/10;
+    @apply message-bubble bg-teal/10 text-foreground border border-teal/10;
   }
 
   .assistant-message {
-    @apply message-bubble mr-auto bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10;
+    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10;
   }
 
   .header-container {

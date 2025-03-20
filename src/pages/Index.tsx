@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -76,7 +75,6 @@ const Index = () => {
   }, [messages]);
   
   const handleSendMessage = (content: string, type: 'regular' | 'web-search') => {
-    // Check query limit for free users
     if (!isLoggedIn && queryCount >= MAX_FREE_QUERIES) {
       toast.error('You have reached the maximum number of free queries. Please subscribe for unlimited access.');
       return;
@@ -96,7 +94,6 @@ const Index = () => {
       clearTimeout(timeoutRef.current);
     }
     
-    // Increment query count for free users
     if (!isLoggedIn) {
       setQueryCount(prev => prev + 1);
     }
@@ -300,16 +297,7 @@ const Index = () => {
                   >
                     Go Premium
                   </button> {' '}
-                  for <a 
-                    href="#subscribe" 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSubscribe();
-                    }}
-                    className="text-teal hover:text-teal-light hover:underline transition-all"
-                  >
-                    unlimited access
-                  </a> and more.
+                  for unlimited access and more.
                 </span>
               )}
             </div>
@@ -330,7 +318,7 @@ const Index = () => {
             <div 
               id="messages-section" 
               ref={messagesContainerRef} 
-              className="max-w-3xl mx-auto mt-12 mb-8"
+              className="w-full mx-auto mt-12 mb-8"
             >
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
