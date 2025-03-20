@@ -70,6 +70,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             accept="image/*, application/pdf, text/plain"
           />
           
+          {/* Reordered buttons: Mic, Upload, Web, Ask (Bot) */}
           <Button 
             variant="ghost" 
             size="icon" 
@@ -91,19 +92,19 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => setActiveOption('regular')}
-            className={`rounded-full w-9 h-9 ${activeOption === 'regular' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
+            onClick={() => setActiveOption('web-search')}
+            className={`rounded-full w-9 h-9 ${activeOption === 'web-search' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
           >
-            <Bot size={18} />
+            <Globe size={18} />
           </Button>
           
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => setActiveOption('web-search')}
-            className={`rounded-full w-9 h-9 ${activeOption === 'web-search' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
+            onClick={() => setActiveOption('regular')}
+            className={`rounded-full w-9 h-9 ${activeOption === 'regular' ? 'text-teal bg-teal/10' : 'text-muted-foreground hover:text-teal hover:bg-teal/10'}`}
           >
-            <Globe size={18} />
+            <Bot size={18} />
           </Button>
           
           <Button 

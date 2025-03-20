@@ -17,6 +17,7 @@ const Header: React.FC<HeaderProps> = ({ mainSearchVisible, onSendMessage, onScr
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulating auth state
   
   useEffect(() => {
+    // Show header when mainSearchVisible is false (scrolled past the main search box)
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
 

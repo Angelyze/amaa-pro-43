@@ -8,8 +8,9 @@ import LoadingIndicator from '../components/LoadingIndicator';
 import ThemeToggle from '../components/ThemeToggle';
 import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
-import { Info, Heart } from 'lucide-react';
+import { Info, Heart, LogIn, CreditCard, User } from 'lucide-react';
 import { toast } from 'sonner';
+import UserMenu from '../components/UserMenu';
 
 type MessageType = {
   id: string;
@@ -22,6 +23,7 @@ const Index = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulating auth state
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -42,9 +44,10 @@ const Index = () => {
     if (!mainSearchRef.current) return;
     
     const mainSearchRect = mainSearchRef.current.getBoundingClientRect();
-    const isVisible = mainSearchRect.bottom > 0;
+    // Show header when top of mainSearch is above viewport
+    const isVisible = mainSearchRect.top <= 0;
     
-    setMainSearchVisible(isVisible);
+    setMainSearchVisible(!isVisible);
   };
   
   const scrollToTop = () => {
@@ -157,6 +160,11 @@ const Index = () => {
     toast.info('Edit conversations feature coming soon');
   };
 
+  const toggleLogin = () => {
+    setIsLoggedIn(!isLoggedIn);
+    toast.success(isLoggedIn ? 'Logged out successfully' : 'Logged in successfully');
+  };
+
   // Reverse the messages for display (newest at bottom)
   const displayMessages = [...messages].reverse();
 
@@ -170,7 +178,31 @@ const Index = () => {
       
       <main className="container mx-auto px-4 pt-12">
         <div className="relative">
-          <div className="absolute top-4 right-4 z-10">
+          {/* Top right corner buttons on landing page */}
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+            {isLoggedIn ? (
+              <UserMenu onLogout={toggleLogin} />
+            ) : (
+              <>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={toggleLogin}
+                  className="text-sm gap-1.5"
+                >
+                  <LogIn size={16} />
+                  <span className="hidden sm:inline">Log in</span>
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  className="bg-teal text-white hover:bg-teal-light text-sm gap-1.5"
+                >
+                  <CreditCard size={16} />
+                  <span className="hidden sm:inline">Subscribe</span>
+                </Button>
+              </>
+            )}
             <ThemeToggle />
           </div>
           
