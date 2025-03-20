@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { User, Settings, LogOut, Moon, Sun, Save, Folder } from 'lucide-react';
+import { User, LogOut, Moon, Sun } from 'lucide-react';
 
 interface UserMenuProps {
   onLogout: () => void;
@@ -60,10 +60,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ onLogout }) => {
         <DropdownMenuItem>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={toggleTheme}>

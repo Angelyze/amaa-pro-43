@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -97,32 +96,6 @@ const Index = () => {
   
   const handleUploadFile = (file: File) => {
     toast.success(`Uploaded file: ${file.name}`);
-    
-    const userMessage: MessageType = {
-      id: Date.now().toString(),
-      content: `I've uploaded ${file.name} for analysis.`,
-      type: 'user',
-      timestamp: new Date().toISOString(),
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-    
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    timeoutRef.current = window.setTimeout(() => {
-      const assistantMessage: MessageType = {
-        id: (Date.now() + 1).toString(),
-        content: `I've analyzed ${file.name}. This appears to be a ${file.type.split('/')[1]} file. What would you like to know about it?`,
-        type: 'assistant',
-        timestamp: new Date().toISOString(),
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 3000);
   };
   
   const handleVoiceInput = () => {
@@ -144,7 +117,6 @@ const Index = () => {
       return;
     }
     
-    // Get the first user message to use as the title
     const firstUserMessage = messages.find(m => m.type === 'user');
     const defaultTitle = firstUserMessage 
       ? `${firstUserMessage.content.substring(0, 15)}${firstUserMessage.content.length > 15 ? '...' : ''}`
@@ -154,7 +126,6 @@ const Index = () => {
     const dateStr = new Date().toLocaleDateString();
     const fullTitle = `${title} (${dateStr})`;
     
-    // Create new conversation object
     const conversation: SavedConversation = {
       id: Date.now().toString(),
       title: fullTitle,
@@ -162,13 +133,11 @@ const Index = () => {
       savedAt: new Date().toISOString()
     };
     
-    // Get existing conversations
     const existingConversationsStr = localStorage.getItem('savedConversations');
     const existingConversations = existingConversationsStr 
       ? JSON.parse(existingConversationsStr) 
       : [];
     
-    // Add new conversation
     const updatedConversations = [conversation, ...existingConversations];
     localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
     
@@ -225,6 +194,10 @@ const Index = () => {
   const toggleLogin = () => {
     setIsLoggedIn(!isLoggedIn);
     toast.success(isLoggedIn ? 'Logged out successfully' : 'Logged in successfully');
+    
+    if (isLoggedIn) {
+      window.location.reload();
+    }
   };
 
   const displayMessages = [...messages].reverse();
@@ -286,14 +259,16 @@ const Index = () => {
               <span>{isLoggedIn ? "Thank you for using Premium!" : "Free users have 5 queries. Go Premium for unlimited access."}</span>
             </div>
 
-            <ConversationControls 
-              onNewConversation={handleNewConversation}
-              onSaveConversation={handleSaveConversation}
-              onLoadConversation={handleLoadConversation}
-              onRenameConversation={handleRenameConversation}
-              onDeleteConversation={handleDeleteConversation}
-              currentMessages={messages}
-            />
+            {isLoggedIn && (
+              <ConversationControls 
+                onNewConversation={handleNewConversation}
+                onSaveConversation={handleSaveConversation}
+                onLoadConversation={handleLoadConversation}
+                onRenameConversation={handleRenameConversation}
+                onDeleteConversation={handleDeleteConversation}
+                currentMessages={messages}
+              />
+            )}
           </div>
           
           {displayMessages.length > 0 && (

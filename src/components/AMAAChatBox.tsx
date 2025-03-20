@@ -19,6 +19,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const [message, setMessage] = useState('');
   const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload'>('regular');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [voiceInputActive, setVoiceInputActive] = useState(false);
   
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -53,8 +54,15 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     fileInputRef.current?.click();
   };
 
+  const toggleVoiceInput = () => {
+    setVoiceInputActive(!voiceInputActive);
+    if (onVoiceInput) {
+      onVoiceInput();
+    }
+  };
+
   const getPlaceholder = () => {
-    if (activeOption === 'web-search') return "Search the web...";
+    if (activeOption === 'web-search') return "Search the internet...";
     if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the uploaded file...";
     return "Ask me anything...";
   };
@@ -82,8 +90,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           
           <div className="flex items-center gap-0">
             <button 
-              onClick={onVoiceInput}
-              className="p-1.5 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
+              onClick={toggleVoiceInput}
+              className={`p-1.5 transition-colors focus:outline-none ${
+                voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+              }`}
             >
               <Mic size={18} />
             </button>
@@ -128,9 +138,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       {!isMinimized && (
         <div className="flex justify-center mt-2 text-xs text-muted-foreground">
           <span className="px-2 py-1 rounded-full">
-            {activeOption === 'regular' ? 'Ask AI Assistant' : 
-             activeOption === 'web-search' ? 'Search recent web content' : 
-             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded` : 'Upload file'}
+            {activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
+             activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
+             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>
       )}
