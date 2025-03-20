@@ -27,7 +27,6 @@ const Index = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
   
-  // Mock responses for demo purposes
   const demoResponses = [
     "I'm AMAA, your AI assistant. I can help you find information, answer questions, and even search the web for the latest content. What would you like to know?",
     "The concept of minimalism in design emerged in the late 1960s as a reaction against the subjective expressionism of abstract expressionism. It emphasizes simplicity and objectivity, using clean lines, geometric shapes, and a monochromatic palette.",
@@ -43,7 +42,6 @@ const Index = () => {
     if (!mainSearchRef.current) return;
     
     const mainSearchRect = mainSearchRef.current.getBoundingClientRect();
-    // Show header when top of mainSearch is above viewport
     const isVisible = mainSearchRect.top <= 0;
     
     setMainSearchVisible(!isVisible);
@@ -65,7 +63,6 @@ const Index = () => {
   }, [messages]);
   
   const handleSendMessage = (content: string, type: 'regular' | 'web-search') => {
-    // Add user message
     const userMessage: MessageType = {
       id: Date.now().toString(),
       content,
@@ -76,13 +73,11 @@ const Index = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     
-    // Simulate API delay
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     
     timeoutRef.current = window.setTimeout(() => {
-      // Add assistant response
       const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
       const assistantMessage: MessageType = {
         id: (Date.now() + 1).toString(),
@@ -101,7 +96,6 @@ const Index = () => {
   const handleUploadFile = (file: File) => {
     toast.info(`Uploaded file: ${file.name}`);
     
-    // Add user message about the file
     const userMessage: MessageType = {
       id: Date.now().toString(),
       content: `I've uploaded ${file.name} for analysis.`,
@@ -112,7 +106,6 @@ const Index = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     
-    // Simulate processing
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -164,7 +157,6 @@ const Index = () => {
     toast.success(isLoggedIn ? 'Logged out successfully' : 'Logged in successfully');
   };
 
-  // Reverse the messages for display (newest at bottom)
   const displayMessages = [...messages].reverse();
 
   return (
@@ -179,7 +171,6 @@ const Index = () => {
       
       <main className="container mx-auto px-4 pt-12 flex-grow">
         <div className="relative">
-          {/* Top right corner buttons on landing page */}
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             {isLoggedIn ? (
               <UserMenu onLogout={toggleLogin} />
@@ -257,36 +248,20 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="w-full py-8 bg-background/50 border-t border-border backdrop-blur-sm">
+      <footer className="w-full py-4 bg-background/50 border-t border-border backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-            <div className="text-sm mb-4 md:mb-0">
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-sm mb-2">
               <a href="https://amaa.pro" className="text-foreground hover:text-teal mr-6 transition-colors">Home</a>
               <a href="https://amaa.pro/about" className="text-foreground hover:text-teal mr-6 transition-colors">About</a>
               <a href="https://amaa.pro/terms" className="text-foreground hover:text-teal mr-6 transition-colors">Terms</a>
               <a href="https://amaa.pro/privacy" className="text-foreground hover:text-teal transition-colors">Privacy</a>
             </div>
-            <div className="flex items-center">
-              <Button 
-                variant="outline"
-                size="sm"
-                className="mr-2 hover:bg-teal/10 hover:text-teal transition-colors"
-              >
-                Contact Us
-              </Button>
-              <Button 
-                variant="default"
-                size="sm"
-                className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
-              >
-                Get Started
-              </Button>
+            <div className="text-xs text-muted-foreground">
+              <p className="flex justify-center items-center">
+                © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+              </p>
             </div>
-          </div>
-          <div className="text-center text-sm text-muted-foreground">
-            <p className="flex justify-center items-center">
-              © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
-            </p>
           </div>
         </div>
       </footer>
