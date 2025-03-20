@@ -125,7 +125,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button
               onClick={handleSend}
               disabled={!message.trim()}
-              className="ml-1 p-1.5 transition-colors focus:outline-none text-teal hover:text-teal-light"
+              className="ml-1 p-1.5 transition-all duration-300 focus:outline-none text-teal hover:text-teal-light hover:scale-110 hover:drop-shadow-md"
             >
               <img src="/AskIcon.png" alt="Ask" className="w-6 h-6" />
             </button>

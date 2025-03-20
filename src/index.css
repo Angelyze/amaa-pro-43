@@ -35,9 +35,11 @@
 
     --radius: 1rem;
     
-    --pattern-color: 210 40% 88%; /* Make lighter for more contrast */
-    --pattern-secondary-color: 222 47% 90%;
-    --pattern-color-rgb: 219, 226, 236;
+    /* Enhanced pattern colors for light theme - more vibrant */
+    --pattern-color: 191 80% 88%; 
+    --pattern-secondary-color: 210 60% 90%;
+    --pattern-color-rgb: 179, 230, 242;
+    --pattern-accent-rgb: 0, 151, 178;
   }
 
   .dark {
@@ -69,9 +71,11 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 191 100% 35%;
     
-    --pattern-color: 217.2 32.6% 15%; /* Make darker for more visibility */
-    --pattern-secondary-color: 222 47% 12%;
-    --pattern-color-rgb: 28, 34, 46;
+    /* Enhanced pattern colors for dark theme - more vibrant */
+    --pattern-color: 191 60% 20%; 
+    --pattern-secondary-color: 200 70% 15%;
+    --pattern-color-rgb: 12, 50, 60;
+    --pattern-accent-rgb: 0, 170, 200;
   }
 }
 
@@ -109,13 +113,15 @@
     @apply bg-muted dark:bg-muted/60;
   }
   
+  /* Enhanced background pattern with more abstract and visible elements */
   .background-pattern {
     background-image: 
-      radial-gradient(circle at 80% 20%, hsl(var(--pattern-secondary-color) / 0.95) 0%, transparent 45%),
-      radial-gradient(circle at 20% 80%, hsl(var(--pattern-secondary-color) / 0.9) 0%, transparent 50%),
-      linear-gradient(135deg, hsl(var(--pattern-color) / 0.4) 0%, hsl(var(--pattern-color) / 0) 70%),
-      radial-gradient(circle at 50% 50%, hsl(var(--background)) 20%, transparent 100%);
-    filter: blur(0);
+      radial-gradient(circle at 30% 20%, hsl(var(--pattern-secondary-color) / 0.95) 0%, transparent 35%),
+      radial-gradient(circle at 70% 70%, hsl(var(--pattern-secondary-color) / 0.9) 0%, transparent 45%),
+      radial-gradient(circle at 90% 10%, hsl(var(--pattern-color) / 0.8) 0%, transparent 30%),
+      radial-gradient(circle at 10% 90%, hsl(var(--pattern-color) / 0.8) 0%, transparent 30%),
+      linear-gradient(135deg, hsl(var(--pattern-color) / 0.6) 0%, hsl(var(--pattern-color) / 0) 70%),
+      radial-gradient(circle at 50% 50%, hsl(var(--background)) 0%, transparent 100%);
     position: relative;
     overflow: hidden;
   }
@@ -129,30 +135,43 @@
     right: 0;
     bottom: 0;
     z-index: -1;
-    opacity: 0.75; /* Increased opacity for more visibility */
+    opacity: 0.85; /* Increased opacity for more visibility */
     transition: all 15s ease-in-out;
-    animation: patternFloat 20s ease-in-out infinite alternate;
+    animation: patternFloat 25s ease-in-out infinite alternate;
   }
   
   .background-pattern::before {
-    background: radial-gradient(circle at 30% 40%, rgba(var(--pattern-color-rgb), 0.6) 0%, transparent 50%);
-    animation-delay: -5s;
+    /* More abstract shapes with vibrant teal accent */
+    background-image: 
+      radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.3) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 45% 60%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 45%);
+    animation-delay: -8s;
+    filter: blur(30px);
   }
   
   .background-pattern::after {
-    background: radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.6) 0%, transparent 50%);
-    animation-delay: -10s;
+    /* Additional layer with different shapes */
+    background-image: 
+      radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 20%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(var(--pattern-accent-rgb), 0.25) 0%, transparent 30%);
+    animation-delay: -15s;
+    filter: blur(20px);
   }
   
   @keyframes patternFloat {
     0% {
       transform: translate(0%, 0%) rotate(0deg);
     }
-    50% {
-      transform: translate(3%, 2%) rotate(1.5deg); /* Slightly increased movement */
+    33% {
+      transform: translate(3%, -2%) rotate(1deg);
+    }
+    66% {
+      transform: translate(-2%, 3%) rotate(-1deg);
     }
     100% {
-      transform: translate(-3%, -2%) rotate(-1.5deg); /* Slightly increased movement */
+      transform: translate(2%, 2%) rotate(1.5deg);
     }
   }
 }
