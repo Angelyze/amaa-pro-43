@@ -1,10 +1,11 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
 import Logo from '../components/Logo';
 import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
-import ConversationControls from '../components/ConversationControls';
+import ConversationControls, { SavedConversation } from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
 import { Info, Heart, LogIn, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
@@ -137,20 +138,88 @@ const Index = () => {
     }
   };
 
-  const handleSaveConversation = () => {
-    if (messages.length > 0) {
-      toast.success('Conversation saved successfully');
-    } else {
+  const handleSaveConversation = (customTitle?: string) => {
+    if (messages.length === 0) {
       toast.error('No conversation to save');
+      return;
+    }
+    
+    // Get the first user message to use as the title
+    const firstUserMessage = messages.find(m => m.type === 'user');
+    const defaultTitle = firstUserMessage 
+      ? `${firstUserMessage.content.substring(0, 15)}${firstUserMessage.content.length > 15 ? '...' : ''}`
+      : 'Conversation';
+    
+    const title = customTitle || defaultTitle;
+    const dateStr = new Date().toLocaleDateString();
+    const fullTitle = `${title} (${dateStr})`;
+    
+    // Create new conversation object
+    const conversation: SavedConversation = {
+      id: Date.now().toString(),
+      title: fullTitle,
+      messages: [...messages],
+      savedAt: new Date().toISOString()
+    };
+    
+    // Get existing conversations
+    const existingConversationsStr = localStorage.getItem('savedConversations');
+    const existingConversations = existingConversationsStr 
+      ? JSON.parse(existingConversationsStr) 
+      : [];
+    
+    // Add new conversation
+    const updatedConversations = [conversation, ...existingConversations];
+    localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
+    
+    toast.success('Conversation saved successfully');
+  };
+
+  const handleLoadConversation = (conversation: SavedConversation) => {
+    if (messages.length > 0) {
+      if (!confirm('Load this conversation? Your current conversation will be replaced.')) {
+        return;
+      }
+    }
+    
+    setMessages(conversation.messages);
+    toast.success(`Loaded conversation: ${conversation.title}`);
+  };
+
+  const handleRenameConversation = (id: string, newTitle: string) => {
+    const savedConversationsStr = localStorage.getItem('savedConversations');
+    if (!savedConversationsStr) return;
+    
+    try {
+      const savedConversations = JSON.parse(savedConversationsStr);
+      const updatedConversations = savedConversations.map((conv: SavedConversation) => 
+        conv.id === id ? { ...conv, title: newTitle } : conv
+      );
+      
+      localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
+      toast.success('Conversation renamed');
+    } catch (error) {
+      console.error('Error updating conversation:', error);
+      toast.error('Failed to rename conversation');
     }
   };
 
-  const handleLoadConversation = () => {
-    toast.info('Load conversation feature coming soon');
-  };
-
-  const handleEditConversations = () => {
-    toast.info('Edit conversations feature coming soon');
+  const handleDeleteConversation = (id: string) => {
+    const savedConversationsStr = localStorage.getItem('savedConversations');
+    if (!savedConversationsStr) return;
+    
+    try {
+      const savedConversations = JSON.parse(savedConversationsStr);
+      const updatedConversations = savedConversations.filter(
+        (conv: SavedConversation) => conv.id !== id
+      );
+      
+      localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
+      toast.success('Conversation deleted');
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      toast.error('Failed to delete conversation');
+    }
   };
 
   const toggleLogin = () => {
@@ -221,6 +290,9 @@ const Index = () => {
               onNewConversation={handleNewConversation}
               onSaveConversation={handleSaveConversation}
               onLoadConversation={handleLoadConversation}
+              onRenameConversation={handleRenameConversation}
+              onDeleteConversation={handleDeleteConversation}
+              currentMessages={messages}
             />
           </div>
           
