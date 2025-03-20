@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -22,9 +23,13 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [queryCount, setQueryCount] = useState(0);
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
+  
+  const MAX_FREE_QUERIES = 5;
   
   const demoResponses = [
     "I'm AMAA, your AI assistant. I can help you find information, answer questions, and even search the web for the latest content. What would you like to know?",
@@ -33,8 +38,10 @@ const Index = () => {
     "The James Webb Space Telescope, launched in December 2021, is the largest, most powerful space telescope ever built. It allows astronomers to observe the universe in unprecedented detail, including the formation of early galaxies and potential habitable exoplanets."
   ];
   
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToMessages = () => {
+    if (messagesContainerRef.current && messages.length > 0) {
+      messagesContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
   
   const handleScroll = () => {
@@ -57,11 +64,17 @@ const Index = () => {
   
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToBottom();
+      scrollToMessages();
     }
   }, [messages]);
   
   const handleSendMessage = (content: string, type: 'regular' | 'web-search') => {
+    // Check query limit for free users
+    if (!isLoggedIn && queryCount >= MAX_FREE_QUERIES) {
+      toast.error('You have reached the maximum number of free queries. Please subscribe for unlimited access.');
+      return;
+    }
+    
     const userMessage: MessageType = {
       id: Date.now().toString(),
       content,
@@ -74,6 +87,11 @@ const Index = () => {
     
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+    }
+    
+    // Increment query count for free users
+    if (!isLoggedIn) {
+      setQueryCount(prev => prev + 1);
     }
     
     timeoutRef.current = window.setTimeout(() => {
@@ -90,7 +108,7 @@ const Index = () => {
       setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
       
-      document.getElementById('messages-section')?.scrollIntoView({ behavior: 'smooth' });
+      scrollToMessages();
     }, 2000);
   };
   
@@ -203,7 +221,9 @@ const Index = () => {
   const displayMessages = [...messages].reverse();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      <div className="absolute inset-0 -z-10 background-pattern"></div>
+      
       <Header 
         mainSearchVisible={mainSearchVisible}
         onSendMessage={handleSendMessage}
@@ -256,7 +276,7 @@ const Index = () => {
             
             <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
               <Info size={12} />
-              <span>{isLoggedIn ? "Thank you for using Premium!" : "Free users have 5 queries. Go Premium for unlimited access."}</span>
+              <span>{isLoggedIn ? "Thank you for using Premium!" : `Free users have ${MAX_FREE_QUERIES} queries. Go Premium for unlimited access.`}</span>
             </div>
 
             {isLoggedIn && (
@@ -272,7 +292,11 @@ const Index = () => {
           </div>
           
           {displayMessages.length > 0 && (
-            <div id="messages-section" className="max-w-3xl mx-auto mt-12 mb-8">
+            <div 
+              id="messages-section" 
+              ref={messagesContainerRef} 
+              className="max-w-3xl mx-auto mt-12 mb-8"
+            >
               <div className="space-y-4">
                 {isLoading && <LoadingIndicator />}
                 
@@ -292,7 +316,7 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="w-full py-2 mt-auto bg-background">
+      <footer className="w-full py-2 mt-auto bg-background relative z-10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="text-sm">
