@@ -58,10 +58,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={activeOption === 'regular' ? "Ask me anything..." : "Search the web..."}
-          className={`amaa-input pr-[130px] ${isMinimized ? 'py-3 text-sm' : 'py-4'}`}
+          className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'}`}
         />
         
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
           <input
             type="file"
             ref={fileInputRef}
@@ -70,43 +70,44 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             accept="image/*, application/pdf, text/plain"
           />
           
-          {/* Reordered buttons: Mic, Upload, Web, Ask (Bot) */}
-          <button 
-            onClick={onVoiceInput}
-            className="p-2 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
-          >
-            <Mic size={18} />
-          </button>
-          
-          <button
-            onClick={triggerFileUpload}
-            className="p-2 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
-          >
-            <Upload size={18} />
-          </button>
-          
-          <button
-            onClick={() => setActiveOption('web-search')}
-            className={`p-2 transition-colors focus:outline-none ${activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
-          >
-            <Globe size={18} />
-          </button>
-          
-          <button
-            onClick={() => setActiveOption('regular')}
-            className={`p-2 transition-colors focus:outline-none ${activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
-          >
-            <Bot size={18} />
-          </button>
-          
-          <Button 
-            size="icon"
-            onClick={handleSend}
-            disabled={!message.trim()}
-            className="ml-1 rounded-full w-8 h-8 bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
-          >
-            <Send size={16} />
-          </Button>
+          <div className="flex items-center gap-0">
+            <button 
+              onClick={onVoiceInput}
+              className="p-1.5 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
+            >
+              <Mic size={18} />
+            </button>
+            
+            <button
+              onClick={triggerFileUpload}
+              className="p-1.5 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
+            >
+              <Upload size={18} />
+            </button>
+            
+            <button
+              onClick={() => setActiveOption('web-search')}
+              className={`p-1.5 transition-colors focus:outline-none ${activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
+            >
+              <Globe size={18} />
+            </button>
+            
+            <button
+              onClick={() => setActiveOption('regular')}
+              className={`p-1.5 transition-colors focus:outline-none ${activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'}`}
+            >
+              <Bot size={18} />
+            </button>
+            
+            <Button 
+              size="icon"
+              onClick={handleSend}
+              disabled={!message.trim()}
+              className="ml-1 rounded-full w-8 h-8 bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all"
+            >
+              <Send size={16} />
+            </Button>
+          </div>
         </div>
       </div>
       

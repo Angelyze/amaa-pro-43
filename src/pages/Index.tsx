@@ -4,10 +4,9 @@ import Header from '../components/Header';
 import Logo from '../components/Logo';
 import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
-import ThemeToggle from '../components/ThemeToggle';
 import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
-import { Info, Heart, LogIn, CreditCard, User } from 'lucide-react';
+import { Info, Heart, LogIn, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import UserMenu from '../components/UserMenu';
 
@@ -22,7 +21,7 @@ const Index = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulating auth state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -160,7 +159,7 @@ const Index = () => {
   const displayMessages = [...messages].reverse();
 
   return (
-    <div className="min-h-screen pb-24 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Header 
         mainSearchVisible={mainSearchVisible}
         onSendMessage={handleSendMessage}
@@ -195,7 +194,6 @@ const Index = () => {
                 </Button>
               </>
             )}
-            <ThemeToggle />
           </div>
           
           <div 
@@ -248,10 +246,10 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="w-full py-4 bg-background/50 border-t border-border backdrop-blur-sm">
+      <footer className="w-full py-3 mt-auto bg-background/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
-            <div className="text-sm mb-2">
+            <div className="text-sm mb-1">
               <a href="https://amaa.pro" className="text-foreground hover:text-teal mr-6 transition-colors">Home</a>
               <a href="https://amaa.pro/about" className="text-foreground hover:text-teal mr-6 transition-colors">About</a>
               <a href="https://amaa.pro/terms" className="text-foreground hover:text-teal mr-6 transition-colors">Terms</a>

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -16,13 +16,40 @@ interface UserMenuProps {
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({ onLogout }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // On mount, check if user has a theme preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    
+    const shouldUseDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    
+    if (shouldUseDark) {
+      document.documentElement.classList.add('dark');
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
           size="icon"
-          className="rounded-full w-9 h-9"
+          className="rounded-full w-9 h-9 hover:bg-teal/10 hover:text-teal transition-all"
         >
           <User size={18} />
         </Button>
@@ -39,13 +66,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ onLogout }) => {
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Sun className="mr-2 h-4 w-4" />
-          <span>Light Theme</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Moon className="mr-2 h-4 w-4" />
-          <span>Dark Theme</span>
+        <DropdownMenuItem onClick={toggleTheme}>
+          {isDarkMode ? (
+            <>
+              <Sun className="mr-2 h-4 w-4" />
+              <span>Light Theme</span>
+            </>
+          ) : (
+            <>
+              <Moon className="mr-2 h-4 w-4" />
+              <span>Dark Theme</span>
+            </>
+          )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogout}>

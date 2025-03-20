@@ -1,9 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
-import { ArrowUp, User, LogIn, CreditCard } from 'lucide-react';
+import { ArrowUp, LogIn, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
 import AMAAChatBox from './AMAAChatBox';
-import ThemeToggle from './ThemeToggle';
 import UserMenu from './UserMenu';
 
 interface HeaderProps {
@@ -34,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="w-32 flex items-center">
-          <span className="text-xl font-semibold tracking-tight text-gradient">AMAA</span>
+          <img src="/AMAApp.png" alt="AMAA" className="h-8" />
         </div>
         
         <div className="flex-1 flex justify-center px-4">
@@ -69,7 +68,6 @@ const Header: React.FC<HeaderProps> = ({
             </>
           )}
           
-          <ThemeToggle />
           <Button 
             variant="ghost" 
             size="icon" 
