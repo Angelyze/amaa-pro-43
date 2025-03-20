@@ -62,7 +62,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
 
   return (
     <div className="flex justify-center mb-4">
-      <div className={`${type === 'user' ? 'user-message' : 'assistant-message'} w-[90%]`}>
+      <div className={`${type === 'user' ? 'user-message' : 'assistant-message'}`}>
         <div className={`${getFontSize()} whitespace-pre-wrap`}>
           {content}
         </div>

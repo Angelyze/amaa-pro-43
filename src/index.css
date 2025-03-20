@@ -34,9 +34,9 @@
 
     --radius: 1rem;
     
-    --pattern-color: 210 40% 92.1%;
-    --pattern-secondary-color: 222 47% 94%;
-    --pattern-color-rgb: 229, 233, 240;
+    --pattern-color: 210 40% 88%; /* Make lighter for more contrast */
+    --pattern-secondary-color: 222 47% 90%;
+    --pattern-color-rgb: 219, 226, 236;
   }
 
   .dark {
@@ -68,9 +68,9 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 191 100% 35%;
     
-    --pattern-color: 217.2 32.6% 10%;
-    --pattern-secondary-color: 222 47% 8%;
-    --pattern-color-rgb: 20, 24, 33;
+    --pattern-color: 217.2 32.6% 15%; /* Make darker for more visibility */
+    --pattern-secondary-color: 222 47% 12%;
+    --pattern-color-rgb: 28, 34, 46;
   }
 }
 
@@ -110,9 +110,9 @@
   
   .background-pattern {
     background-image: 
-      radial-gradient(circle at 80% 20%, hsl(var(--pattern-secondary-color) / 0.8) 0%, transparent 35%),
-      radial-gradient(circle at 20% 80%, hsl(var(--pattern-secondary-color) / 0.7) 0%, transparent 40%),
-      linear-gradient(135deg, hsl(var(--pattern-color) / 0.2) 0%, hsl(var(--pattern-color) / 0) 70%),
+      radial-gradient(circle at 80% 20%, hsl(var(--pattern-secondary-color) / 0.9) 0%, transparent 45%),
+      radial-gradient(circle at 20% 80%, hsl(var(--pattern-secondary-color) / 0.8) 0%, transparent 50%),
+      linear-gradient(135deg, hsl(var(--pattern-color) / 0.3) 0%, hsl(var(--pattern-color) / 0) 70%),
       radial-gradient(circle at 50% 50%, hsl(var(--background)) 20%, transparent 100%);
     filter: blur(0);
     position: relative;
@@ -128,18 +128,18 @@
     right: 0;
     bottom: 0;
     z-index: -1;
-    opacity: 0.4;
+    opacity: 0.6; /* Increased opacity for more visibility */
     transition: all 15s ease-in-out;
     animation: patternFloat 20s ease-in-out infinite alternate;
   }
   
   .background-pattern::before {
-    background: radial-gradient(circle at 30% 40%, rgba(var(--pattern-color-rgb), 0.3) 0%, transparent 40%);
+    background: radial-gradient(circle at 30% 40%, rgba(var(--pattern-color-rgb), 0.5) 0%, transparent 50%);
     animation-delay: -5s;
   }
   
   .background-pattern::after {
-    background: radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.3) 0%, transparent 40%);
+    background: radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.5) 0%, transparent 50%);
     animation-delay: -10s;
   }
   
@@ -148,10 +148,10 @@
       transform: translate(0%, 0%) rotate(0deg);
     }
     50% {
-      transform: translate(2%, 1%) rotate(1deg);
+      transform: translate(3%, 2%) rotate(1.5deg); /* Slightly increased movement */
     }
     100% {
-      transform: translate(-2%, -1%) rotate(-1deg);
+      transform: translate(-3%, -2%) rotate(-1.5deg); /* Slightly increased movement */
     }
   }
 }
@@ -174,11 +174,11 @@
   }
 
   .user-message {
-    @apply message-bubble bg-teal/10 text-foreground border border-teal/10;
+    @apply message-bubble bg-teal/10 text-foreground border border-teal/10 w-[90%] md:w-[50%];
   }
 
   .assistant-message {
-    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10;
+    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
   .header-container {
