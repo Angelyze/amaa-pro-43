@@ -6,6 +6,7 @@ import Logo from '../components/Logo';
 import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ThemeToggle from '../components/ThemeToggle';
+import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
 import { Info, Heart } from 'lucide-react';
 import { toast } from 'sonner';
@@ -41,7 +42,7 @@ const Index = () => {
     if (!mainSearchRef.current) return;
     
     const mainSearchRect = mainSearchRef.current.getBoundingClientRect();
-    const isVisible = mainSearchRect.top >= 0 && mainSearchRect.bottom <= window.innerHeight;
+    const isVisible = mainSearchRect.bottom > 0;
     
     setMainSearchVisible(isVisible);
   };
@@ -131,6 +132,34 @@ const Index = () => {
     toast.info('Voice input feature coming soon');
   };
 
+  const handleNewConversation = () => {
+    if (messages.length > 0) {
+      if (confirm('Start a new conversation? This will clear the current conversation.')) {
+        setMessages([]);
+        scrollToTop();
+      }
+    }
+  };
+
+  const handleSaveConversation = () => {
+    if (messages.length > 0) {
+      toast.success('Conversation saved successfully');
+    } else {
+      toast.error('No conversation to save');
+    }
+  };
+
+  const handleLoadConversation = () => {
+    toast.info('Load conversation feature coming soon');
+  };
+
+  const handleEditConversations = () => {
+    toast.info('Edit conversations feature coming soon');
+  };
+
+  // Reverse the messages for display (newest at bottom)
+  const displayMessages = [...messages].reverse();
+
   return (
     <div className="min-h-screen pb-24">
       <Header 
@@ -163,12 +192,23 @@ const Index = () => {
               <Info size={12} />
               <span>Free users have 5 queries. Go Premium for unlimited access.</span>
             </div>
+
+            {messages.length > 0 && (
+              <ConversationControls 
+                onNewConversation={handleNewConversation}
+                onSaveConversation={handleSaveConversation}
+                onLoadConversation={handleLoadConversation}
+                onEditConversations={handleEditConversations}
+              />
+            )}
           </div>
           
-          {messages.length > 0 && (
+          {displayMessages.length > 0 && (
             <div className="max-w-3xl mx-auto mt-12 mb-8">
               <div className="space-y-4">
-                {messages.map((message) => (
+                {isLoading && <LoadingIndicator />}
+                
+                {displayMessages.map((message) => (
                   <Message
                     key={message.id}
                     content={message.content}
@@ -176,8 +216,6 @@ const Index = () => {
                     timestamp={message.timestamp}
                   />
                 ))}
-                
-                {isLoading && <LoadingIndicator />}
                 
                 <div ref={messagesEndRef} />
               </div>

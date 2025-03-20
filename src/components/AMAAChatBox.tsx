@@ -73,19 +73,19 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={triggerFileUpload}
+            onClick={onVoiceInput}
             className="rounded-full w-9 h-9 text-muted-foreground hover:text-teal hover:bg-teal/10"
           >
-            <Upload size={18} />
+            <Mic size={18} />
           </Button>
           
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={onVoiceInput}
+            onClick={triggerFileUpload}
             className="rounded-full w-9 h-9 text-muted-foreground hover:text-teal hover:bg-teal/10"
           >
-            <Mic size={18} />
+            <Upload size={18} />
           </Button>
           
           <Button 
