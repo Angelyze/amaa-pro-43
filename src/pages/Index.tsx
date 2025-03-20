@@ -96,7 +96,7 @@ const Index = () => {
   };
   
   const handleUploadFile = (file: File) => {
-    toast.info(`Uploaded file: ${file.name}`);
+    toast.success(`Uploaded file: ${file.name}`);
     
     const userMessage: MessageType = {
       id: Date.now().toString(),
@@ -283,7 +283,7 @@ const Index = () => {
             
             <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
               <Info size={12} />
-              <span>Free users have 5 queries. Go Premium for unlimited access.</span>
+              <span>{isLoggedIn ? "Thank you for using Premium!" : "Free users have 5 queries. Go Premium for unlimited access."}</span>
             </div>
 
             <ConversationControls 

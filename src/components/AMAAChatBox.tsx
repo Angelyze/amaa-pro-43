@@ -17,13 +17,14 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   isMinimized = false
 }) => {
   const [message, setMessage] = useState('');
-  const [activeOption, setActiveOption] = useState<'regular' | 'web-search'>('regular');
+  const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload'>('regular');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     if (message.trim()) {
-      onSendMessage(message, activeOption);
+      onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
       setMessage('');
     }
   };
@@ -38,6 +39,8 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && onUploadFile) {
+      setActiveOption('upload');
+      setUploadedFile(file);
       onUploadFile(file);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -46,7 +49,14 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   };
 
   const triggerFileUpload = () => {
+    setActiveOption('upload');
     fileInputRef.current?.click();
+  };
+
+  const getPlaceholder = () => {
+    if (activeOption === 'web-search') return "Search the web...";
+    if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the uploaded file...";
+    return "Ask me anything...";
   };
 
   return (
@@ -57,7 +67,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={activeOption === 'regular' ? "Ask me anything..." : "Search the web..."}
+          placeholder={getPlaceholder()}
           className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'}`}
         />
         
@@ -80,7 +90,11 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             
             <button
               onClick={triggerFileUpload}
-              className="p-1.5 text-muted-foreground hover:text-teal transition-colors focus:outline-none"
+              className={`p-1.5 transition-colors focus:outline-none ${
+                activeOption === 'upload' 
+                  ? (uploadedFile ? 'text-green-500' : 'text-teal') 
+                  : 'text-muted-foreground hover:text-teal'
+              }`}
             >
               <Upload size={18} />
             </button>
@@ -114,7 +128,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       {!isMinimized && (
         <div className="flex justify-center mt-2 text-xs text-muted-foreground">
           <span className="px-2 py-1 rounded-full">
-            {activeOption === 'regular' ? 'Ask AI Assistant' : 'Search recent web content'}
+            {activeOption === 'regular' ? 'Ask AI Assistant' : 
+             activeOption === 'web-search' ? 'Search recent web content' : 
+             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded` : 'Upload file'}
           </span>
         </div>
       )}
