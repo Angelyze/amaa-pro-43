@@ -1,3 +1,4 @@
+
 // Get the cached audio element or create a new one
 let audioElement: HTMLAudioElement | null = null;
 
@@ -167,14 +168,18 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
       // Setup speaking in sequence
       for (let i = 0; i < utterances.length; i++) {
         if (i < utterances.length - 1) {
-          utterances[i].onend = () => {
+          // Fix: Properly type the event handler
+          utterances[i].onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
             window.speechSynthesis.speak(utterances[i + 1]);
           };
         } else {
-          utterances[i].onend = resolve;
+          // Fix: Properly type the event handler for the last utterance
+          utterances[i].onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
+            resolve();
+          };
         }
         
-        utterances[i].onerror = (event) => {
+        utterances[i].onerror = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
           console.error('TTS error:', event);
           // If error, try to continue with next chunk
           if (i < utterances.length - 1) {
