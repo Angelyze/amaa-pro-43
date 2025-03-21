@@ -24,7 +24,8 @@ import {
   getGuestMessages,
   saveGuestMessage,
   getGuestQueryCount,
-  incrementGuestQueryCount
+  incrementGuestQueryCount,
+  GUEST_CONVERSATION_ID
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
 
@@ -242,7 +243,8 @@ const Index = () => {
           id: Date.now().toString(), 
           content: fileMessage, 
           type: 'user', 
-          created_at: new Date().toISOString() 
+          created_at: new Date().toISOString(),
+          conversation_id: currentConversationId || GUEST_CONVERSATION_ID 
         }]);
         
         const response = await supabase.functions.invoke('ai-service', {

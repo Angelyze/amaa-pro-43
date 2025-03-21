@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
@@ -20,7 +21,7 @@ export interface Message {
 // Guest session management
 const GUEST_STORAGE_KEY = 'amaa_guest_messages';
 const GUEST_COUNTER_KEY = 'amaa_guest_query_count';
-const GUEST_CONVERSATION_ID = 'guest-session';
+export const GUEST_CONVERSATION_ID = 'guest-session';
 
 export const getGuestQueryCount = (): number => {
   return parseInt(localStorage.getItem(GUEST_COUNTER_KEY) || '0', 10);
