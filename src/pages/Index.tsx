@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -11,7 +12,7 @@ import { toast } from 'sonner';
 import UserMenu from '../components/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Conversation,
   Message as MessageType,
@@ -50,7 +51,30 @@ const Index = () => {
     } else {
       const guestMessages = getGuestMessages();
       setMessages(guestMessages);
-      setGuestQueriesCount(getGuestQueryCount());
+      const queryCount = getGuestQueryCount();
+      setGuestQueriesCount(queryCount);
+      
+      // Show warning notification when user is getting close to limit
+      if (queryCount === MAX_GUEST_QUERIES - 1) {
+        toast.warning(
+          "You have 1 query left as a free user. Consider subscribing for unlimited access.",
+          { duration: 5000 }
+        );
+      }
+      
+      // Show limit reached notification if user is at max
+      if (queryCount >= MAX_GUEST_QUERIES) {
+        toast.error(
+          "You've reached the maximum number of free queries. Subscribe for unlimited access!",
+          { 
+            duration: 8000,
+            action: {
+              label: "Subscribe",
+              onClick: () => window.location.href = "/subscribe"
+            }
+          }
+        );
+      }
     }
   }, [user]);
 
@@ -134,12 +158,35 @@ const Index = () => {
       } else {
         const queryCount = getGuestQueryCount();
         if (queryCount >= MAX_GUEST_QUERIES) {
-          toast.error('You have reached the maximum number of queries as a guest. Please log in or Subscribe to continue.');
+          toast.error(
+            "You've reached the maximum number of free queries. Subscribe for unlimited access!",
+            { 
+              duration: 8000,
+              action: {
+                label: "Subscribe",
+                onClick: () => window.location.href = "/subscribe"
+              }
+            }
+          );
           return;
         }
         
         const newCount = incrementGuestQueryCount();
         setGuestQueriesCount(newCount);
+        
+        // Show notification if user just reached their final query
+        if (newCount === MAX_GUEST_QUERIES) {
+          toast.warning(
+            "This is your last free query. Subscribe for unlimited access.",
+            { 
+              duration: 5000,
+              action: {
+                label: "Subscribe",
+                onClick: () => window.location.href = "/subscribe"
+              }
+            }
+          );
+        }
         
         const userMessage = saveGuestMessage({ content, type: 'user' });
         setMessages(prev => [...prev, userMessage]);

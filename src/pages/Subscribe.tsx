@@ -11,7 +11,7 @@ const Subscribe = () => {
   const { user } = useAuth();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-start px-4 py-16">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4">
       <div className="absolute inset-0 -z-10 background-pattern"></div>
       
       <div className="w-full max-w-4xl">
@@ -22,9 +22,7 @@ const Subscribe = () => {
               <span>Back to App</span>
             </Button>
           </Link>
-          <div className="w-full flex justify-center">
-            <Logo />
-          </div>
+          <Logo />
         </div>
         
         <h1 className="text-3xl font-bold text-center mb-8">Upgrade to Premium</h1>
