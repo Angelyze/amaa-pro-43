@@ -59,9 +59,6 @@ const Subscribe = () => {
           
           <Card className="border-teal">
             <CardHeader className="bg-teal/5 rounded-t-lg">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-teal text-white px-4 py-1 rounded-full text-sm font-medium">
-                Recommended
-              </div>
               <CardTitle>Premium Plan</CardTitle>
               <CardDescription>Full access to all AMAA features</CardDescription>
               <div className="text-3xl font-bold mt-2">$9.99<span className="text-sm font-normal">/month</span></div>

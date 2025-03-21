@@ -6,13 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const AI_RESPONSES = [
-  "I'm AMAA, your AI assistant. I can help you find information, answer questions, and even search the web for the latest content. What would you like to know?",
-  "The concept of minimalism in design emerged in the late 1960s as a reaction against the subjective expressionism of abstract expressionism. It emphasizes simplicity and objectivity, using clean lines, geometric shapes, and a monochromatic palette.",
-  "According to recent studies, regular meditation can reduce stress, improve focus, and promote overall well-being. Even just 10 minutes of daily meditation has been shown to make a significant difference in cognitive function and emotional regulation.",
-  "The James Webb Space Telescope, launched in December 2021, is the largest, most powerful space telescope ever built. It allows astronomers to observe the universe in unprecedented detail, including the formation of early galaxies and potential habitable exoplanets."
-];
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -20,28 +13,24 @@ serve(async (req) => {
   }
   
   try {
-    const { message, conversationType } = await req.json();
+    const reqBody = await req.json();
     
-    console.log('Received request:', { message, conversationType });
+    // Redirect to our new ai-service function
+    const aiServiceUrl = new URL('/functions/v1/ai-service', req.url);
     
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const response = await fetch(aiServiceUrl.toString(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': req.headers.get('Authorization') || '',
+      },
+      body: JSON.stringify(reqBody),
+    });
     
-    // Get a random response or process based on type
-    const responseIndex = Math.floor(Math.random() * AI_RESPONSES.length);
-    let aiResponse;
-    
-    if (conversationType === 'web-search') {
-      aiResponse = `Web search results for "${message}":\n\n${AI_RESPONSES[responseIndex]}`;
-    } else {
-      aiResponse = AI_RESPONSES[responseIndex];
-    }
+    const responseData = await response.json();
     
     return new Response(
-      JSON.stringify({ 
-        response: aiResponse,
-        processing_time: "1.2 seconds"
-      }),
+      JSON.stringify(responseData),
       { 
         headers: { 
           'Content-Type': 'application/json',
@@ -50,7 +39,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Error in chat function:', error);
     
     return new Response(
       JSON.stringify({ error: 'An error occurred processing your request' }),

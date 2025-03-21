@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -54,7 +53,6 @@ const Index = () => {
       const queryCount = getGuestQueryCount();
       setGuestQueriesCount(queryCount);
       
-      // Show warning notification when user is getting close to limit
       if (queryCount === MAX_GUEST_QUERIES - 1) {
         toast.warning(
           "You have 1 query left as a free user. Consider subscribing for unlimited access.",
@@ -62,7 +60,6 @@ const Index = () => {
         );
       }
       
-      // Show limit reached notification if user is at max
       if (queryCount >= MAX_GUEST_QUERIES) {
         toast.error(
           "You've reached the maximum number of free queries. Subscribe for unlimited access!",
@@ -174,7 +171,6 @@ const Index = () => {
         const newCount = incrementGuestQueryCount();
         setGuestQueriesCount(newCount);
         
-        // Show notification if user just reached their final query
         if (newCount === MAX_GUEST_QUERIES) {
           toast.warning(
             "This is your last free query. Subscribe for unlimited access.",
@@ -193,8 +189,8 @@ const Index = () => {
         setIsLoading(true);
       }
       
-      const response = await supabase.functions.invoke('chat', {
-        body: { message: content, conversationType: type },
+      const response = await supabase.functions.invoke('ai-service', {
+        body: { message: content, type },
       });
       
       if (response.error) {
@@ -221,10 +217,70 @@ const Index = () => {
     }
   };
   
-  const handleUploadFile = (file: File) => {
-    toast.success(`Uploaded file: ${file.name}`);
+  const handleUploadFile = async (file: File) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const fileData = e.target?.result;
+        if (!fileData) {
+          toast.error('Error reading file');
+          return;
+        }
+        
+        toast.success(`Analyzing file: ${file.name}`);
+        setIsLoading(true);
+        
+        const fileMessage = `Analyze this ${file.type.includes('image') ? 'image' : 'document'}: ${file.name}`;
+        
+        if (user && currentConversationId) {
+          await createMessage(currentConversationId, fileMessage, 'user');
+        } else {
+          saveGuestMessage({ content: fileMessage, type: 'user' });
+        }
+        
+        setMessages(prev => [...prev, { 
+          id: Date.now().toString(), 
+          content: fileMessage, 
+          type: 'user', 
+          created_at: new Date().toISOString() 
+        }]);
+        
+        const response = await supabase.functions.invoke('ai-service', {
+          body: { 
+            message: "Please analyze this file and provide insights", 
+            type: 'upload',
+            file: {
+              name: file.name,
+              type: file.type,
+              data: fileData
+            }
+          },
+        });
+        
+        if (response.error) {
+          throw new Error(response.error.message);
+        }
+        
+        const assistantContent = response.data.response;
+        
+        if (user && currentConversationId) {
+          const assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
+          setMessages(prev => [...prev, assistantMessage]);
+        } else {
+          const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
+          setMessages(prev => [...prev, assistantMessage]);
+        }
+      };
+      
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error processing file:', error);
+      toast.error('An error occurred while processing your file');
+    } finally {
+      setIsLoading(false);
+    }
   };
-  
+
   const handleVoiceInput = () => {
     toast.info('Voice input feature coming soon');
   };
