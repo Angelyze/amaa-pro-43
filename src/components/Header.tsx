@@ -49,15 +49,16 @@ const Header: React.FC<HeaderProps> = ({
             <UserMenu onLogout={onLogin} />
           ) : (
             <>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={onLogin}
-                className="text-sm gap-1.5 hover:bg-teal/10 hover:text-teal transition-all"
-              >
-                <LogIn size={16} />
-                <span className="hidden sm:inline">Log in</span>
-              </Button>
+              <Link to="/auth">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-sm gap-1.5 hover:bg-teal/10 hover:text-teal transition-all"
+                >
+                  <LogIn size={16} />
+                  <span className="hidden sm:inline">Log in</span>
+                </Button>
+              </Link>
               <Link to="/subscribe">
                 <Button 
                   variant="default" 

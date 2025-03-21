@@ -318,23 +318,6 @@ const Index = () => {
               </span>
             </div>
 
-            {!user && (
-              <div className="mt-4 flex items-center gap-2">
-                <Link to="/auth">
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
-                    <LogIn size={16} />
-                    <span>Log in</span>
-                  </Button>
-                </Link>
-                <Link to="/subscribe">
-                  <Button variant="default" size="sm" className="bg-teal text-white hover:bg-teal-light flex items-center gap-2">
-                    <CreditCard size={16} />
-                    <span>Subscribe</span>
-                  </Button>
-                </Link>
-              </div>
-            )}
-
             {user && (
               <ConversationControls 
                 onNewConversation={handleNewConversation}
