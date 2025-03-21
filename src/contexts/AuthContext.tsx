@@ -5,7 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { clearGuestMessages } from '@/services/conversationService';
-import { getSubscriptionStatus, SubscriptionStatus } from '@/services/subscriptionService';
+import { 
+  getSubscriptionStatus, 
+  SubscriptionStatus, 
+  syncSubscriptions 
+} from '@/services/subscriptionService';
 
 interface AuthContextProps {
   session: Session | null;
@@ -32,7 +36,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshSubscriptionStatus = async () => {
     if (user) {
       try {
+        console.log('Refreshing subscription status for user:', user.id);
+        
+        // First try to sync with Stripe
+        await syncSubscriptions();
+        
+        // Then get the latest status
         const status = await getSubscriptionStatus();
+        console.log('Got subscription status:', status);
+        
         setSubscriptionStatus(status);
         setIsPremium(status.active);
       } catch (error) {
@@ -78,6 +90,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Add a separate effect to perform an additional subscription check after a delay
+  // This helps with edge cases where the subscription data might not be immediately available
+  useEffect(() => {
+    if (user && !isPremium) {
+      const checkTimer = setTimeout(() => {
+        refreshSubscriptionStatus();
+      }, 2000);
+      
+      return () => clearTimeout(checkTimer);
+    }
+  }, [user, isPremium]);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {

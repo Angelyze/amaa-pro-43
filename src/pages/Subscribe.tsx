@@ -5,13 +5,18 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, ArrowLeft, Loader2 } from 'lucide-react';
-import { createCheckoutSession, createBillingPortalSession } from '@/services/subscriptionService';
+import { Check, ArrowLeft, Loader2, RefreshCw } from 'lucide-react';
+import { 
+  createCheckoutSession, 
+  createBillingPortalSession,
+  syncSubscriptions
+} from '@/services/subscriptionService';
 import { toast } from 'sonner';
 
 const Subscribe = () => {
-  const { user, isPremium, refreshSubscriptionStatus } = useAuth();
+  const { user, isPremium, refreshSubscriptionStatus, subscriptionStatus } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
@@ -69,6 +74,22 @@ const Subscribe = () => {
     }
   };
 
+  const handleSyncSubscription = async () => {
+    if (!user) return;
+    
+    setSyncing(true);
+    try {
+      await syncSubscriptions();
+      await refreshSubscriptionStatus();
+      toast.success('Subscription status synchronized successfully');
+    } catch (error) {
+      console.error('Error syncing subscription:', error);
+      toast.error('Failed to sync subscription status');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4">
       <div className="absolute inset-0 -z-10 background-pattern"></div>
@@ -85,6 +106,39 @@ const Subscribe = () => {
         </div>
         
         <h1 className="text-3xl font-bold text-center mb-8">Upgrade to Premium</h1>
+        
+        {user && (
+          <div className="flex justify-center mb-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleSyncSubscription}
+              disabled={syncing}
+              className="flex items-center gap-1"
+            >
+              {syncing ? (
+                <Loader2 size={14} className="animate-spin mr-1" />
+              ) : (
+                <RefreshCw size={14} className="mr-1" />
+              )}
+              Sync Subscription Status
+            </Button>
+          </div>
+        )}
+        
+        {subscriptionStatus && (
+          <div className="text-center mb-6 text-sm text-muted-foreground">
+            {isPremium ? (
+              <span className="text-teal">You have an active subscription until {
+                subscriptionStatus.currentPeriodEnd ? 
+                  new Date(subscriptionStatus.currentPeriodEnd * 1000).toLocaleDateString() : 
+                  'unknown date'
+              }</span>
+            ) : (
+              <span>You do not have an active subscription</span>
+            )}
+          </div>
+        )}
         
         <div className="grid md:grid-cols-2 gap-8">
           <Card>

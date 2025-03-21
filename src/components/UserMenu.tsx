@@ -1,5 +1,5 @@
 
-import { User, LogOut, CreditCard, Settings } from 'lucide-react';
+import { User, LogOut, CreditCard, Settings, RefreshCw } from 'lucide-react';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -12,6 +12,8 @@ import {
 import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface UserMenuProps {
   onLogout: () => Promise<void>;
@@ -19,11 +21,27 @@ interface UserMenuProps {
 }
 
 const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
-  const { user } = useAuth();
+  const { user, refreshSubscriptionStatus } = useAuth();
+  const [refreshing, setRefreshing] = useState(false);
   
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
+  
+  const handleRefreshSubscription = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setRefreshing(true);
+    try {
+      await refreshSubscriptionStatus();
+      toast.success('Subscription status refreshed');
+    } catch (error) {
+      toast.error('Failed to refresh subscription status');
+    } finally {
+      setRefreshing(false);
+    }
+  };
   
   return (
     <DropdownMenu>
@@ -43,6 +61,17 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem 
+          className="flex items-center justify-between cursor-pointer"
+          onClick={handleRefreshSubscription}
+          disabled={refreshing}
+        >
+          <span>Refresh Status</span>
+          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+        </DropdownMenuItem>
+        
         <DropdownMenuSeparator />
         
         {isPremium ? (
