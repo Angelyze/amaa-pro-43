@@ -145,7 +145,7 @@ const Profile = () => {
       console.log('Public URL generated:', data.publicUrl);
       
       // Update user metadata with the new avatar URL
-      const { error: updateError, data: userData } = await supabase.auth.updateUser({
+      const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: data.publicUrl }
       });
       
@@ -163,6 +163,12 @@ const Profile = () => {
         : `${data.publicUrl}?t=${timestamp}`;
       
       setAvatarUrl(urlWithTimestamp);
+      
+      // Force refresh of Auth context to update user object
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      
       toast.success('Avatar updated successfully!');
       
     } catch (error: any) {

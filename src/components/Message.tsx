@@ -169,28 +169,9 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
 
   return (
     <div className="flex justify-center mb-4">
-      <div className={`${type === 'user' ? 'user-message' : 'assistant-message'}`}>
-        <div className={`${getFontSize()} prose-container`}>
-          {type === 'user' ? (
-            <div className="whitespace-pre-wrap">{content}</div>
-          ) : (
-            <ReactMarkdown 
-              components={renderers}
-              className="markdown-content"
-            >
-              {content}
-            </ReactMarkdown>
-          )}
-        </div>
-        
-        {timestamp && (
-          <div className="mt-2 text-xs text-muted-foreground">
-            {formatTimestamp()}
-          </div>
-        )}
-        
+      <div className={`${type === 'user' ? 'user-message' : 'assistant-message'} relative`}>
         {type === 'assistant' && (
-          <div className="mt-3 flex items-center gap-1 justify-end">
+          <div className="absolute top-2 right-2 flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
@@ -233,6 +214,25 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
             >
               <Share2 size={14} />
             </Button>
+          </div>
+        )}
+        
+        <div className={`${getFontSize()} prose-container`}>
+          {type === 'user' ? (
+            <div className="whitespace-pre-wrap">{content}</div>
+          ) : (
+            <ReactMarkdown 
+              components={renderers}
+              className="markdown-content"
+            >
+              {content}
+            </ReactMarkdown>
+          )}
+        </div>
+        
+        {timestamp && (
+          <div className="mt-2 text-xs text-muted-foreground">
+            {formatTimestamp()}
           </div>
         )}
         
