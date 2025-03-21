@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -7,7 +6,7 @@ import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
-import { Info, Heart, LogIn } from 'lucide-react';
+import { Info, Heart, LogIn, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import UserMenu from '../components/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,7 +27,6 @@ import {
   incrementGuestQueryCount
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const MAX_GUEST_QUERIES = 5;
 
@@ -46,19 +44,16 @@ const Index = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const activeMessageRef = useRef<HTMLDivElement>(null);
   
-  // Load conversations for authenticated users
   useEffect(() => {
     if (user) {
       loadConversations();
     } else {
-      // Load guest messages
       const guestMessages = getGuestMessages();
       setMessages(guestMessages);
       setGuestQueriesCount(getGuestQueryCount());
     }
   }, [user]);
 
-  // Load messages for current conversation
   useEffect(() => {
     if (currentConversationId && user) {
       loadMessages(currentConversationId);
@@ -124,8 +119,6 @@ const Index = () => {
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
     try {
       if (user) {
-        // Authenticated user flow
-        // Create a new conversation if needed
         let conversationId = currentConversationId;
         if (!conversationId) {
           const defaultTitle = content.substring(0, 30) + (content.length > 30 ? '...' : '');
@@ -135,30 +128,24 @@ const Index = () => {
           setConversations([newConversation, ...conversations]);
         }
         
-        // Add user message
         const userMessage = await createMessage(conversationId, content, 'user');
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
       } else {
-        // Guest user flow
-        // Check if guest has reached the query limit
         const queryCount = getGuestQueryCount();
         if (queryCount >= MAX_GUEST_QUERIES) {
-          toast.error('You have reached the maximum number of queries as a guest. Please sign in to continue.');
+          toast.error('You have reached the maximum number of queries as a guest. Please log in or Subscribe to continue.');
           return;
         }
         
-        // Increment guest query count
         const newCount = incrementGuestQueryCount();
         setGuestQueriesCount(newCount);
         
-        // Add user message
         const userMessage = saveGuestMessage({ content, type: 'user' });
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
       }
       
-      // Call our edge function
       const response = await supabase.functions.invoke('chat', {
         body: { message: content, conversationType: type },
       });
@@ -167,18 +154,13 @@ const Index = () => {
         throw new Error(response.error.message);
       }
       
-      // Add assistant message
       const assistantContent = response.data.response;
       
       if (user) {
-        // For authenticated users, save to database
         const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
         setMessages(prev => [...prev, assistantMessage]);
-        
-        // Refresh conversations list to get the updated one
         loadConversations();
       } else {
-        // For guest users, save to local storage
         const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
         setMessages(prev => [...prev, assistantMessage]);
       }
@@ -223,7 +205,6 @@ const Index = () => {
       const title = customTitle || conversation.title;
       await updateConversationTitle(currentConversationId, title);
       
-      // Refresh conversations
       loadConversations();
       
       toast.success('Conversation saved successfully');
@@ -243,7 +224,6 @@ const Index = () => {
     try {
       await updateConversationTitle(id, newTitle);
       
-      // Refresh conversations
       loadConversations();
       
       toast.success('Conversation renamed');
@@ -257,13 +237,11 @@ const Index = () => {
     try {
       await deleteConversation(id);
       
-      // If we deleted the current conversation, clear it
       if (id === currentConversationId) {
         setCurrentConversationId(null);
         setMessages([]);
       }
       
-      // Refresh conversations
       loadConversations();
       
       toast.success('Conversation deleted');
@@ -273,7 +251,6 @@ const Index = () => {
     }
   };
 
-  // Map database messages to the format expected by the components
   const displayMessages = messages.map(msg => ({
     id: msg.id,
     content: msg.content,
@@ -281,7 +258,6 @@ const Index = () => {
     timestamp: msg.created_at
   })).reverse();
 
-  // Map conversations to the SavedConversation format
   const savedConversations: SavedConversation[] = conversations.map(conv => ({
     id: conv.id,
     title: conv.title,
@@ -310,7 +286,7 @@ const Index = () => {
               <Link to="/auth">
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <LogIn size={16} />
-                  <span>Sign In</span>
+                  <span>Log in</span>
                 </Button>
               </Link>
             )}
@@ -323,17 +299,6 @@ const Index = () => {
             <Logo />
             
             <div className="w-full max-w-3xl mt-8">
-              {!user && guestQueriesCount > 0 && (
-                <Alert className="mb-4">
-                  <AlertDescription>
-                    Guest mode: {guestQueriesCount}/{MAX_GUEST_QUERIES} queries used. 
-                    <Link to="/auth" className="ml-2 text-primary hover:underline">
-                      Sign in
-                    </Link> for unlimited access.
-                  </AlertDescription>
-                </Alert>
-              )}
-              
               <AMAAChatBox 
                 onSendMessage={handleSendMessage}
                 onUploadFile={handleUploadFile}
@@ -344,8 +309,31 @@ const Index = () => {
             
             <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
               <Info size={12} />
-              <span>Ask me anything. I'm here to help!</span>
+              <span>
+                Free users have 5 queries. 
+                <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
+                  Go Premium
+                </Link> 
+                for unlimited access and much more.
+              </span>
             </div>
+
+            {!user && (
+              <div className="mt-4 flex items-center gap-2">
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <LogIn size={16} />
+                    <span>Log in</span>
+                  </Button>
+                </Link>
+                <Link to="/subscribe">
+                  <Button variant="default" size="sm" className="bg-teal text-white hover:bg-teal-light flex items-center gap-2">
+                    <CreditCard size={16} />
+                    <span>Subscribe</span>
+                  </Button>
+                </Link>
+              </div>
+            )}
 
             {user && (
               <ConversationControls 
@@ -354,6 +342,7 @@ const Index = () => {
                 onLoadConversation={handleLoadConversation}
                 onRenameConversation={handleRenameConversation}
                 onDeleteConversation={handleDeleteConversation}
+                savedConversations={savedConversations}
                 currentMessages={messages}
               />
             )}

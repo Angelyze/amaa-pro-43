@@ -4,6 +4,7 @@ import { ArrowUp, LogIn, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
 import AMAAChatBox from './AMAAChatBox';
 import UserMenu from './UserMenu';
+import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   mainSearchVisible: boolean;
@@ -57,14 +58,16 @@ const Header: React.FC<HeaderProps> = ({
                 <LogIn size={16} />
                 <span className="hidden sm:inline">Log in</span>
               </Button>
-              <Button 
-                variant="default" 
-                size="sm"
-                className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
-              >
-                <CreditCard size={16} />
-                <span className="hidden sm:inline">Subscribe</span>
-              </Button>
+              <Link to="/subscribe">
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
+                >
+                  <CreditCard size={16} />
+                  <span className="hidden sm:inline">Subscribe</span>
+                </Button>
+              </Link>
             </>
           )}
           

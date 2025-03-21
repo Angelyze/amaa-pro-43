@@ -1,13 +1,14 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Logo from '@/components/Logo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft } from 'lucide-react';
 
 const Auth = () => {
   const { user, signIn, signUp } = useAuth();
@@ -54,8 +55,15 @@ const Auth = () => {
       <div className="absolute inset-0 -z-10 background-pattern"></div>
       
       <div className="w-full max-w-md">
-        <div className="mb-8 flex justify-center">
+        <div className="flex justify-between items-center mb-8 w-full">
+          <Link to="/">
+            <Button variant="ghost" size="sm" className="flex items-center gap-2">
+              <ArrowLeft size={16} />
+              <span>Back to App</span>
+            </Button>
+          </Link>
           <Logo />
+          <div className="w-[73px]"></div> {/* Spacer for alignment */}
         </div>
         
         <Card className="w-full">
@@ -63,7 +71,7 @@ const Auth = () => {
             <CardHeader>
               <div className="flex justify-center">
                 <TabsList className="w-full">
-                  <TabsTrigger value="signin" className="w-full">Sign In</TabsTrigger>
+                  <TabsTrigger value="signin" className="w-full">Log In</TabsTrigger>
                   <TabsTrigger value="signup" className="w-full">Sign Up</TabsTrigger>
                 </TabsList>
               </div>
@@ -84,7 +92,7 @@ const Auth = () => {
                     <Input id="signin-password" name="password" type="password" required />
                   </div>
                   <Button type="submit" className="w-full bg-teal hover:bg-teal-light" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                    {isLoading ? 'Logging in...' : 'Log In'}
                   </Button>
                 </form>
               </TabsContent>
