@@ -12,6 +12,29 @@ interface MessageProps {
   timestamp?: string;
 }
 
+// Function to strip markdown for TTS
+const stripMarkdown = (text: string): string => {
+  // Replace headers
+  let cleaned = text.replace(/^#{1,6}\s+/gm, '');
+  
+  // Replace bold and italic
+  cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, '$1');
+  cleaned = cleaned.replace(/\*(.*?)\*/g, '$1');
+  
+  // Replace code blocks
+  cleaned = cleaned.replace(/```[\s\S]*?```/g, '');
+  cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
+  
+  // Replace links
+  cleaned = cleaned.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
+  
+  // Replace lists
+  cleaned = cleaned.replace(/^[*-]\s+/gm, '');
+  cleaned = cleaned.replace(/^\d+\.\s+/gm, '');
+  
+  return cleaned;
+};
+
 const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
@@ -50,9 +73,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     setIsSpeaking(true);
     
     try {
-      console.log('Starting TTS with content length:', content.length);
-      // The textToSpeech function will handle markdown parsing
-      await textToSpeech(content);
+      // Clean the markdown content for TTS
+      const cleanText = stripMarkdown(content);
+      console.log('Starting TTS with cleaned content length:', cleanText.length);
+      
+      await textToSpeech(cleanText);
     } catch (error) {
       console.error('Error during text-to-speech:', error);
       toast.error('Failed to read text. Falling back to browser voices.');

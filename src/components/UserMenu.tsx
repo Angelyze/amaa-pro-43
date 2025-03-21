@@ -40,13 +40,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   // Set avatar URL whenever user changes
   useEffect(() => {
     if (user?.user_metadata?.avatar_url) {
-      console.log('UserMenu - Setting avatar URL from user metadata:', user.user_metadata.avatar_url);
-      // Get the public URL without query parameters
-      const url = new URL(user.user_metadata.avatar_url);
-      const cleanUrl = url.origin + url.pathname;
-      // Add cache-busting timestamp
-      const timestamp = new Date().getTime();
-      setAvatarUrl(`${cleanUrl}?t=${timestamp}`);
+      const url = user.user_metadata.avatar_url;
+      console.log('UserMenu - Setting avatar URL from user metadata:', url);
+      
+      // Remove any existing query params and add a timestamp
+      const timestamp = Date.now();
+      const baseUrl = url.split('?')[0];
+      setAvatarUrl(`${baseUrl}?t=${timestamp}`);
     }
   }, [user]);
   
