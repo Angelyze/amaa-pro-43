@@ -74,7 +74,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     toast.success('Link copied to clipboard');
     onClose();
   };
-  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-5 px-[60px] py-[13px] rounded-md">
+  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-5 py-[13px] w-60 rounded-md px-[13px]">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
