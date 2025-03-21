@@ -30,11 +30,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   
   useEffect(() => {
-    // Get the current theme from localStorage or system preference
+    // Get the current theme from localStorage
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+    setTheme(savedTheme || 'light');
   }, []);
   
   // Set avatar URL whenever user changes
@@ -45,9 +43,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         const avatarUrl = user.user_metadata.avatar_url;
         
         // Add timestamp to prevent caching issues
-        const urlWithTimestamp = avatarUrl.includes('?') 
-          ? `${avatarUrl}&t=${timestamp}`
-          : `${avatarUrl}?t=${timestamp}`;
+        const urlWithTimestamp = `${avatarUrl}?t=${timestamp}`;
           
         setAvatarUrl(urlWithTimestamp);
       } catch (err) {

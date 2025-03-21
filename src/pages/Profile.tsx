@@ -14,7 +14,6 @@ import { Layout } from '@/components/ui/layout';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
 import { Loader2, Upload } from 'lucide-react';
 import { 
   getAllVoices,
@@ -30,17 +29,10 @@ const Profile = () => {
   const [uploading, setUploading] = useState(false);
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
-  const [selectedVoice, setSelectedVoice] = useState(() => {
-    return localStorage.getItem('tts_voice') || 'browser-0';
-  });
-  const [autoReadMessages, setAutoReadMessages] = useState(() => {
-    return getAutoReadSetting();
-  });
+  const [selectedVoice, setSelectedVoice] = useState(getCurrentVoice().id);
+  const [autoReadMessages, setAutoReadMessages] = useState(getAutoReadSetting());
   const [selectedTheme, setSelectedTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') || 'light';
-    }
-    return 'light';
+    return localStorage.getItem('theme') || 'light';
   });
   const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
   
@@ -53,29 +45,22 @@ const Profile = () => {
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
-  // Load user data including avatar when user object changes
+  // Load user data including avatar
   useEffect(() => {
-    const loadUserData = async () => {
-      if (user) {
-        setFullName(user.user_metadata?.full_name || '');
+    if (user) {
+      setFullName(user.user_metadata?.full_name || '');
+      
+      if (user.user_metadata?.avatar_url) {
+        const timestamp = Date.now();
+        const avatarUrl = user.user_metadata.avatar_url;
         
-        if (user.user_metadata?.avatar_url) {
-          // Force a timestamp to prevent caching
-          const timestamp = Date.now();
-          const avatarUrl = user.user_metadata.avatar_url;
-          
-          // Add timestamp to prevent caching issues
-          const urlWithTimestamp = avatarUrl.includes('?') 
-            ? `${avatarUrl}&t=${timestamp}`
-            : `${avatarUrl}?t=${timestamp}`;
-          
-          setAvatarUrl(urlWithTimestamp);
-          console.log('Set avatar URL to:', urlWithTimestamp);
-        }
+        // Add timestamp to prevent caching issues
+        const urlWithTimestamp = `${avatarUrl}?t=${timestamp}`;
+        
+        setAvatarUrl(urlWithTimestamp);
+        console.log('Set avatar URL to:', urlWithTimestamp);
       }
-    };
-    
-    loadUserData();
+    }
   }, [user]);
   
   // Initialize TTS voices
@@ -85,23 +70,14 @@ const Profile = () => {
     
     if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
       const handleVoicesChanged = () => {
-        const updatedVoices = getAllVoices();
-        setAvailableVoices(updatedVoices);
+        setAvailableVoices(getAllVoices());
       };
       
       window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
-      
       return () => {
         window.speechSynthesis.onvoiceschanged = null;
       };
     }
-  }, []);
-  
-  // Initialize voice settings
-  useEffect(() => {
-    const currentVoice = getCurrentVoice();
-    setSelectedVoice(currentVoice.id);
-    setAutoReadMessages(getAutoReadSetting());
   }, []);
   
   const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +96,7 @@ const Profile = () => {
       console.log('Uploading file:', fileName);
       console.log('File path:', filePath);
       
-      // Make sure we have access to Storage API
+      // Upload file to Storage
       const { error: uploadError, data: uploadData } = await supabase.storage
         .from('amaa')
         .upload(filePath, file, {
@@ -133,9 +109,7 @@ const Profile = () => {
         throw uploadError;
       }
       
-      console.log('Upload successful, getting public URL for:', filePath);
-      
-      // Get the public URL for the uploaded file
+      // Get the public URL
       const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
       if (!data || !data.publicUrl) {
@@ -154,17 +128,11 @@ const Profile = () => {
         throw updateError;
       }
       
-      console.log('User metadata updated with new avatar URL');
-      
-      // Update the avatar URL in the UI with a timestamp to avoid caching
+      // Update the avatar URL with timestamp to avoid caching
       const timestamp = Date.now();
-      const urlWithTimestamp = data.publicUrl.includes('?')
-        ? `${data.publicUrl}&t=${timestamp}`
-        : `${data.publicUrl}?t=${timestamp}`;
+      const urlWithTimestamp = `${data.publicUrl}?t=${timestamp}`;
       
       setAvatarUrl(urlWithTimestamp);
-      
-      // Force a quick refresh of the Auth context to update user object
       refreshSubscriptionStatus();
       
       toast.success('Avatar updated successfully!');
@@ -296,25 +264,23 @@ const Profile = () => {
                   <CardDescription>Customize the appearance of the application.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <Label htmlFor="theme-selection">Theme</Label>
-                      <Select
-                        value={selectedTheme}
-                        onValueChange={handleThemeChange}
-                      >
-                        <SelectTrigger id="theme-selection" className="mt-1.5">
-                          <SelectValue placeholder="Select a theme" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {themes.map((theme) => (
-                            <SelectItem key={theme.id} value={theme.id}>
-                              {theme.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <Label htmlFor="theme-selection">Theme</Label>
+                    <Select
+                      value={selectedTheme}
+                      onValueChange={handleThemeChange}
+                    >
+                      <SelectTrigger id="theme-selection" className="mt-1.5">
+                        <SelectValue placeholder="Select a theme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {themes.map((theme) => (
+                          <SelectItem key={theme.id} value={theme.id}>
+                            {theme.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </CardContent>
               </Card>
@@ -329,21 +295,15 @@ const Profile = () => {
                   <CardDescription>Manage your subscription and billing.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    <div className="flex flex-col gap-2 p-4 border rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">Status</span>
-                        <Badge className="bg-teal hover:bg-teal">Premium</Badge>
-                      </div>
-                      
-                      {isPremium && (
-                        <>
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium">Next billing</span>
-                            <span>{new Date().toLocaleDateString()}</span>
-                          </div>
-                        </>
-                      )}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Status</span>
+                      <Badge className="bg-teal hover:bg-teal">Premium</Badge>
+                    </div>
+                    
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="font-medium">Next billing</span>
+                      <span>{new Date().toLocaleDateString()}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -377,15 +337,12 @@ const Profile = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Choose from available text-to-speech voices.
-                      </p>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
+                      <div>
                         <Label htmlFor="auto-read">Auto-read messages</Label>
-                        <p className="text-xs text-muted-foreground">Automatically read incoming messages with text-to-speech</p>
+                        <p className="text-xs text-muted-foreground">Automatically read incoming messages</p>
                       </div>
                       <Switch
                         id="auto-read"
