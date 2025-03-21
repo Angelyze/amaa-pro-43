@@ -29,6 +29,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
+      // Always send the message with the current active option type
       onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
       setMessage('');
       // If we're in upload mode and sent a message, don't clear the uploaded file
@@ -51,8 +52,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       setActiveOption('upload');
       setUploadedFile(file);
       
-      // We don't automatically upload and process the file anymore
-      // Just save it for when the user asks a question about it
+      // Just notify that we've uploaded the file, but don't process it yet
+      if (onUploadFile) {
+        onUploadFile(file);
+      }
       
       if (fileInputRef.current) {
         fileInputRef.current.value = '';

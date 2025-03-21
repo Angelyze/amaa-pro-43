@@ -33,9 +33,25 @@ serve(async (req) => {
     // Choose appropriate API based on the type
     if (type === 'web-search') {
       return await handleOpenRouterSearch(message);
-    } else if (type === 'upload' && file && photoContext) {
+    } else if (type === 'upload' && file) {
       // Only process the file if we have context from the user
-      return await handleGeminiFileAnalysis(photoContext, file);
+      if (photoContext) {
+        return await handleGeminiFileAnalysis(photoContext, file);
+      } else {
+        // Just acknowledge that we received the file but don't process it yet
+        return new Response(
+          JSON.stringify({ 
+            response: "I've received your file. What would you like to know about it?",
+            model: "system-message"
+          }),
+          { 
+            headers: { 
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            } 
+          }
+        );
+      }
     } else {
       return await handleGeminiRegularChat(message);
     }
@@ -64,7 +80,8 @@ async function handleGeminiRegularChat(message: string) {
     
     try {
       console.log('Trying Gemini API with key length:', apiKey.length);
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      // Updated to use gemini-2.0-flash model as specified
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +116,7 @@ async function handleGeminiRegularChat(message: string) {
       return new Response(
         JSON.stringify({ 
           response: aiResponse,
-          model: "gemini-1.5-flash"
+          model: "gemini-2.0-flash"
         }),
         { 
           headers: { 
@@ -159,6 +176,7 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
       imageData = `data:${file.type};base64,${fileData}`;
     }
     
+    // Updated to use gemini-2.0-flash model as specified
     const payload = {
       contents: [
         {
@@ -183,7 +201,7 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
     };
     
     console.log('Sending payload to Gemini with image data');
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -203,7 +221,7 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
     return new Response(
       JSON.stringify({ 
         response: aiResponse,
-        model: "gemini-1.5-flash"
+        model: "gemini-2.0-flash"
       }),
       { 
         headers: { 
@@ -242,7 +260,19 @@ async function handleOpenRouterSearch(message: string) {
   }
   
   try {
-    const searchQuery = `Find the latest articles and information about: ${message}. Provide a comprehensive summary of the most current information, with specific dates when possible, and organize the information in a clear structure with headings.`;
+    // Improved search query for better results with latest articles
+    const searchQuery = `
+      I need comprehensive information about: ${message}
+      
+      Please:
+      1. Focus on the MOST RECENT information available (include publication dates when possible)
+      2. Organize your response in a clear structure with headings and sections
+      3. Provide a summary of the latest news or developments first
+      4. Include specific dates of information where available
+      5. Cite sources when possible
+      6. Format your response in a reader-friendly way with bullet points where appropriate
+      7. End with a brief conclusion
+    `;
     
     console.log('Sending web search query to OpenRouter:', searchQuery);
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -258,7 +288,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a web search assistant. Provide comprehensive, up-to-date information with sources when possible. Format your response clearly with sections and include dates of information when available. Always start by providing the most recent information first.' 
+            content: 'You are a highly effective web search assistant specialized in finding and summarizing the most current information. Always prioritize recent information and present it in a well-structured format. Include specific dates whenever possible. Format your response with clear headings and a logical structure.' 
           },
           { role: 'user', content: searchQuery }
         ],
