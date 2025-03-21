@@ -13,7 +13,7 @@ let isPlaying = false;
 let playQueue: string[] = [];
 let currentChunkIndex = 0;
 
-// Get all available browser voices and ElevenLabs voices
+// Get all available browser voices
 export const getAllVoices = (): VoiceOption[] => {
   const voices: VoiceOption[] = [];
   
@@ -84,7 +84,7 @@ export const stopSpeech = (): void => {
 };
 
 // Split text into smaller chunks for better TTS processing
-const splitTextIntoChunks = (text: string, maxLength = 200): string[] => {
+const splitTextIntoChunks = (text: string, maxLength = 250): string[] => {
   const chunks: string[] = [];
   let startIndex = 0;
   
@@ -100,7 +100,7 @@ const splitTextIntoChunks = (text: string, maxLength = 200): string[] => {
       for (const boundary of possibleBoundaries) {
         const boundaryIndex = text.lastIndexOf(boundary, endIndex);
         if (boundaryIndex > startIndex && boundaryIndex > bestBoundary) {
-          bestBoundary = boundaryIndex + boundary.length - 1; // Include the space
+          bestBoundary = boundaryIndex + boundary.length - 1;
         }
       }
       
@@ -162,8 +162,8 @@ export const textToSpeech = async (text: string): Promise<void> => {
         return;
       }
       
-      // Split text into manageable chunks
-      playQueue = splitTextIntoChunks(text, 150);
+      // Split text into manageable chunks with larger size (250 characters)
+      playQueue = splitTextIntoChunks(text, 250);
       currentChunkIndex = 0;
       
       console.log('Speaking', playQueue.length, 'chunks of text');
@@ -189,36 +189,46 @@ export const textToSpeech = async (text: string): Promise<void> => {
           console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
           currentChunkIndex++;
           
-          // Add a small delay between chunks for more natural speech
+          // Reduce delay between chunks for more continuous speech
           setTimeout(() => {
             if (isPlaying) {
               speakNextChunk();
             }
-          }, 50);
+          }, 10);
         };
         
         utterance.onerror = (event) => {
           console.error('Speech error:', event);
-          isPlaying = false;
-          reject(new Error('Speech synthesis error'));
+          // Don't stop completely on error, try to continue with next chunk
+          currentChunkIndex++;
+          setTimeout(() => {
+            if (isPlaying) {
+              speakNextChunk();
+            }
+          }, 10);
         };
         
-        // Chrome workaround - sometimes Chrome's speech synthesis can get stuck
-        // Add a timeout to ensure it moves to the next chunk
+        // Safety mechanism: if a chunk doesn't complete in 10 seconds, move to the next one
         const safetyTimeout = setTimeout(() => {
           if (isPlaying && currentUtterance === utterance) {
             console.log('Safety timeout triggered for chunk', currentChunkIndex);
-            window.speechSynthesis.cancel(); // Cancel the current utterance
+            // Instead of canceling all synthesis, just move to next chunk
             currentChunkIndex++;
             speakNextChunk();
           }
-        }, 5000); // 5 seconds should be enough for most chunks
+        }, 10000);
         
         // Clear the timeout when the utterance naturally ends
-        const originalOnEnd = utterance.onend;
         utterance.onend = (event) => {
           clearTimeout(safetyTimeout);
-          if (originalOnEnd) originalOnEnd.call(utterance, event);
+          console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
+          currentChunkIndex++;
+          
+          setTimeout(() => {
+            if (isPlaying) {
+              speakNextChunk();
+            }
+          }, 10);
         };
         
         // Speak the current chunk
