@@ -1,14 +1,11 @@
-
 import React, { useRef, useEffect } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Link2, MessageSquare, X, Share2, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
-
 interface ShareMenuProps {
   content: string;
   onClose: () => void;
 }
-
 const ShareMenu: React.FC<ShareMenuProps> = ({
   content,
   onClose
@@ -40,19 +37,16 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     window.open(url, '_blank');
     onClose();
   };
-  
   const shareToTwitter = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
-  
   const shareToReddit = () => {
     const url = `https://www.reddit.com/submit?url=${window.location.href}&title=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
-  
   const shareToThreads = () => {
     // There's no direct sharing URL for Threads, but we can copy the content
     // and suggest opening Threads
@@ -60,32 +54,27 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     toast.success('Copied to clipboard for sharing to Threads');
     onClose();
   };
-  
   const shareToLinkedIn = () => {
     const url = `https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=Shared%20from%20AMAA&summary=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
-  
   const shareToWhatsApp = () => {
     const url = `https://wa.me/?text=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
-  
   const shareViaEmail = () => {
     const url = `mailto:?subject=Shared%20from%20AMAA&body=${encodedText}`;
     window.location.href = url;
     onClose();
   };
-  
   const copyLinkToClipboard = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success('Link copied to clipboard');
     onClose();
   };
-
-  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border rounded-lg shadow-lg p-3 z-500 w-72">
+  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-5 px-[60px] py-[13px] rounded-md">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
@@ -128,5 +117,4 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
       </div>
     </div>;
 };
-
 export default ShareMenu;
