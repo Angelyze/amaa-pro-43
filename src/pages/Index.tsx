@@ -7,11 +7,12 @@ import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
-import { Info, Heart } from 'lucide-react';
+import { Info, Heart, LogIn } from 'lucide-react';
 import { toast } from 'sonner';
 import UserMenu from '../components/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 import {
   Conversation,
   Message as MessageType,
@@ -20,9 +21,16 @@ import {
   getConversations,
   getMessages,
   deleteConversation,
-  updateConversationTitle
+  updateConversationTitle,
+  getGuestMessages,
+  saveGuestMessage,
+  getGuestQueryCount,
+  incrementGuestQueryCount
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const MAX_GUEST_QUERIES = 5;
 
 const Index = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -31,25 +39,31 @@ const Index = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const { user, signOut } = useAuth();
+  const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const activeMessageRef = useRef<HTMLDivElement>(null);
   
-  // Load conversations
+  // Load conversations for authenticated users
   useEffect(() => {
     if (user) {
       loadConversations();
+    } else {
+      // Load guest messages
+      const guestMessages = getGuestMessages();
+      setMessages(guestMessages);
+      setGuestQueriesCount(getGuestQueryCount());
     }
   }, [user]);
 
   // Load messages for current conversation
   useEffect(() => {
-    if (currentConversationId) {
+    if (currentConversationId && user) {
       loadMessages(currentConversationId);
     }
-  }, [currentConversationId]);
+  }, [currentConversationId, user]);
   
   const loadConversations = async () => {
     try {
@@ -109,20 +123,40 @@ const Index = () => {
   
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
     try {
-      // Create a new conversation if needed
-      let conversationId = currentConversationId;
-      if (!conversationId) {
-        const defaultTitle = content.substring(0, 30) + (content.length > 30 ? '...' : '');
-        const newConversation = await createConversation(defaultTitle);
-        conversationId = newConversation.id;
-        setCurrentConversationId(conversationId);
-        setConversations([newConversation, ...conversations]);
+      if (user) {
+        // Authenticated user flow
+        // Create a new conversation if needed
+        let conversationId = currentConversationId;
+        if (!conversationId) {
+          const defaultTitle = content.substring(0, 30) + (content.length > 30 ? '...' : '');
+          const newConversation = await createConversation(defaultTitle);
+          conversationId = newConversation.id;
+          setCurrentConversationId(conversationId);
+          setConversations([newConversation, ...conversations]);
+        }
+        
+        // Add user message
+        const userMessage = await createMessage(conversationId, content, 'user');
+        setMessages(prev => [...prev, userMessage]);
+        setIsLoading(true);
+      } else {
+        // Guest user flow
+        // Check if guest has reached the query limit
+        const queryCount = getGuestQueryCount();
+        if (queryCount >= MAX_GUEST_QUERIES) {
+          toast.error('You have reached the maximum number of queries as a guest. Please sign in to continue.');
+          return;
+        }
+        
+        // Increment guest query count
+        const newCount = incrementGuestQueryCount();
+        setGuestQueriesCount(newCount);
+        
+        // Add user message
+        const userMessage = saveGuestMessage({ content, type: 'user' });
+        setMessages(prev => [...prev, userMessage]);
+        setIsLoading(true);
       }
-      
-      // Add user message
-      const userMessage = await createMessage(conversationId, content, 'user');
-      setMessages(prev => [...prev, userMessage]);
-      setIsLoading(true);
       
       // Call our edge function
       const response = await supabase.functions.invoke('chat', {
@@ -135,11 +169,19 @@ const Index = () => {
       
       // Add assistant message
       const assistantContent = response.data.response;
-      const assistantMessage = await createMessage(conversationId, assistantContent, 'assistant');
-      setMessages(prev => [...prev, assistantMessage]);
       
-      // Refresh conversations list to get the updated one
-      loadConversations();
+      if (user) {
+        // For authenticated users, save to database
+        const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
+        setMessages(prev => [...prev, assistantMessage]);
+        
+        // Refresh conversations list to get the updated one
+        loadConversations();
+      } else {
+        // For guest users, save to local storage
+        const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
+        setMessages(prev => [...prev, assistantMessage]);
+      }
       
       setTimeout(scrollToLatestMessage, 100);
     } catch (error) {
@@ -262,8 +304,15 @@ const Index = () => {
       <main className="container mx-auto px-4 pt-12 flex-grow">
         <div className="relative">
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-            {user && (
+            {user ? (
               <UserMenu onLogout={signOut} />
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <LogIn size={16} />
+                  <span>Sign In</span>
+                </Button>
+              </Link>
             )}
           </div>
           
@@ -274,10 +323,22 @@ const Index = () => {
             <Logo />
             
             <div className="w-full max-w-3xl mt-8">
+              {!user && guestQueriesCount > 0 && (
+                <Alert className="mb-4">
+                  <AlertDescription>
+                    Guest mode: {guestQueriesCount}/{MAX_GUEST_QUERIES} queries used. 
+                    <Link to="/auth" className="ml-2 text-primary hover:underline">
+                      Sign in
+                    </Link> for unlimited access.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               <AMAAChatBox 
                 onSendMessage={handleSendMessage}
                 onUploadFile={handleUploadFile}
                 onVoiceInput={handleVoiceInput}
+                disabled={!user && guestQueriesCount >= MAX_GUEST_QUERIES}
               />
             </div>
             

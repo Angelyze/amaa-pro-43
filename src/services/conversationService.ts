@@ -18,6 +18,45 @@ export interface Message {
   created_at: string;
 }
 
+// Guest session management
+const GUEST_STORAGE_KEY = 'amaa_guest_messages';
+const GUEST_COUNTER_KEY = 'amaa_guest_query_count';
+
+export const getGuestQueryCount = (): number => {
+  return parseInt(localStorage.getItem(GUEST_COUNTER_KEY) || '0', 10);
+};
+
+export const incrementGuestQueryCount = (): number => {
+  const currentCount = getGuestQueryCount();
+  const newCount = currentCount + 1;
+  localStorage.setItem(GUEST_COUNTER_KEY, newCount.toString());
+  return newCount;
+};
+
+export const getGuestMessages = (): Message[] => {
+  const storedMessages = localStorage.getItem(GUEST_STORAGE_KEY);
+  return storedMessages ? JSON.parse(storedMessages) : [];
+};
+
+export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id' | 'created_at'>): Message => {
+  const messages = getGuestMessages();
+  const newMessage: Message = {
+    id: crypto.randomUUID(),
+    conversation_id: 'guest-session',
+    content: message.content,
+    type: message.type,
+    created_at: new Date().toISOString()
+  };
+  
+  const updatedMessages = [...messages, newMessage];
+  localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(updatedMessages));
+  return newMessage;
+};
+
+export const clearGuestMessages = (): void => {
+  localStorage.removeItem(GUEST_STORAGE_KEY);
+};
+
 // Conversation-related functions
 export const getConversations = async (): Promise<Conversation[]> => {
   const { data, error } = await supabase

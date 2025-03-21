@@ -20,14 +20,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
-            <Route 
-              path="/" 
-              element={
-                <PrivateRoute>
-                  <Index />
-                </PrivateRoute>
-              } 
-            />
+            <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
