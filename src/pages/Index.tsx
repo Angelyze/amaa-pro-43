@@ -51,6 +51,17 @@ const Index = () => {
     if (user) {
       loadConversations();
       setGuestQueriesCount(0);
+      
+      if (messages.length > 0 && !currentConversationId) {
+        const guestMessages = getGuestMessages();
+        const messagesMatch = messages.some(m => 
+          guestMessages.some(gm => gm.id === m.id)
+        );
+        
+        if (messagesMatch) {
+          setMessages([]);
+        }
+      }
     } else {
       const guestMessages = getGuestMessages();
       setMessages(guestMessages);
@@ -77,7 +88,7 @@ const Index = () => {
         );
       }
     }
-  }, [user]);
+  }, [user, currentConversationId]);
 
   useEffect(() => {
     if (currentConversationId && user) {
@@ -143,6 +154,20 @@ const Index = () => {
   
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
     try {
+      if (!user && getGuestQueryCount() >= MAX_GUEST_QUERIES) {
+        toast.error(
+          "You've reached the maximum number of free queries. Subscribe for unlimited access!",
+          { 
+            duration: 8000,
+            action: {
+              label: "Subscribe",
+              onClick: () => window.location.href = "/subscribe"
+            }
+          }
+        );
+        return;
+      }
+      
       if (user) {
         let conversationId = currentConversationId;
         if (!conversationId) {

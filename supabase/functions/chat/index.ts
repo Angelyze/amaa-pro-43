@@ -22,9 +22,22 @@ serve(async (req) => {
     const aiServiceUrl = new URL('/functions/v1/ai-service', req.url);
     
     // Forward ALL headers, especially authorization
+    const headers = new Headers(req.headers);
+    
+    // Ensure the Authorization header is present and not empty
+    if (!headers.get('Authorization')) {
+      console.warn('Warning: Missing Authorization header in chat function request');
+    }
+    
+    // Clone all headers explicitly (to be safe)
+    const forwardedHeaders: HeadersInit = {};
+    for (const [key, value] of headers.entries()) {
+      forwardedHeaders[key] = value;
+    }
+    
     const response = await fetch(aiServiceUrl.toString(), {
       method: 'POST',
-      headers: req.headers,
+      headers: forwardedHeaders,
       body: JSON.stringify(reqBody),
     });
     

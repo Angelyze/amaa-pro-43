@@ -4,6 +4,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { clearGuestMessages } from '@/services/conversationService';
 
 interface AuthContextProps {
   session: Session | null;
@@ -29,6 +30,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('Auth state changed:', event);
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // If user signed in, we might want to clear guest data
+        if (event === 'SIGNED_IN') {
+          clearGuestMessages();
+        }
       }
     );
 
@@ -70,6 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) throw error;
+      
+      // Clear guest data when signing in successfully
+      clearGuestMessages();
+      
       toast.success('Logged in successfully!');
       navigate('/');
     } catch (error: any) {
@@ -85,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.info('Logged out successfully');
       navigate('/auth');
     } catch (error: any) {
+      console.error('Logout error:', error);
       toast.error(error.message || 'An error occurred during sign out');
     }
   };
