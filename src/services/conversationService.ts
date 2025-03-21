@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
@@ -21,6 +20,7 @@ export interface Message {
 // Guest session management
 const GUEST_STORAGE_KEY = 'amaa_guest_messages';
 const GUEST_COUNTER_KEY = 'amaa_guest_query_count';
+const GUEST_CONVERSATION_ID = 'guest-session';
 
 export const getGuestQueryCount = (): number => {
   return parseInt(localStorage.getItem(GUEST_COUNTER_KEY) || '0', 10);
@@ -42,7 +42,7 @@ export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id'
   const messages = getGuestMessages();
   const newMessage: Message = {
     id: crypto.randomUUID(),
-    conversation_id: 'guest-session',
+    conversation_id: GUEST_CONVERSATION_ID,
     content: message.content,
     type: message.type,
     created_at: new Date().toISOString()
