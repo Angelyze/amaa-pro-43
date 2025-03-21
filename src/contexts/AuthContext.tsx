@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -31,11 +31,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
   const [isPremium, setIsPremium] = useState(false);
+  const isRefreshingSubscription = useRef(false);
   const navigate = useNavigate();
 
   const refreshSubscriptionStatus = async () => {
-    if (user) {
+    if (user && !isRefreshingSubscription.current) {
       try {
+        isRefreshingSubscription.current = true;
         console.log('Refreshing subscription status for user:', user.id);
         console.log('User email:', user.email);
         
@@ -56,6 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error("Failed to refresh subscription status:", error);
+      } finally {
+        isRefreshingSubscription.current = false;
       }
     } else {
       setSubscriptionStatus(null);
@@ -101,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Add a separate effect to perform an additional subscription check after a delay
   // This helps with edge cases where the subscription data might not be immediately available
   useEffect(() => {
-    if (user && !isPremium) {
+    if (user && !isPremium && !isRefreshingSubscription.current) {
       const checkTimer = setTimeout(() => {
         refreshSubscriptionStatus();
       }, 2000);

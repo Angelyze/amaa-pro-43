@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +22,7 @@ const Profile = () => {
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
   const [selectedVoice, setSelectedVoice] = useState(() => {
-    return localStorage.getItem('tts_voice') || 'alloy';
+    return localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x';
   });
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
     return localStorage.getItem('auto_read_messages') === 'true';
@@ -57,6 +56,13 @@ const Profile = () => {
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
+  useEffect(() => {
+    if (user) {
+      setFullName(user.user_metadata?.full_name || '');
+      setAvatarUrl(user.user_metadata?.avatar_url || '');
+    }
+  }, [user]);
+  
   const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
@@ -67,33 +73,44 @@ const Profile = () => {
       
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const filePath = `${user!.id}-${Math.random()}.${fileExt}`;
+      const fileName = `${user!.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = fileName;
       
-      // Upload the file to Supabase storage - using 'amaa' bucket
       const { error: uploadError } = await supabase.storage
         .from('amaa')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: true,
+          contentType: file.type,
+        });
         
       if (uploadError) {
+        console.error('Upload error details:', uploadError);
         throw uploadError;
       }
       
-      // Get the public URL
       const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
-      // Update user metadata
+      if (!data || !data.publicUrl) {
+        throw new Error('Failed to get public URL for uploaded file');
+      }
+      
+      console.log('Successfully uploaded to storage. Public URL:', data.publicUrl);
+      
       const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: data.publicUrl }
       });
       
       if (updateError) {
+        console.error('User metadata update error:', updateError);
         throw updateError;
       }
       
       setAvatarUrl(data.publicUrl);
+      
       toast.success('Avatar updated successfully!');
       
     } catch (error: any) {
+      console.error('Complete error details:', error);
       toast.error(`Error uploading avatar: ${error.message}`);
     } finally {
       setUploading(false);
@@ -115,7 +132,6 @@ const Profile = () => {
   };
   
   const saveVoiceSettings = () => {
-    // Save voice settings to local storage
     localStorage.setItem('tts_voice', selectedVoice);
     localStorage.setItem('auto_read_messages', autoReadMessages.toString());
     toast.success('Voice settings saved!');
@@ -133,7 +149,6 @@ const Profile = () => {
     toast.success('Theme updated successfully!');
   };
   
-  // Load saved voice settings on component mount
   useEffect(() => {
     const savedVoice = localStorage.getItem('tts_voice');
     if (savedVoice) {
@@ -171,7 +186,9 @@ const Profile = () => {
                 <div className="space-y-6">
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     <Avatar className="w-24 h-24">
-                      <AvatarImage src={avatarUrl} />
+                      {avatarUrl ? (
+                        <AvatarImage src={avatarUrl} alt="Profile" />
+                      ) : null}
                       <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
                     </Avatar>
                     
@@ -271,7 +288,6 @@ const Profile = () => {
                         <Badge className="bg-teal hover:bg-teal">Premium</Badge>
                       </div>
                       
-                      {/* Display other subscription details if available */}
                       {isPremium && (
                         <>
                           <div className="flex justify-between items-center">

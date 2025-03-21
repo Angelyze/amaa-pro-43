@@ -4,6 +4,7 @@ import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
+import { textToSpeech, stopSpeech } from '@/services/speechService';
 
 interface MessageProps {
   content: string;
@@ -32,18 +33,24 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     toast.info('Sharing feature coming soon');
   };
   
-  const handleTextToSpeech = () => {
+  const handleTextToSpeech = async () => {
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      stopSpeech();
       setIsSpeaking(false);
       return;
     }
     
-    const utterance = new SpeechSynthesisUtterance(content);
-    utterance.onend = () => setIsSpeaking(false);
-    
-    window.speechSynthesis.speak(utterance);
     setIsSpeaking(true);
+    
+    try {
+      // Use our custom TTS service with ElevenLabs
+      await textToSpeech(content);
+    } catch (error) {
+      console.error('Error during text-to-speech:', error);
+      toast.error('Failed to read text');
+    } finally {
+      setIsSpeaking(false);
+    }
   };
   
   const getFontSize = () => {
