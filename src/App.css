@@ -19,6 +19,38 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* Markdown content styling */
+.markdown-content {
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+.markdown-content a {
+  color: var(--teal, #0097b2);
+  text-decoration: underline;
+  transition: all 0.2s ease;
+}
+
+.markdown-content a:hover {
+  color: var(--teal-light, #00afd1);
+}
+
+.markdown-content pre {
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.prose-container {
+  max-width: 65ch;
+  line-height: 1.6;
+}
+
 /* Footer styles */
 .footer-container {
   margin-top: 3rem;

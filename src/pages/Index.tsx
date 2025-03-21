@@ -561,13 +561,13 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="footer-nav">
-              <a href="https://amaa.pro" className="footer-link">Home</a>
-              <a href="https://amaa.pro/about" className="footer-link">About</a>
-              <a href="https://amaa.pro/terms" className="footer-link">Terms</a>
-              <a href="https://amaa.pro/privacy" className="footer-link">Privacy</a>
+              <Link to="/" className="footer-link">Home</Link>
+              <Link to="/about" className="footer-link">About</Link>
+              <Link to="/terms" className="footer-link">Terms</Link>
+              <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
             <div className="copyright">
-              © Copyright 2025 <a href="https://amaa.pro" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</a>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
             </div>
           </div>
         </div>

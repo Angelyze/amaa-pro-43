@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
+import ReactMarkdown from 'react-markdown';
 
 interface MessageProps {
   content: string;
@@ -60,11 +61,85 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     setTextSize(sizes[nextIndex]);
   };
 
+  // Custom renderer components for ReactMarkdown
+  const renderers = {
+    a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-teal hover:text-teal-light underline"
+      >
+        {children}
+      </a>
+    ),
+    p: ({ children }: { children: React.ReactNode }) => (
+      <p className="mb-4 last:mb-0">{children}</p>
+    ),
+    h1: ({ children }: { children: React.ReactNode }) => (
+      <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
+    ),
+    h2: ({ children }: { children: React.ReactNode }) => (
+      <h2 className="text-lg font-bold mb-3 mt-5 first:mt-0">{children}</h2>
+    ),
+    h3: ({ children }: { children: React.ReactNode }) => (
+      <h3 className="text-md font-bold mb-2 mt-4 first:mt-0">{children}</h3>
+    ),
+    ul: ({ children }: { children: React.ReactNode }) => (
+      <ul className="list-disc pl-5 mb-4 space-y-1">{children}</ul>
+    ),
+    ol: ({ children }: { children: React.ReactNode }) => (
+      <ol className="list-decimal pl-5 mb-4 space-y-1">{children}</ol>
+    ),
+    li: ({ children }: { children: React.ReactNode }) => (
+      <li className="mb-1">{children}</li>
+    ),
+    blockquote: ({ children }: { children: React.ReactNode }) => (
+      <blockquote className="border-l-4 border-teal pl-4 italic my-4">{children}</blockquote>
+    ),
+    code: ({ node, inline, className, children, ...props }: any) => {
+      if (inline) {
+        return (
+          <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
+            {children}
+          </code>
+        );
+      }
+      return (
+        <pre className="bg-muted p-4 rounded-md overflow-x-auto mb-4 text-sm">
+          <code className="font-mono" {...props}>
+            {children}
+          </code>
+        </pre>
+      );
+    },
+    table: ({ children }: { children: React.ReactNode }) => (
+      <div className="overflow-x-auto mb-4">
+        <table className="min-w-full border-collapse border border-border">{children}</table>
+      </div>
+    ),
+    th: ({ children }: { children: React.ReactNode }) => (
+      <th className="border border-border bg-muted p-2 text-left font-semibold">{children}</th>
+    ),
+    td: ({ children }: { children: React.ReactNode }) => (
+      <td className="border border-border p-2">{children}</td>
+    ),
+  };
+
   return (
     <div className="flex justify-center mb-4">
       <div className={`${type === 'user' ? 'user-message' : 'assistant-message'}`}>
-        <div className={`${getFontSize()} whitespace-pre-wrap`}>
-          {content}
+        <div className={`${getFontSize()} prose-container`}>
+          {type === 'user' ? (
+            <div className="whitespace-pre-wrap">{content}</div>
+          ) : (
+            <ReactMarkdown 
+              components={renderers}
+              className="markdown-content"
+            >
+              {content}
+            </ReactMarkdown>
+          )}
         </div>
         
         {timestamp && (

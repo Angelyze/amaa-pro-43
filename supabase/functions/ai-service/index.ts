@@ -94,7 +94,19 @@ async function handleGeminiRegularChat(message: string) {
           contents: [
             {
               role: "user",
-              parts: [{ text: message }]
+              parts: [{ 
+                text: `${message}
+                
+                FORMATTING INSTRUCTIONS:
+                - Use proper Markdown formatting in your response
+                - For links, use the full Markdown syntax: [link text](https://example.com)
+                - Use headings (##, ###) to organize information
+                - Use bullet points (*) or numbered lists (1.) where appropriate
+                - Format code snippets with backticks or code blocks
+                - Use bold and italic formatting when it enhances readability
+                - Include source links when referencing external information
+                - Structure information with clear sections and paragraphs`
+              }]
             }
           ],
           generationConfig: {
@@ -273,11 +285,15 @@ async function handleOpenRouterSearch(message: string) {
       3. Include SPECIFIC DATES for every piece of information
       4. If searching for API documentation or technical information, fetch the ABSOLUTE LATEST version 
       5. Explicitly note if any information seems outdated
-      6. Format your response with clear headings and bullet points
-      7. Provide FULL, working URLs to original sources
-      8. PRIORITIZE information from the last 30 days, especially for technical documentation
-      9. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
-      10. Add a timestamp of when this search was conducted
+      6. Format your response with clear Markdown formatting:
+         - Use proper headings (## and ###)
+         - Use bullet points or numbered lists where appropriate
+         - Include FULL, clickable URLs using [text](URL) syntax
+         - Format code with code blocks using backticks
+      7. PRIORITIZE information from the last 30 days, especially for technical documentation
+      8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
+      9. Add a timestamp of when this search was conducted
+      10. Include the date when each source was published/updated
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
@@ -299,7 +315,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL).' 
           },
           { role: 'user', content: searchQuery }
         ],
