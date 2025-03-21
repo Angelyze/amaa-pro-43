@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -42,6 +41,7 @@ const Index = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const { user, signOut, isPremium } = useAuth();
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -251,10 +251,15 @@ const Index = () => {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
           setMessages(prev => [...prev, assistantMessage]);
         }
+        
+        // Set isVoiceActive to false after receiving a response
+        setIsVoiceActive(false);
       }
     } catch (error) {
       console.error('Error in conversation:', error);
       toast.error('An error occurred while processing your request');
+      // Also turn off voice in case of error
+      setIsVoiceActive(false);
     } finally {
       setIsLoading(false);
     }
@@ -346,8 +351,8 @@ const Index = () => {
   };
 
   const handleVoiceInput = () => {
-    // This is now handled within the AMAAChatBox component
-    console.log('Voice input toggled from parent component');
+    // Toggle voice active state
+    setIsVoiceActive(!isVoiceActive);
   };
 
   const handleNewConversation = () => {

@@ -29,7 +29,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-
+  const silenceTimerRef = useRef<number | null>(null);
+  const lastTranscriptRef = useRef<string>('');
+  
   useEffect(() => {
     // Initialize speech recognition if available
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -45,6 +47,19 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           .join('');
         
         setMessage(transcript);
+        
+        // Reset silence timer on new speech
+        if (transcript !== lastTranscriptRef.current) {
+          resetSilenceTimer();
+          lastTranscriptRef.current = transcript;
+        }
+      };
+      
+      recognitionRef.current.onspeechend = () => {
+        // Start silence timer when speech ends
+        if (message.trim()) {
+          startSilenceTimer();
+        }
       };
       
       recognitionRef.current.onerror = (event) => {
@@ -53,22 +68,75 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         setIsListening(false);
         setVoiceInputActive(false);
       };
+      
+      // When recognition ends, restart it if voiceInputActive is still true
+      recognitionRef.current.onend = () => {
+        if (voiceInputActive) {
+          try {
+            recognitionRef.current?.start();
+          } catch (error) {
+            console.error("Failed to restart voice recognition:", error);
+          }
+        } else {
+          setIsListening(false);
+        }
+      };
     }
     
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.abort();
       }
+      clearSilenceTimer();
     };
   }, []);
+  
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      clearSilenceTimer();
+    };
+  }, []);
+  
+  // Turn off voice input when disabled changes
+  useEffect(() => {
+    if (disabled && voiceInputActive) {
+      stopVoiceInput();
+    }
+  }, [disabled]);
+  
+  const resetSilenceTimer = () => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+  };
+  
+  const clearSilenceTimer = () => {
+    resetSilenceTimer();
+  };
+  
+  const startSilenceTimer = () => {
+    resetSilenceTimer();
+    
+    // Auto-send message after 1.5 seconds of silence if there's a message
+    silenceTimerRef.current = window.setTimeout(() => {
+      if (message.trim() && voiceInputActive) {
+        handleSend();
+      }
+    }, 1500);
+  };
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
       // Always send the message with the current active option type
       onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
       setMessage('');
-      // If we're in upload mode and sent a message, don't clear the uploaded file
-      // This allows the user to ask multiple questions about the same file
+      
+      // Turn off voice input after sending a message
+      if (voiceInputActive) {
+        stopVoiceInput();
+      }
     }
   };
 
@@ -103,6 +171,16 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     setActiveOption('upload');
     fileInputRef.current?.click();
   };
+  
+  const stopVoiceInput = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    setVoiceInputActive(false);
+    setIsListening(false);
+    resetSilenceTimer();
+    toast.info('Voice input deactivated');
+  };
 
   const toggleVoiceInput = () => {
     if (disabled) return;
@@ -119,6 +197,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       try {
         recognitionRef.current.start();
         setIsListening(true);
+        lastTranscriptRef.current = '';
         toast.success('Voice input activated. Start speaking...');
       } catch (error) {
         console.error('Speech recognition start error:', error);
@@ -126,9 +205,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         setVoiceInputActive(false);
       }
     } else {
-      recognitionRef.current.stop();
-      setIsListening(false);
-      toast.info('Voice input deactivated');
+      stopVoiceInput();
     }
     
     if (onVoiceInput) {
