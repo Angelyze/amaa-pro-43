@@ -1,3 +1,5 @@
+// This component is deprecated as theme selection has been moved to UserMenu and Profile.
+// Keep this file for reference in case we want to revert or refactor later.
 
 import React, { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';

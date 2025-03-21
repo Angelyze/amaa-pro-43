@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,9 +60,9 @@ const Profile = () => {
       const fileExt = file.name.split('.').pop();
       const filePath = `${user!.id}-${Math.random()}.${fileExt}`;
       
-      // Upload the file to Supabase storage
+      // Upload the file to Supabase storage - using 'amaa' bucket
       const { error: uploadError } = await supabase.storage
-        .from('avatars')
+        .from('amaa')
         .upload(filePath, file);
         
       if (uploadError) {
@@ -71,7 +70,7 @@ const Profile = () => {
       }
       
       // Get the public URL
-      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
       // Update user metadata
       const { error: updateError } = await supabase.auth.updateUser({
