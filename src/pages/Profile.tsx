@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -21,8 +22,12 @@ const Profile = () => {
   const [uploading, setUploading] = useState(false);
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
-  const [selectedVoice, setSelectedVoice] = useState('alloy');
-  const [autoReadMessages, setAutoReadMessages] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState(() => {
+    return localStorage.getItem('tts_voice') || 'alloy';
+  });
+  const [autoReadMessages, setAutoReadMessages] = useState(() => {
+    return localStorage.getItem('auto_read_messages') === 'true';
+  });
   const [selectedTheme, setSelectedTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') || 'light';
@@ -31,12 +36,16 @@ const Profile = () => {
   });
   
   const voices = [
-    { id: 'alloy', name: 'Alloy (Neutral)' },
-    { id: 'echo', name: 'Echo (Male)' },
-    { id: 'fable', name: 'Fable (Male)' },
-    { id: 'onyx', name: 'Onyx (Male)' },
-    { id: 'nova', name: 'Nova (Female)' },
-    { id: 'shimmer', name: 'Shimmer (Female)' }
+    { id: '9BWtsMINqrJLrRacOk9x', name: 'Aria', description: 'Calm female voice' },
+    { id: 'CwhRBWXzGAHq8TQ4Fs17', name: 'Roger', description: 'Deep male voice' },
+    { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah', description: 'Friendly female voice' },
+    { id: 'FGY2WhTYpPnrIDTdsKH5', name: 'Laura', description: 'Warm female voice' },
+    { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie', description: 'Casual male voice' },
+    { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', description: 'Authoritative male voice' },
+    { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', description: 'British male voice' },
+    { id: 'SAz9YHcvj6GT2YYXdXww', name: 'River', description: 'Soft female voice' },
+    { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', description: 'Energetic male voice' },
+    { id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte', description: 'Refined female voice' }
   ];
 
   const themes = [
@@ -123,6 +132,19 @@ const Profile = () => {
     }
     toast.success('Theme updated successfully!');
   };
+  
+  // Load saved voice settings on component mount
+  useEffect(() => {
+    const savedVoice = localStorage.getItem('tts_voice');
+    if (savedVoice) {
+      setSelectedVoice(savedVoice);
+    }
+    
+    const autoRead = localStorage.getItem('auto_read_messages');
+    if (autoRead !== null) {
+      setAutoReadMessages(autoRead === 'true');
+    }
+  }, []);
   
   return (
     <Layout showBackButton title="Profile Settings">
@@ -286,11 +308,12 @@ const Profile = () => {
                         <SelectContent>
                           {voices.map((voice) => (
                             <SelectItem key={voice.id} value={voice.id}>
-                              {voice.name}
+                              {voice.name} - {voice.description}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                      <p className="text-xs text-muted-foreground mt-1">Choose from ElevenLabs high-quality voices.</p>
                     </div>
                     
                     <div className="flex items-center justify-between">
