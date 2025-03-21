@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -95,6 +96,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     const nextIndex = (currentIndex + 1) % sizes.length;
     setTextSize(sizes[nextIndex]);
   };
+  
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(content);
+    toast.success('Copied to clipboard');
+  };
 
   // Custom renderer components for ReactMarkdown
   const renderers = {
@@ -190,6 +196,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
               size="icon"
               onClick={cycleTextSize}
               className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              title="Change text size"
             >
               <span className="text-xs font-medium">Aa</span>
             </Button>
@@ -199,6 +206,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
               size="icon"
               onClick={handleTextToSpeech}
               className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              title={isSpeaking ? "Stop reading" : "Read aloud"}
             >
               {isSpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </Button>
@@ -206,8 +214,22 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
             <Button
               variant="ghost"
               size="icon"
+              onClick={copyToClipboard}
+              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              title="Copy to clipboard"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleShare}
               className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              title="Share"
             >
               <Share2 size={14} />
             </Button>

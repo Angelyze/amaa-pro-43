@@ -115,18 +115,19 @@ const chunkText = (text: string): string[] => {
   const sentences = text.split(/(?<=[.!?])\s+/);
   const chunks: string[] = [];
   
-  // Combine sentences into reasonable sized chunks
+  // Process sentences sequentially into chunks of reasonable size
   let currentChunk = '';
   
   for (const sentence of sentences) {
-    // Add sentence to current chunk if it fits
-    if (currentChunk.length + sentence.length < 1000) {
+    if (currentChunk.length + sentence.length < 200) {
+      // Add sentence to current chunk if it fits
       currentChunk += (currentChunk ? ' ' : '') + sentence;
     } else {
       // Store current chunk and start a new one
       if (currentChunk) {
         chunks.push(currentChunk);
       }
+      // Start new chunk with current sentence
       currentChunk = sentence;
     }
   }
@@ -145,11 +146,11 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
       // Cancel any ongoing speech
       window.speechSynthesis.cancel();
       
-      // Split text into manageable chunks
+      // Split text into manageable chunks for sequential reading
       const textChunks = chunkText(text);
       console.log(`Speaking ${textChunks.length} chunks of text`);
       
-      // Create all utterances upfront to maintain proper order
+      // Create all utterances upfront
       const utterances = textChunks.map(chunk => {
         const utterance = new SpeechSynthesisUtterance(chunk);
         
@@ -165,34 +166,34 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
         return utterance;
       });
       
-      // Setup speaking in sequence
-      for (let i = 0; i < utterances.length; i++) {
-        if (i < utterances.length - 1) {
-          // Fix: Properly type the event handler
-          utterances[i].onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
-            window.speechSynthesis.speak(utterances[i + 1]);
-          };
+      // Setup sequential speaking with proper event handlers
+      let currentIndex = 0;
+      
+      const speakNext = () => {
+        if (currentIndex < utterances.length) {
+          window.speechSynthesis.speak(utterances[currentIndex]);
         } else {
-          // Fix: Properly type the event handler for the last utterance
-          utterances[i].onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
-            resolve();
-          };
+          resolve();
         }
-        
-        utterances[i].onerror = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
-          console.error('TTS error:', event);
-          // If error, try to continue with next chunk
-          if (i < utterances.length - 1) {
-            window.speechSynthesis.speak(utterances[i + 1]);
-          } else {
-            resolve();
-          }
+      };
+      
+      // Attach event handlers to each utterance
+      utterances.forEach((utterance, index) => {
+        utterance.onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
+          currentIndex++;
+          speakNext();
         };
-      }
+        
+        utterance.onerror = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
+          console.error('TTS error:', event);
+          currentIndex++;
+          speakNext();
+        };
+      });
       
       // Start with the first utterance
       if (utterances.length > 0) {
-        window.speechSynthesis.speak(utterances[0]);
+        speakNext();
       } else {
         resolve(); // Nothing to speak
       }

@@ -1,14 +1,15 @@
 
 import React, { useRef, useEffect } from 'react';
 import { 
-  Twitter, 
   Facebook, 
+  Twitter, 
   Linkedin, 
   Mail, 
   Link,
   MessageSquare,
   X,
-  Share2
+  Share2,
+  Reddit
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
@@ -44,15 +45,29 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
   const encodedText = encodeURIComponent(shareText);
   
   // Different share functions
+  const shareToFacebook = () => {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${encodedText}`;
+    window.open(url, '_blank');
+    onClose();
+  };
+  
   const shareToTwitter = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareToFacebook = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${encodedText}`;
+  const shareToReddit = () => {
+    const url = `https://www.reddit.com/submit?url=${window.location.href}&title=${encodedText}`;
     window.open(url, '_blank');
+    onClose();
+  };
+  
+  const shareToThreads = () => {
+    // There's no direct sharing URL for Threads, but we can copy the content
+    // and suggest opening Threads
+    navigator.clipboard.writeText(content);
+    toast.success('Copied to clipboard for sharing to Threads');
     onClose();
   };
   
@@ -71,20 +86,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
   const shareViaEmail = () => {
     const url = `mailto:?subject=Shared%20from%20AMAA&body=${encodedText}`;
     window.location.href = url;
-    onClose();
-  };
-  
-  const shareToReddit = () => {
-    const url = `https://www.reddit.com/submit?url=${window.location.href}&title=${encodedText}`;
-    window.open(url, '_blank');
-    onClose();
-  };
-  
-  const shareToThreads = () => {
-    // There's no direct sharing URL for Threads, but we can copy the content
-    // and suggest opening Threads
-    navigator.clipboard.writeText(content);
-    toast.success('Copied to clipboard for sharing to Threads');
     onClose();
   };
   
@@ -111,85 +112,85 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-3">
         <Button 
           variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
-          onClick={shareToTwitter}
-        >
-          <Twitter size={16} className="mb-1" />
-          <span className="text-xs">Twitter</span>
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
           onClick={shareToFacebook}
+          title="Share to Facebook"
         >
-          <Facebook size={16} className="mb-1" />
-          <span className="text-xs">Facebook</span>
+          <Facebook className="h-5 w-5 text-foreground" />
         </Button>
         
         <Button 
           variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
-          onClick={shareToLinkedIn}
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
+          onClick={shareToTwitter}
+          title="Share to X"
         >
-          <Linkedin size={16} className="mb-1" />
-          <span className="text-xs">LinkedIn</span>
+          <Twitter className="h-5 w-5 text-foreground" />
         </Button>
         
         <Button 
           variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
-          onClick={shareToWhatsApp}
-        >
-          <MessageSquare size={16} className="mb-1" />
-          <span className="text-xs">WhatsApp</span>
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
-          onClick={shareViaEmail}
-        >
-          <Mail size={16} className="mb-1" />
-          <span className="text-xs">Email</span>
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
           onClick={shareToReddit}
+          title="Share to Reddit"
         >
-          <Share2 size={16} className="mb-1" />
-          <span className="text-xs">Reddit</span>
+          <Reddit className="h-5 w-5 text-foreground" />
         </Button>
         
         <Button 
           variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
           onClick={shareToThreads}
+          title="Share to Threads"
         >
-          <Share2 size={16} className="mb-1" />
-          <span className="text-xs">Threads</span>
+          <Share2 className="h-5 w-5 text-foreground" />
         </Button>
         
         <Button 
           variant="outline" 
-          size="sm" 
-          className="flex flex-col items-center p-2" 
-          onClick={copyLinkToClipboard}
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
+          onClick={shareToLinkedIn}
+          title="Share to LinkedIn"
         >
-          <Link size={16} className="mb-1" />
-          <span className="text-xs">Copy Link</span>
+          <Linkedin className="h-5 w-5 text-foreground" />
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
+          onClick={shareToWhatsApp}
+          title="Share to WhatsApp"
+        >
+          <MessageSquare className="h-5 w-5 text-foreground" />
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
+          onClick={shareViaEmail}
+          title="Share via Email"
+        >
+          <Mail className="h-5 w-5 text-foreground" />
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="h-10 w-10 p-2 flex items-center justify-center" 
+          onClick={copyLinkToClipboard}
+          title="Copy Link"
+        >
+          <Link className="h-5 w-5 text-foreground" />
         </Button>
       </div>
     </div>

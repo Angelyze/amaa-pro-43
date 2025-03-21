@@ -41,24 +41,15 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   useEffect(() => {
     if (user?.user_metadata?.avatar_url) {
       try {
-        const rawUrl = user.user_metadata.avatar_url;
+        const timestamp = Date.now();
+        const avatarUrl = user.user_metadata.avatar_url;
         
-        // Create a URL object to properly parse the URL
-        let url;
-        try {
-          url = new URL(rawUrl);
-        } catch (e) {
-          // If URL parsing fails, use the raw URL
-          setAvatarUrl(`${rawUrl}?t=${Date.now()}`);
-          return;
-        }
-        
-        // Get just the base URL without query parameters
-        const baseUrl = `${url.origin}${url.pathname}`;
-        
-        // Add timestamp to prevent caching
-        const finalUrl = `${baseUrl}?t=${Date.now()}`;
-        setAvatarUrl(finalUrl);
+        // Add timestamp to prevent caching issues
+        const urlWithTimestamp = avatarUrl.includes('?') 
+          ? `${avatarUrl}&t=${timestamp}`
+          : `${avatarUrl}?t=${timestamp}`;
+          
+        setAvatarUrl(urlWithTimestamp);
       } catch (err) {
         console.error('Error processing avatar URL:', err);
       }

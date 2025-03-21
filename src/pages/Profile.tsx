@@ -57,28 +57,15 @@ const Profile = () => {
       setFullName(user.user_metadata?.full_name || '');
       
       if (user.user_metadata?.avatar_url) {
-        try {
-          const rawUrl = user.user_metadata.avatar_url;
-          
-          // Create a URL object to properly parse the URL
-          let url;
-          try {
-            url = new URL(rawUrl);
-          } catch (e) {
-            // If URL parsing fails, use the raw URL
-            setAvatarUrl(`${rawUrl}?t=${Date.now()}`);
-            return;
-          }
-          
-          // Get just the base URL without query parameters
-          const baseUrl = `${url.origin}${url.pathname}`;
-          
-          // Add timestamp to prevent caching
-          const finalUrl = `${baseUrl}?t=${Date.now()}`;
-          setAvatarUrl(finalUrl);
-        } catch (err) {
-          console.error('Error processing avatar URL:', err);
-        }
+        const timestamp = Date.now();
+        const avatarUrl = user.user_metadata.avatar_url;
+        
+        // Add timestamp to prevent caching issues
+        const urlWithTimestamp = avatarUrl.includes('?') 
+          ? `${avatarUrl}&t=${timestamp}`
+          : `${avatarUrl}?t=${timestamp}`;
+        
+        setAvatarUrl(urlWithTimestamp);
       }
     }
   }, [user]);
@@ -118,8 +105,9 @@ const Profile = () => {
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
       const fileName = `${user!.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = fileName;
+      const filePath = `avatars/${fileName}`;
       
+      // Make sure we have access to Storage API
       const { error: uploadError } = await supabase.storage
         .from('amaa')
         .upload(filePath, file, {
@@ -132,6 +120,7 @@ const Profile = () => {
         throw uploadError;
       }
       
+      // Get the public URL for the uploaded file
       const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
       if (!data || !data.publicUrl) {
@@ -140,6 +129,7 @@ const Profile = () => {
       
       console.log('Successfully uploaded to storage. Public URL:', data.publicUrl);
       
+      // Update user metadata with the new avatar URL
       const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: data.publicUrl }
       });
@@ -149,15 +139,13 @@ const Profile = () => {
         throw updateError;
       }
       
-      try {
-        const url = new URL(data.publicUrl);
-        const baseUrl = `${url.origin}${url.pathname}`;
-        setAvatarUrl(`${baseUrl}?t=${Date.now()}`);
-      } catch (e) {
-        // Fallback if URL parsing fails
-        setAvatarUrl(`${data.publicUrl}?t=${Date.now()}`);
-      }
+      // Update the avatar URL in the UI with a timestamp to avoid caching
+      const timestamp = Date.now();
+      const urlWithTimestamp = data.publicUrl.includes('?')
+        ? `${data.publicUrl}&t=${timestamp}`
+        : `${data.publicUrl}?t=${timestamp}`;
       
+      setAvatarUrl(urlWithTimestamp);
       toast.success('Avatar updated successfully!');
       
     } catch (error: any) {
