@@ -39,6 +39,11 @@ serve(async (req) => {
       body: JSON.stringify(reqBody),
     });
     
+    if (!response.ok) {
+      console.error('Error from ai-service:', response.status, response.statusText);
+      throw new Error(`AI service returned error: ${response.status} ${response.statusText}`);
+    }
+    
     const responseData = await response.json();
     
     return new Response(

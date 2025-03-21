@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
-import { textToSpeech, stopSpeech } from '@/services/speechService';
+import { textToSpeech, stopSpeech, getAutoReadSetting } from '@/services/speechService';
 
 interface MessageProps {
   content: string;
@@ -15,6 +15,13 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
+  
+  // Auto-read assistant messages if enabled
+  useEffect(() => {
+    if (type === 'assistant' && getAutoReadSetting()) {
+      handleTextToSpeech();
+    }
+  }, [content, type]);
   
   const formatTimestamp = () => {
     if (!timestamp) return '';
@@ -43,11 +50,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     setIsSpeaking(true);
     
     try {
-      // Use our custom TTS service with ElevenLabs
+      // Use our improved TTS service
       await textToSpeech(content);
     } catch (error) {
       console.error('Error during text-to-speech:', error);
-      toast.error('Failed to read text');
+      toast.error('Failed to read text. Falling back to browser voices.');
+      
+      // We don't need an explicit fallback here as it's handled in the textToSpeech function
     } finally {
       setIsSpeaking(false);
     }

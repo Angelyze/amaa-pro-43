@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,16 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Loader2, Upload, User } from 'lucide-react';
+import { 
+  getAllVoices, 
+  getBrowserVoices, 
+  ELEVENLABS_VOICES, 
+  setVoice, 
+  setAutoReadSetting,
+  getCurrentVoice,
+  getAutoReadSetting,
+  VoiceOption 
+} from '@/services/speechService';
 
 const Profile = () => {
   const { user, isPremium, refreshSubscriptionStatus } = useAuth();
@@ -25,7 +36,7 @@ const Profile = () => {
     return localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x';
   });
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
-    return localStorage.getItem('auto_read_messages') === 'true';
+    return getAutoReadSetting();
   });
   const [selectedTheme, setSelectedTheme] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -33,20 +44,8 @@ const Profile = () => {
     }
     return 'light';
   });
+  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
   
-  const voices = [
-    { id: '9BWtsMINqrJLrRacOk9x', name: 'Aria', description: 'Calm female voice' },
-    { id: 'CwhRBWXzGAHq8TQ4Fs17', name: 'Roger', description: 'Deep male voice' },
-    { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah', description: 'Friendly female voice' },
-    { id: 'FGY2WhTYpPnrIDTdsKH5', name: 'Laura', description: 'Warm female voice' },
-    { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie', description: 'Casual male voice' },
-    { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', description: 'Authoritative male voice' },
-    { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', description: 'British male voice' },
-    { id: 'SAz9YHcvj6GT2YYXdXww', name: 'River', description: 'Soft female voice' },
-    { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', description: 'Energetic male voice' },
-    { id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte', description: 'Refined female voice' }
-  ];
-
   const themes = [
     { id: 'light', name: 'Default' },
     { id: 'dark', name: 'Default Dark' },
@@ -62,6 +61,34 @@ const Profile = () => {
       setAvatarUrl(user.user_metadata?.avatar_url || '');
     }
   }, [user]);
+  
+  // Initialize voices
+  useEffect(() => {
+    // Get all available voices
+    const voices = getAllVoices();
+    setAvailableVoices(voices);
+    
+    // Listen for voices changed (Chrome loads voices asynchronously)
+    if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+      const handleVoicesChanged = () => {
+        const updatedVoices = getAllVoices();
+        setAvailableVoices(updatedVoices);
+      };
+      
+      window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+      
+      return () => {
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
+  }, []);
+  
+  // Update voice settings
+  useEffect(() => {
+    const currentVoice = getCurrentVoice();
+    setSelectedVoice(currentVoice.id);
+    setAutoReadMessages(getAutoReadSetting());
+  }, []);
   
   const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -132,8 +159,8 @@ const Profile = () => {
   };
   
   const saveVoiceSettings = () => {
-    localStorage.setItem('tts_voice', selectedVoice);
-    localStorage.setItem('auto_read_messages', autoReadMessages.toString());
+    setVoice(selectedVoice);
+    setAutoReadSetting(autoReadMessages);
     toast.success('Voice settings saved!');
   };
 
@@ -149,17 +176,11 @@ const Profile = () => {
     toast.success('Theme updated successfully!');
   };
   
-  useEffect(() => {
-    const savedVoice = localStorage.getItem('tts_voice');
-    if (savedVoice) {
-      setSelectedVoice(savedVoice);
-    }
-    
-    const autoRead = localStorage.getItem('auto_read_messages');
-    if (autoRead !== null) {
-      setAutoReadMessages(autoRead === 'true');
-    }
-  }, []);
+  // Group voices by type
+  const groupedVoices = {
+    elevenlabs: availableVoices.filter(voice => voice.type === 'elevenlabs'),
+    browser: availableVoices.filter(voice => voice.type === 'browser')
+  };
   
   return (
     <Layout showBackButton title="Profile Settings">
@@ -322,14 +343,34 @@ const Profile = () => {
                           <SelectValue placeholder="Select a voice" />
                         </SelectTrigger>
                         <SelectContent>
-                          {voices.map((voice) => (
+                          {/* ElevenLabs Premium Voices */}
+                          <SelectItem value="elevenlabs-group" disabled>
+                            Premium Voices (ElevenLabs)
+                          </SelectItem>
+                          {groupedVoices.elevenlabs.map((voice) => (
                             <SelectItem key={voice.id} value={voice.id}>
                               {voice.name} - {voice.description}
                             </SelectItem>
                           ))}
+                          
+                          {/* Browser Voices */}
+                          {groupedVoices.browser.length > 0 && (
+                            <>
+                              <SelectItem value="browser-group" disabled>
+                                Browser Voices
+                              </SelectItem>
+                              {groupedVoices.browser.map((voice) => (
+                                <SelectItem key={voice.id} value={voice.id}>
+                                  {voice.name} - {voice.description}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
-                      <p className="text-xs text-muted-foreground mt-1">Choose from ElevenLabs high-quality voices.</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Choose from ElevenLabs high-quality voices or your device's built-in voices.
+                      </p>
                     </div>
                     
                     <div className="flex items-center justify-between">

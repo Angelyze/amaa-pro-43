@@ -19,6 +19,12 @@ serve(async (req) => {
       throw new Error('Text is required');
     }
 
+    // Verify API key is set
+    const apiKey = Deno.env.get('ELEVENLABS_API_KEY');
+    if (!apiKey) {
+      throw new Error('ELEVENLABS_API_KEY is not set in environment variables');
+    }
+
     // Use the voice ID provided by the client or default to Bella
     const selectedVoiceId = voiceId || '9BWtsMINqrJLrRacOk9x';
     
@@ -28,7 +34,7 @@ serve(async (req) => {
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}/stream`, {
       method: 'POST',
       headers: {
-        'xi-api-key': Deno.env.get('ELEVENLABS_API_KEY') || '',
+        'xi-api-key': apiKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -42,9 +48,17 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('ElevenLabs API error:', errorData);
-      throw new Error(`ElevenLabs API error: ${errorData.detail?.message || response.statusText}`);
+      let errorMessage = response.statusText;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.detail?.message || errorData.message || response.statusText;
+      } catch (e) {
+        // If we can't parse the error as JSON, just use the status text
+        console.error('Failed to parse error response:', e);
+      }
+      
+      console.error('ElevenLabs API error:', errorMessage);
+      throw new Error(`ElevenLabs API error: ${errorMessage}`);
     }
 
     // Get audio data and convert to base64
