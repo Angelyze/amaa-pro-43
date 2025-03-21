@@ -8,7 +8,7 @@ const GEMINI_API_KEYS = [
   Deno.env.get('GEMINI_API_KEY_2') || '',
   Deno.env.get('GEMINI_API_KEY_3') || '',
 ];
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || '';
+const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY') || '';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,7 +27,7 @@ serve(async (req) => {
     
     // Choose appropriate API based on the type
     if (type === 'web-search') {
-      return await handleOpenAISearch(message);
+      return await handleOpenRouterSearch(message);
     } else if (type === 'upload' && file) {
       return await handleGeminiFileAnalysis(message, file);
     } else {
@@ -195,10 +195,10 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
   }
 }
 
-async function handleOpenAISearch(message: string) {
-  if (!OPENAI_API_KEY) {
+async function handleOpenRouterSearch(message: string) {
+  if (!OPENROUTER_API_KEY) {
     return new Response(
-      JSON.stringify({ error: 'OpenAI API key not configured' }),
+      JSON.stringify({ error: 'OpenRouter API key not configured' }),
       { 
         status: 500,
         headers: { 
@@ -210,14 +210,16 @@ async function handleOpenAISearch(message: string) {
   }
   
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://amaa.pro', // your site URL
+        'X-Title': 'AMAA Pro'              // your site name
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'openai/gpt-4o',
         messages: [
           { 
             role: 'system', 
@@ -233,7 +235,7 @@ async function handleOpenAISearch(message: string) {
     const data = await response.json();
     
     if (data.error) {
-      throw new Error(`OpenAI API error: ${data.error.message}`);
+      throw new Error(`OpenRouter API error: ${data.error.message}`);
     }
     
     const searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
@@ -251,7 +253,7 @@ async function handleOpenAISearch(message: string) {
       }
     );
   } catch (error) {
-    console.error(`Error in OpenAI search: ${error.message}`);
+    console.error(`Error in OpenRouter search: ${error.message}`);
     return new Response(
       JSON.stringify({ error: `Search failed: ${error.message}` }),
       { 
