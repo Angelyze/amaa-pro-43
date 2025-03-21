@@ -80,7 +80,6 @@ async function handleGeminiRegularChat(message: string) {
     
     try {
       console.log('Trying Gemini API with key length:', apiKey.length);
-      // Updated to use gemini-2.0-flash model as specified
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: {
@@ -176,7 +175,6 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
       imageData = `data:${file.type};base64,${fileData}`;
     }
     
-    // Updated to use gemini-2.0-flash model as specified
     const payload = {
       contents: [
         {
@@ -260,18 +258,18 @@ async function handleOpenRouterSearch(message: string) {
   }
   
   try {
-    // Improved search query for better results with latest articles
+    // Enhanced search query for up-to-date information with sources
     const searchQuery = `
-      I need comprehensive information about: ${message}
+      I need to search the web for the most current information about: ${message}
       
       Please:
-      1. Focus on the MOST RECENT information available (include publication dates when possible)
-      2. Organize your response in a clear structure with headings and sections
-      3. Provide a summary of the latest news or developments first
-      4. Include specific dates of information where available
-      5. Cite sources when possible
-      6. Format your response in a reader-friendly way with bullet points where appropriate
-      7. End with a brief conclusion
+      1. Focus on the MOST RECENT information available within the last few months
+      2. Start with a brief summary of the topic
+      3. Include specific dates for news and information
+      4. Provide links to sources when possible
+      5. List the 3-5 most relevant and recent articles with their publication dates
+      6. Format your response with clear headings and bullet points
+      7. Add a "Sources" section at the end with properly formatted URLs
     `;
     
     console.log('Sending web search query to OpenRouter:', searchQuery);
@@ -280,20 +278,20 @@ async function handleOpenRouterSearch(message: string) {
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://amaa.pro', // your site URL
-        'X-Title': 'AMAA Pro'              // your site name
+        'HTTP-Referer': 'https://amaa.pro',
+        'X-Title': 'AMAA Pro'
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o',
+        model: 'openai/gpt-4o-search-preview', // Using the specialized search model
         messages: [
           { 
             role: 'system', 
-            content: 'You are a highly effective web search assistant specialized in finding and summarizing the most current information. Always prioritize recent information and present it in a well-structured format. Include specific dates whenever possible. Format your response with clear headings and a logical structure.' 
+            content: 'You are a real-time web search assistant specialized in finding the most current information. Format your response with clear section headings, bullet points, and a dedicated sources section with properly formatted URLs. Always include publication dates with any information to indicate recency. Prioritize content from the last few months.' 
           },
           { role: 'user', content: searchQuery }
         ],
-        temperature: 0.7,
-        max_tokens: 1024,
+        temperature: 0.5,
+        max_tokens: 1500,
       }),
     });
     
@@ -310,7 +308,7 @@ async function handleOpenRouterSearch(message: string) {
     return new Response(
       JSON.stringify({ 
         response: searchResponse,
-        model: "gpt-4o"
+        model: "gpt-4o-search-preview"
       }),
       { 
         headers: { 

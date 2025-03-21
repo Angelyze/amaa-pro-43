@@ -190,7 +190,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             {disabled ? 'Sign in to continue chatting' :
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
-             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded - ask a question about it${voiceInputActive ? ' using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
+             uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>
       )}

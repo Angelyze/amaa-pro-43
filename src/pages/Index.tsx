@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -25,7 +26,8 @@ import {
   saveGuestMessage,
   getGuestQueryCount,
   incrementGuestQueryCount,
-  GUEST_CONVERSATION_ID
+  GUEST_CONVERSATION_ID,
+  clearGuestMessages
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
 
@@ -49,6 +51,8 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       loadConversations();
+      // Clear guest query count when user is logged in
+      setGuestQueriesCount(0);
     } else {
       const guestMessages = getGuestMessages();
       setMessages(guestMessages);
@@ -453,7 +457,7 @@ const Index = () => {
 
             {uploadedFile && (
               <div className="mt-2 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-xs flex items-center">
-                <span className="mr-1">📎</span> {uploadedFile.name} uploaded - ask a question about it
+                <span className="mr-1">📎</span> {uploadedFile.name} uploaded
               </div>
             )}
 
