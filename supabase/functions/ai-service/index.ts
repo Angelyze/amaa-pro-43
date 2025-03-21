@@ -265,37 +265,42 @@ async function handleOpenRouterSearch(message: string) {
   try {
     // Enhanced search query for up-to-date information with sources
     const searchQuery = `
-      I need to search the web for the most current information about: ${message}
+      I need the MOST CURRENT AND UP-TO-DATE information about: ${message}
       
-      Please:
-      1. Focus on the MOST RECENT information available within the last few months
-      2. Start with a brief summary of the topic
-      3. Include specific dates for news and information
-      4. Provide links to sources when possible
-      5. List the 3-5 most relevant and recent articles with their publication dates
+      CRITICAL INSTRUCTIONS:
+      1. ONLY use information from 2025 (or the most recent available if we're in a earlier year)
+      2. Start with a clear summary stating when the information was last updated
+      3. Include SPECIFIC DATES for every piece of information
+      4. If searching for API documentation (like https://openrouter.ai/api/v1), fetch the LATEST version
+      5. Explicitly note if any information seems outdated
       6. Format your response with clear headings and bullet points
-      7. Add a "Sources" section at the end with properly formatted URLs
+      7. Provide FULL, working URLs to original sources
+      8. PRIORITIZE information from the last 30 days
     `;
     
-    console.log('Sending web search query to OpenRouter:', searchQuery);
+    console.log('Sending real-time web search query to OpenRouter:', searchQuery);
+    
+    // Using fetch with no-cache headers to ensure fresh data
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://amaa.pro',
-        'X-Title': 'AMAA Pro'
+        'X-Title': 'AMAA Pro',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o-search-preview', // Using the specialized search model
+        model: 'openai/gpt-4o-search-preview',
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the most current information. Format your response with clear section headings, bullet points, and a dedicated sources section with properly formatted URLs. Always include publication dates with any information to indicate recency. Prioritize content from the last few months.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Treat each query as requiring the most up-to-date information possible.' 
           },
           { role: 'user', content: searchQuery }
         ],
-        temperature: 0.5,
+        temperature: 0.4,
         max_tokens: 1500,
       }),
     });

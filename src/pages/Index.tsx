@@ -221,7 +221,8 @@ const Index = () => {
       if (uploadedFile && type !== 'web-search') {
         await processFileWithQuestion(content, uploadedFile);
       } else {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
         
         const response = await supabase.functions.invoke('ai-service', {
           body: { message: content, type },
@@ -237,9 +238,22 @@ const Index = () => {
         const assistantContent = response.data.response;
         
         if (user) {
-          const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
-          setMessages(prev => [...prev, assistantMessage]);
-          loadConversations();
+          try {
+            console.log('Creating message for user with conversation_id:', currentConversationId);
+            const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
+            setMessages(prev => [...prev, assistantMessage]);
+            loadConversations();
+          } catch (error) {
+            console.error('Error creating assistant message:', error);
+            toast.error('Failed to save assistant message, but here is the response:');
+            setMessages(prev => [...prev, {
+              id: crypto.randomUUID(),
+              conversation_id: currentConversationId!,
+              content: assistantContent,
+              type: 'assistant',
+              created_at: new Date().toISOString()
+            }]);
+          }
         } else {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
           setMessages(prev => [...prev, assistantMessage]);
@@ -266,7 +280,8 @@ const Index = () => {
           return;
         }
         
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
         
         const response = await supabase.functions.invoke('ai-service', {
           body: { 
@@ -291,8 +306,20 @@ const Index = () => {
         const assistantContent = response.data.response;
         
         if (user && currentConversationId) {
-          const assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
-          setMessages(prev => [...prev, assistantMessage]);
+          try {
+            const assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
+            setMessages(prev => [...prev, assistantMessage]);
+          } catch (error) {
+            console.error('Error creating assistant message:', error);
+            toast.error('Failed to save assistant message, but here is the response:');
+            setMessages(prev => [...prev, {
+              id: crypto.randomUUID(),
+              conversation_id: currentConversationId,
+              content: assistantContent,
+              type: 'assistant',
+              created_at: new Date().toISOString()
+            }]);
+          }
         } else {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
           setMessages(prev => [...prev, assistantMessage]);
