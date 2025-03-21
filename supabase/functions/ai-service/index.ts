@@ -22,6 +22,11 @@ serve(async (req) => {
   }
   
   try {
+    // Log full request info for debugging
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
+    
     const { message, type, file, photoContext } = await req.json();
     console.log('Received request:', { 
       message, 
@@ -59,7 +64,7 @@ serve(async (req) => {
     console.error('Error processing request:', error);
     
     return new Response(
-      JSON.stringify({ error: 'An error occurred processing your request' }),
+      JSON.stringify({ error: 'An error occurred processing your request: ' + error.message }),
       { 
         status: 500,
         headers: { 

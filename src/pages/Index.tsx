@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -51,7 +50,6 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       loadConversations();
-      // Clear guest query count when user is logged in
       setGuestQueriesCount(0);
     } else {
       const guestMessages = getGuestMessages();
@@ -200,6 +198,9 @@ const Index = () => {
       } else {
         const response = await supabase.functions.invoke('ai-service', {
           body: { message: content, type },
+          headers: {
+            'Authorization': `Bearer ${supabase.auth.session()?.access_token || ''}`
+          }
         });
         
         if (response.error) {
@@ -249,6 +250,9 @@ const Index = () => {
             },
             photoContext: question
           },
+          headers: {
+            'Authorization': `Bearer ${supabase.auth.session()?.access_token || ''}`
+          }
         });
         
         if (response.error) {
@@ -454,12 +458,6 @@ const Index = () => {
                 )}
               </span>
             </div>
-
-            {uploadedFile && (
-              <div className="mt-2 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-xs flex items-center">
-                <span className="mr-1">📎</span> {uploadedFile.name} uploaded
-              </div>
-            )}
 
             {user && (
               <ConversationControls 

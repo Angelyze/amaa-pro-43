@@ -13,17 +13,18 @@ serve(async (req) => {
   }
   
   try {
+    // Log headers for debugging
+    console.log('Request headers in chat function:', Object.fromEntries(req.headers.entries()));
+    
     const reqBody = await req.json();
     
     // Redirect to our new ai-service function
     const aiServiceUrl = new URL('/functions/v1/ai-service', req.url);
     
+    // Forward ALL headers, especially authorization
     const response = await fetch(aiServiceUrl.toString(), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.get('Authorization') || '',
-      },
+      headers: req.headers,
       body: JSON.stringify(reqBody),
     });
     
@@ -42,7 +43,7 @@ serve(async (req) => {
     console.error('Error in chat function:', error);
     
     return new Response(
-      JSON.stringify({ error: 'An error occurred processing your request' }),
+      JSON.stringify({ error: 'An error occurred processing your request: ' + error.message }),
       { 
         status: 500,
         headers: { 
