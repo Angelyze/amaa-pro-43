@@ -1,42 +1,75 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
 import Logo from '../components/Logo';
 import Message from '../components/Message';
 import LoadingIndicator from '../components/LoadingIndicator';
-import ConversationControls, { SavedConversation } from '../components/ConversationControls';
+import ConversationControls from '../components/ConversationControls';
 import { Button } from '@/components/ui/button';
-import { Info, Heart, LogIn, CreditCard } from 'lucide-react';
+import { Info, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import UserMenu from '../components/UserMenu';
-
-type MessageType = {
-  id: string;
-  content: string;
-  type: 'user' | 'assistant';
-  timestamp: string;
-};
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import {
+  Conversation,
+  Message as MessageType,
+  createConversation,
+  createMessage,
+  getConversations,
+  getMessages,
+  deleteConversation,
+  updateConversationTitle
+} from '@/services/conversationService';
+import { SavedConversation } from '@/components/ConversationControls';
 
 const Index = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [queryCount, setQueryCount] = useState(0);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const { user, signOut } = useAuth();
+  
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const activeMessageRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<number | null>(null);
   
-  const MAX_FREE_QUERIES = 5;
+  // Load conversations
+  useEffect(() => {
+    if (user) {
+      loadConversations();
+    }
+  }, [user]);
+
+  // Load messages for current conversation
+  useEffect(() => {
+    if (currentConversationId) {
+      loadMessages(currentConversationId);
+    }
+  }, [currentConversationId]);
   
-  const demoResponses = [
-    "I'm AMAA, your AI assistant. I can help you find information, answer questions, and even search the web for the latest content. What would you like to know?",
-    "The concept of minimalism in design emerged in the late 1960s as a reaction against the subjective expressionism of abstract expressionism. It emphasizes simplicity and objectivity, using clean lines, geometric shapes, and a monochromatic palette.",
-    "According to recent studies, regular meditation can reduce stress, improve focus, and promote overall well-being. Even just 10 minutes of daily meditation has been shown to make a significant difference in cognitive function and emotional regulation.",
-    "The James Webb Space Telescope, launched in December 2021, is the largest, most powerful space telescope ever built. It allows astronomers to observe the universe in unprecedented detail, including the formation of early galaxies and potential habitable exoplanets."
-  ];
+  const loadConversations = async () => {
+    try {
+      const conversationList = await getConversations();
+      setConversations(conversationList);
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+      toast.error('Failed to load conversations');
+    }
+  };
+  
+  const loadMessages = async (conversationId: string) => {
+    try {
+      const messageList = await getMessages(conversationId);
+      setMessages(messageList);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      toast.error('Failed to load messages');
+    }
+  };
   
   const scrollToMessages = () => {
     if (messagesContainerRef.current && messages.length > 0) {
@@ -74,46 +107,47 @@ const Index = () => {
     }
   }, [messages]);
   
-  const handleSendMessage = (content: string, type: 'regular' | 'web-search') => {
-    if (!isLoggedIn && queryCount >= MAX_FREE_QUERIES) {
-      toast.error('You have reached the maximum number of free queries. Please subscribe for unlimited access.');
-      return;
-    }
-    
-    const userMessage: MessageType = {
-      id: Date.now().toString(),
-      content,
-      type: 'user',
-      timestamp: new Date().toISOString(),
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-    
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    if (!isLoggedIn) {
-      setQueryCount(prev => prev + 1);
-    }
-    
-    timeoutRef.current = window.setTimeout(() => {
-      const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
-      const assistantMessage: MessageType = {
-        id: (Date.now() + 1).toString(),
-        content: type === 'web-search' ? 
-          `Web search results for "${content}":\n\n${randomResponse}` : 
-          randomResponse,
-        type: 'assistant',
-        timestamp: new Date().toISOString(),
-      };
+  const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
+    try {
+      // Create a new conversation if needed
+      let conversationId = currentConversationId;
+      if (!conversationId) {
+        const defaultTitle = content.substring(0, 30) + (content.length > 30 ? '...' : '');
+        const newConversation = await createConversation(defaultTitle);
+        conversationId = newConversation.id;
+        setCurrentConversationId(conversationId);
+        setConversations([newConversation, ...conversations]);
+      }
       
+      // Add user message
+      const userMessage = await createMessage(conversationId, content, 'user');
+      setMessages(prev => [...prev, userMessage]);
+      setIsLoading(true);
+      
+      // Call our edge function
+      const response = await supabase.functions.invoke('chat', {
+        body: { message: content, conversationType: type },
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Add assistant message
+      const assistantContent = response.data.response;
+      const assistantMessage = await createMessage(conversationId, assistantContent, 'assistant');
       setMessages(prev => [...prev, assistantMessage]);
-      setIsLoading(false);
+      
+      // Refresh conversations list to get the updated one
+      loadConversations();
       
       setTimeout(scrollToLatestMessage, 100);
-    }, 2000);
+    } catch (error) {
+      console.error('Error in conversation:', error);
+      toast.error('An error occurred while processing your request');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const handleUploadFile = (file: File) => {
@@ -128,84 +162,68 @@ const Index = () => {
     if (messages.length > 0) {
       if (confirm('Start a new conversation? This will clear the current conversation.')) {
         setMessages([]);
+        setCurrentConversationId(null);
         scrollToTop();
       }
     }
   };
 
-  const handleSaveConversation = (customTitle?: string) => {
-    if (messages.length === 0) {
+  const handleSaveConversation = async (customTitle?: string) => {
+    if (!currentConversationId) {
       toast.error('No conversation to save');
       return;
     }
     
-    const firstUserMessage = messages.find(m => m.type === 'user');
-    const defaultTitle = firstUserMessage 
-      ? `${firstUserMessage.content.substring(0, 15)}${firstUserMessage.content.length > 15 ? '...' : ''}`
-      : 'Conversation';
-    
-    const title = customTitle || defaultTitle;
-    const dateStr = new Date().toLocaleDateString();
-    const fullTitle = `${title} (${dateStr})`;
-    
-    const conversation: SavedConversation = {
-      id: Date.now().toString(),
-      title: fullTitle,
-      messages: [...messages],
-      savedAt: new Date().toISOString()
-    };
-    
-    const existingConversationsStr = localStorage.getItem('savedConversations');
-    const existingConversations = existingConversationsStr 
-      ? JSON.parse(existingConversationsStr) 
-      : [];
-    
-    const updatedConversations = [conversation, ...existingConversations];
-    localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
-    
-    toast.success('Conversation saved successfully');
+    try {
+      const conversation = conversations.find(c => c.id === currentConversationId);
+      if (!conversation) return;
+      
+      const title = customTitle || conversation.title;
+      await updateConversationTitle(currentConversationId, title);
+      
+      // Refresh conversations
+      loadConversations();
+      
+      toast.success('Conversation saved successfully');
+    } catch (error) {
+      console.error('Error saving conversation:', error);
+      toast.error('Failed to save conversation');
+    }
   };
 
   const handleLoadConversation = (conversation: SavedConversation) => {
-    if (messages.length > 0) {
-      if (!confirm('Load this conversation? Your current conversation will be replaced.')) {
-        return;
-      }
-    }
-    
-    setMessages(conversation.messages);
+    const conversationId = conversation.id;
+    setCurrentConversationId(conversationId);
     toast.success(`Loaded conversation: ${conversation.title}`);
   };
 
-  const handleRenameConversation = (id: string, newTitle: string) => {
-    const savedConversationsStr = localStorage.getItem('savedConversations');
-    if (!savedConversationsStr) return;
-    
+  const handleRenameConversation = async (id: string, newTitle: string) => {
     try {
-      const savedConversations = JSON.parse(savedConversationsStr);
-      const updatedConversations = savedConversations.map((conv: SavedConversation) => 
-        conv.id === id ? { ...conv, title: newTitle } : conv
-      );
+      await updateConversationTitle(id, newTitle);
       
-      localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
+      // Refresh conversations
+      loadConversations();
+      
       toast.success('Conversation renamed');
     } catch (error) {
-      console.error('Error updating conversation:', error);
+      console.error('Error renaming conversation:', error);
       toast.error('Failed to rename conversation');
     }
   };
 
-  const handleDeleteConversation = (id: string) => {
-    const savedConversationsStr = localStorage.getItem('savedConversations');
-    if (!savedConversationsStr) return;
-    
+  const handleDeleteConversation = async (id: string) => {
     try {
-      const savedConversations = JSON.parse(savedConversationsStr);
-      const updatedConversations = savedConversations.filter(
-        (conv: SavedConversation) => conv.id !== id
-      );
+      await deleteConversation(id);
       
-      localStorage.setItem('savedConversations', JSON.stringify(updatedConversations));
+      // If we deleted the current conversation, clear it
+      if (id === currentConversationId) {
+        setCurrentConversationId(null);
+        setMessages([]);
+      }
+      
+      // Refresh conversations
+      loadConversations();
+      
       toast.success('Conversation deleted');
     } catch (error) {
       console.error('Error deleting conversation:', error);
@@ -213,21 +231,21 @@ const Index = () => {
     }
   };
 
-  const handleSubscribe = () => {
-    toast.success('Opening subscription page');
-    // Subscription page would be opened here in a real application
-  };
+  // Map database messages to the format expected by the components
+  const displayMessages = messages.map(msg => ({
+    id: msg.id,
+    content: msg.content,
+    type: msg.type,
+    timestamp: msg.created_at
+  })).reverse();
 
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
-    toast.success(isLoggedIn ? 'Logged out successfully' : 'Logged in successfully');
-    
-    if (isLoggedIn) {
-      window.location.reload();
-    }
-  };
-
-  const displayMessages = [...messages].reverse();
+  // Map conversations to the SavedConversation format
+  const savedConversations: SavedConversation[] = conversations.map(conv => ({
+    id: conv.id,
+    title: conv.title,
+    messages: [],
+    savedAt: conv.created_at
+  }));
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -237,36 +255,15 @@ const Index = () => {
         mainSearchVisible={mainSearchVisible}
         onSendMessage={handleSendMessage}
         onScrollToTop={scrollToTop}
-        isLoggedIn={isLoggedIn}
-        onLogin={toggleLogin}
+        isLoggedIn={!!user}
+        onLogin={() => {}} // We're using our custom auth now
       />
       
       <main className="container mx-auto px-4 pt-12 flex-grow">
         <div className="relative">
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-            {isLoggedIn ? (
-              <UserMenu onLogout={toggleLogin} />
-            ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={toggleLogin}
-                  className="text-sm gap-1.5 hover:bg-teal/10 hover:text-teal transition-all"
-                >
-                  <LogIn size={16} />
-                  <span className="hidden sm:inline">Log in</span>
-                </Button>
-                <Button 
-                  variant="default" 
-                  size="sm"
-                  onClick={handleSubscribe}
-                  className="bg-teal text-white hover:bg-teal-light hover:shadow-md transition-all text-sm gap-1.5"
-                >
-                  <CreditCard size={16} />
-                  <span className="hidden sm:inline">Subscribe</span>
-                </Button>
-              </>
+            {user && (
+              <UserMenu onLogout={signOut} />
             )}
           </div>
           
@@ -286,23 +283,10 @@ const Index = () => {
             
             <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
               <Info size={12} />
-              {isLoggedIn ? (
-                <span>Thank you for using Premium!</span>
-              ) : (
-                <span>
-                  Free users have {MAX_FREE_QUERIES} queries. {' '}
-                  <button 
-                    onClick={handleSubscribe} 
-                    className="text-teal hover:text-teal-light hover:underline transition-all"
-                  >
-                    Go Premium
-                  </button> {' '}
-                  for unlimited access and more.
-                </span>
-              )}
+              <span>Ask me anything. I'm here to help!</span>
             </div>
 
-            {isLoggedIn && (
+            {user && (
               <ConversationControls 
                 onNewConversation={handleNewConversation}
                 onSaveConversation={handleSaveConversation}
