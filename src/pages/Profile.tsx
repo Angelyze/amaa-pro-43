@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,9 +29,7 @@ const Profile = () => {
   const { user, isPremium, refreshSubscriptionStatus } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
-  const [avatarUrl, setAvatarUrl] = useState<string>(() => {
-    return user?.user_metadata?.avatar_url || '';
-  });
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [selectedVoice, setSelectedVoice] = useState(() => {
     return localStorage.getItem('tts_voice') || 'browser-0';
   });
@@ -57,11 +56,15 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       setFullName(user.user_metadata?.full_name || '');
-      console.log('Profile component - User metadata avatar URL:', user.user_metadata?.avatar_url);
       
       if (user.user_metadata?.avatar_url) {
+        console.log('Profile component - User metadata avatar URL:', user.user_metadata.avatar_url);
+        // Get the public URL without query parameters
+        const url = new URL(user.user_metadata.avatar_url);
+        const cleanUrl = url.origin + url.pathname;
+        // Add cache-busting timestamp
         const timestamp = new Date().getTime();
-        setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
+        setAvatarUrl(`${cleanUrl}?t=${timestamp}`);
       }
     }
   }, [user]);
@@ -132,8 +135,12 @@ const Profile = () => {
         throw updateError;
       }
       
+      // Get the clean URL without query parameters
+      const url = new URL(data.publicUrl);
+      const cleanUrl = url.origin + url.pathname;
+      // Add cache-busting timestamp
       const timestamp = new Date().getTime();
-      setAvatarUrl(`${data.publicUrl}?t=${timestamp}`);
+      setAvatarUrl(`${cleanUrl}?t=${timestamp}`);
       
       toast.success('Avatar updated successfully!');
       

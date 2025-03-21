@@ -99,7 +99,7 @@ export const textToSpeech = async (text: string): Promise<void> => {
     // Get voice settings from localStorage
     const voiceId = localStorage.getItem('tts_voice') || DEFAULT_VOICE_ID;
     
-    // Use browser TTS with chunking for long text
+    // Use browser TTS for all voices
     return useBrowserTTS(cleanedText, voiceId);
   } catch (error) {
     console.error('Text-to-speech error:', error);
