@@ -9,7 +9,7 @@ import {
   MessageSquare,
   X,
   Share2,
-  Reddit
+  MessageCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
@@ -140,7 +140,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
           onClick={shareToReddit}
           title="Share to Reddit"
         >
-          <Reddit className="h-5 w-5 text-foreground" />
+          <MessageCircle className="h-5 w-5 text-foreground" />
         </Button>
         
         <Button 
