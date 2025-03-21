@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.4.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
@@ -101,13 +100,13 @@ serve(async (req) => {
       );
     } else {
       // This is a direct API request
-      const { action, userId, returnUrl } = await req.json();
+      const { action, userId, returnUrl, email } = await req.json();
       
-      console.log(`Processing Stripe ${action} request for user ${userId}`);
+      console.log(`Processing Stripe ${action} request for user ${userId}${email ? ` with email ${email}` : ''}`);
       
       // First, lets refresh the subscription data in our database for this user
       if (userId) {
-        await syncUserSubscriptions(userId);
+        await syncUserSubscriptions(userId, email);
       }
       
       if (action === 'create-checkout') {
@@ -159,6 +158,21 @@ serve(async (req) => {
           : null;
         
         // If not found in database, check directly with Stripe
+        if (!customerId && email) {
+          console.log(`Searching for customer with email: ${email}`);
+          const customers = await stripe.customers.list({
+            email: email,
+            limit: 10
+          });
+          
+          if (customers.data.length > 0) {
+            customerId = customers.data[0].id;
+            console.log(`Found customer for email ${email}: ${customerId}`);
+          } else {
+            console.log(`No customer found for email ${email}`);
+          }
+        }
+        
         if (!customerId) {
           const stripeSubscriptions = await stripe.subscriptions.list({
             expand: ['data.customer'],
@@ -220,7 +234,7 @@ serve(async (req) => {
         }
         
         // First check our database
-        const { data: subscriptions, error: dbError } = await supabase
+        const { data: dbSubscriptions, error: dbError } = await supabase
           .from('subscriptions')
           .select('*')
           .eq('user_id', userId)
@@ -232,11 +246,14 @@ serve(async (req) => {
           throw dbError;
         }
         
+        console.log(`Found ${dbSubscriptions?.length || 0} subscriptions in database for user ${userId}`);
+        
         // If we have a subscription in the database that is active
-        if (subscriptions && subscriptions.length > 0) {
-          const subscription = subscriptions[0];
+        if (dbSubscriptions && dbSubscriptions.length > 0) {
+          const subscription = dbSubscriptions[0];
           
           if (subscription.status === 'active') {
+            console.log(`Found active subscription in database for user ${userId}:`, subscription);
             return new Response(
               JSON.stringify({ 
                 active: true,
@@ -256,8 +273,72 @@ serve(async (req) => {
           }
         }
         
-        // If nothing found in database, sync with Stripe and try again
-        await syncUserSubscriptions(userId);
+        // If nothing found in database, check directly with Stripe using email
+        if (email) {
+          console.log(`Checking Stripe directly for email: ${email}`);
+          
+          // Find customer by email
+          const customers = await stripe.customers.list({
+            email: email,
+            limit: 10
+          });
+          
+          if (customers.data.length > 0) {
+            const customerId = customers.data[0].id;
+            console.log(`Found Stripe customer for email ${email}: ${customerId}`);
+            
+            // Check subscriptions for this customer
+            const customerSubscriptions = await stripe.subscriptions.list({
+              customer: customerId,
+              status: 'active',
+              limit: 10
+            });
+            
+            if (customerSubscriptions.data.length > 0) {
+              const subscription = customerSubscriptions.data[0];
+              console.log(`Found active subscription for customer ${customerId}:`, subscription.id);
+              
+              // Save this subscription to our database
+              const { error: upsertError } = await supabase.from('subscriptions').upsert({
+                user_id: userId,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: subscription.id,
+                status: subscription.status,
+                price_id: subscription.items.data[0]?.price.id,
+                current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'stripe_subscription_id'
+              });
+              
+              if (upsertError) {
+                console.error('Error updating subscription in database:', upsertError);
+              } else {
+                console.log(`Saved subscription to database for user ${userId}`);
+              }
+              
+              return new Response(
+                JSON.stringify({ 
+                  active: true,
+                  status: subscription.status,
+                  currentPeriodEnd: subscription.current_period_end,
+                  customerId: customerId,
+                  fromDatabase: false,
+                  directStripeCheck: true
+                }),
+                { 
+                  headers: { 
+                    'Content-Type': 'application/json',
+                  ...corsHeaders
+                } 
+              }
+            );
+          }
+        }
+      }
+        
+        // If still nothing found, sync with Stripe and try again
+        await syncUserSubscriptions(userId, email);
         
         // Check database again after syncing
         const { data: refreshedSubscriptions, error: refreshError } = await supabase
@@ -276,6 +357,7 @@ serve(async (req) => {
           const subscription = refreshedSubscriptions[0];
           
           if (subscription.status === 'active') {
+            console.log(`Found active subscription after sync for user ${userId}:`, subscription);
             return new Response(
               JSON.stringify({ 
                 active: true,
@@ -297,6 +379,7 @@ serve(async (req) => {
         }
         
         // If we still don't have an active subscription, return inactive status
+        console.log(`No active subscription found for user ${userId}`);
         return new Response(
           JSON.stringify({ 
             active: false,
@@ -312,11 +395,11 @@ serve(async (req) => {
         );
       } else if (action === 'sync-subscriptions') {
         // Manual sync endpoint
-        await syncUserSubscriptions(userId);
+        const result = await syncUserSubscriptions(userId, email);
         
         return new Response(
           JSON.stringify({ 
-            success: true,
+            success: result,
             message: 'Subscriptions synchronized'
           }),
           { 
@@ -375,24 +458,40 @@ async function handleSubscriptionChange(subscription) {
     
     // If we still don't have a userId, try to find by email
     if (!userId && customer.email) {
-      // Look up user by email in Supabase
-      const { data: users, error: userError } = await supabase
-        .from('auth.users')
-        .select('id')
-        .eq('email', customer.email)
-        .limit(1);
+      // Try to find user by email in auth.users table using raw query
+      // This is a workaround since the auth.users table isn't accessible through the standard API
+      const { data, error } = await supabase.rpc('get_user_id_by_email', {
+        p_email: customer.email
+      });
       
-      if (userError) {
-        console.error('Error finding user by email:', userError);
-      } else if (users && users.length > 0) {
-        userId = users[0].id;
-        console.log(`Found user ${userId} by email ${customer.email}`);
+      if (error) {
+        console.error('Error finding user by email with RPC:', error);
+      } else if (data) {
+        userId = data;
+        console.log(`Found user ${userId} by email ${customer.email} using RPC`);
+      }
+      
+      // If RPC fails, try direct query on subscriptions table
+      if (!userId) {
+        const { data: subs, error: subsErr } = await supabase
+          .from('subscriptions')
+          .select('user_id')
+          .eq('stripe_customer_id', customerId)
+          .limit(1);
+        
+        if (!subsErr && subs && subs.length > 0) {
+          userId = subs[0].user_id;
+          console.log(`Found user ${userId} for customer ${customerId} from subscriptions table`);
+        }
       }
     }
     
     if (!userId) {
       console.error('No userId found for subscription:', subscription.id);
-      return;
+      // We'll still save the subscription but with a placeholder userId that we can update later
+      // This ensures we don't lose subscription information
+      userId = `stripe_customer_${customerId}`;
+      console.log(`Using placeholder userId ${userId} for customer ${customerId}`);
     }
     
     // Update or insert subscription in database
@@ -414,6 +513,7 @@ async function handleSubscriptionChange(subscription) {
     }
     
     console.log(`Successfully updated subscription ${subscription.id} for user ${userId}`);
+    return true;
   } catch (error) {
     console.error('Error in handleSubscriptionChange:', error);
     throw error;
@@ -421,83 +521,108 @@ async function handleSubscriptionChange(subscription) {
 }
 
 // Helper function to manually sync a user's subscriptions from Stripe to our database
-async function syncUserSubscriptions(userId) {
-  console.log(`Syncing subscriptions for user ${userId}`);
+async function syncUserSubscriptions(userId, userEmail) {
+  console.log(`Syncing subscriptions for user ${userId}${userEmail ? ` with email ${userEmail}` : ''}`);
   
   try {
-    // Get user email from Supabase
-    const { data: userData, error: userError } = await supabase
-      .from('auth.users')
-      .select('email')
-      .eq('id', userId)
-      .single();
-    
-    if (userError) {
-      console.error('Error getting user email:', userError);
-      // Continue with the rest of the sync process
-    }
-    
-    const userEmail = userData?.email;
-    console.log(`User email for ${userId} is ${userEmail}`);
-    
-    // List all subscriptions in Stripe that have this user ID in metadata
-    const stripeSubscriptions = await stripe.subscriptions.list({
-      expand: ['data.customer', 'data.items.data.price'],
-      status: 'all'
-    });
-    
-    let userSubscriptions = [];
-    
-    // First, look in subscription metadata
-    for (const subscription of stripeSubscriptions.data) {
-      if (subscription.metadata?.userId === userId) {
-        userSubscriptions.push(subscription);
-      }
-    }
-    
-    // If none found by metadata, try looking in customer metadata
-    if (userSubscriptions.length === 0) {
-      const customers = await stripe.customers.list({
-        limit: 100
+    // If email wasn't passed, try to get it from the database
+    let email = userEmail;
+    if (!email) {
+      // Try to get email using an RPC function
+      const { data, error } = await supabase.rpc('get_user_email_by_id', {
+        p_user_id: userId
       });
       
-      for (const customer of customers.data) {
-        if (customer.metadata?.userId === userId) {
-          // Get subscriptions for this customer
-          const customerSubscriptions = await stripe.subscriptions.list({
-            customer: customer.id
-          });
-          
-          userSubscriptions = customerSubscriptions.data;
-          break;
-        }
+      if (error) {
+        console.error('Error getting user email with RPC:', error);
+      } else if (data) {
+        email = data;
+        console.log(`Found email ${email} for user ${userId} using RPC`);
       }
     }
     
-    // If we have a user email, try to find subscriptions by email
-    if (userSubscriptions.length === 0 && userEmail) {
+    console.log(`User email for ${userId} is ${email}`);
+    
+    let userSubscriptions = [];
+    let foundByEmail = false;
+    
+    // If we have a user email, check for subscriptions by email first (most reliable method)
+    if (email) {
+      console.log(`Searching for customer with email: ${email}`);
       const customers = await stripe.customers.list({
-        email: userEmail,
-        limit: 1
+        email: email,
+        limit: 10
       });
       
       if (customers.data.length > 0) {
         const customer = customers.data[0];
-        console.log(`Found Stripe customer for email ${userEmail}: ${customer.id}`);
+        console.log(`Found Stripe customer for email ${email}: ${customer.id}`);
         
         // Get subscriptions for this customer
         const customerSubscriptions = await stripe.subscriptions.list({
-          customer: customer.id
+          customer: customer.id,
+          limit: 100
         });
         
         if (customerSubscriptions.data.length > 0) {
           console.log(`Found ${customerSubscriptions.data.length} subscriptions for customer ${customer.id}`);
           userSubscriptions = customerSubscriptions.data;
+          foundByEmail = true;
+          
+          // Update customer metadata with userId for future reference
+          if (customer.metadata?.userId !== userId) {
+            console.log(`Updating customer ${customer.id} metadata with userId ${userId}`);
+            try {
+              await stripe.customers.update(customer.id, {
+                metadata: { userId }
+              });
+            } catch (err) {
+              console.error(`Error updating customer metadata: ${err.message}`);
+            }
+          }
+        }
+      }
+    }
+    
+    // If no subscriptions found by email, look for subscriptions with userId in metadata
+    if (!foundByEmail) {
+      console.log(`Looking for subscriptions with userId ${userId} in metadata`);
+      const stripeSubscriptions = await stripe.subscriptions.list({
+        expand: ['data.customer', 'data.items.data.price'],
+        status: 'all',
+        limit: 100
+      });
+      
+      // First, look in subscription metadata
+      for (const subscription of stripeSubscriptions.data) {
+        if (subscription.metadata?.userId === userId) {
+          userSubscriptions.push(subscription);
+        }
+      }
+      
+      // If none found by metadata, try looking in customer metadata
+      if (userSubscriptions.length === 0) {
+        const customers = await stripe.customers.list({
+          limit: 100
+        });
+        
+        for (const customer of customers.data) {
+          if (customer.metadata?.userId === userId) {
+            // Get subscriptions for this customer
+            const customerSubscriptions = await stripe.subscriptions.list({
+              customer: customer.id,
+              limit: 100
+            });
+            
+            userSubscriptions = customerSubscriptions.data;
+            break;
+          }
         }
       }
     }
     
     // Update or insert each subscription
+    let updatedCount = 0;
     for (const subscription of userSubscriptions) {
       const customerId = typeof subscription.customer === 'object' 
         ? subscription.customer.id 
@@ -520,12 +645,14 @@ async function syncUserSubscriptions(userId) {
         console.error('Error updating subscription in database during sync:', error);
         throw error;
       }
+      
+      updatedCount++;
     }
     
-    console.log(`Synced ${userSubscriptions.length} subscriptions for user ${userId}`);
+    console.log(`Synced ${updatedCount} subscriptions for user ${userId}`);
+    return true;
   } catch (error) {
     console.error('Error in syncUserSubscriptions:', error);
-    throw error;
+    return false;
   }
 }
-

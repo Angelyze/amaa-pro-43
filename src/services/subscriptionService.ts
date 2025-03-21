@@ -77,14 +77,16 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
     console.log('Checking for subscription in database for user:', user.id);
     console.log('User email:', user.email);
     
-    // Try to sync subscriptions first
-    await syncSubscriptions();
+    // Sync subscriptions every time we check for status
+    const syncResult = await syncSubscriptions();
+    console.log('Sync subscriptions result:', syncResult);
     
-    // Check with Stripe via our edge function
+    // Force a direct check with Stripe
     const { data, error } = await supabase.functions.invoke('stripe', {
       body: { 
         action: 'get-subscription-status',
-        userId: user.id
+        userId: user.id,
+        email: user.email // Pass email explicitly to help with lookup
       }
     });
     
@@ -114,7 +116,8 @@ export const syncSubscriptions = async (): Promise<boolean> => {
     const { data, error } = await supabase.functions.invoke('stripe', {
       body: { 
         action: 'sync-subscriptions',
-        userId: user.id
+        userId: user.id,
+        email: user.email // Pass email explicitly to help with lookup
       }
     });
     
