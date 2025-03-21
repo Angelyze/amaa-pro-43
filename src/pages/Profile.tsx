@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,13 +57,28 @@ const Profile = () => {
       setFullName(user.user_metadata?.full_name || '');
       
       if (user.user_metadata?.avatar_url) {
-        console.log('Profile component - User metadata avatar URL:', user.user_metadata.avatar_url);
-        // Get the public URL without query parameters
-        const url = new URL(user.user_metadata.avatar_url);
-        const cleanUrl = url.origin + url.pathname;
-        // Add cache-busting timestamp
-        const timestamp = new Date().getTime();
-        setAvatarUrl(`${cleanUrl}?t=${timestamp}`);
+        try {
+          const rawUrl = user.user_metadata.avatar_url;
+          
+          // Create a URL object to properly parse the URL
+          let url;
+          try {
+            url = new URL(rawUrl);
+          } catch (e) {
+            // If URL parsing fails, use the raw URL
+            setAvatarUrl(`${rawUrl}?t=${Date.now()}`);
+            return;
+          }
+          
+          // Get just the base URL without query parameters
+          const baseUrl = `${url.origin}${url.pathname}`;
+          
+          // Add timestamp to prevent caching
+          const finalUrl = `${baseUrl}?t=${Date.now()}`;
+          setAvatarUrl(finalUrl);
+        } catch (err) {
+          console.error('Error processing avatar URL:', err);
+        }
       }
     }
   }, [user]);
@@ -135,12 +149,14 @@ const Profile = () => {
         throw updateError;
       }
       
-      // Get the clean URL without query parameters
-      const url = new URL(data.publicUrl);
-      const cleanUrl = url.origin + url.pathname;
-      // Add cache-busting timestamp
-      const timestamp = new Date().getTime();
-      setAvatarUrl(`${cleanUrl}?t=${timestamp}`);
+      try {
+        const url = new URL(data.publicUrl);
+        const baseUrl = `${url.origin}${url.pathname}`;
+        setAvatarUrl(`${baseUrl}?t=${Date.now()}`);
+      } catch (e) {
+        // Fallback if URL parsing fails
+        setAvatarUrl(`${data.publicUrl}?t=${Date.now()}`);
+      }
       
       toast.success('Avatar updated successfully!');
       

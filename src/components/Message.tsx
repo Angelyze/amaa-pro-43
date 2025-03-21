@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
+import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -52,11 +52,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-  
-  const handleCopy = () => {
-    navigator.clipboard.writeText(content);
-    toast.success('Copied to clipboard');
   };
   
   const handleShare = () => {
@@ -197,15 +192,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
               className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
             >
               <span className="text-xs font-medium">Aa</span>
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCopy}
-              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
-            >
-              <Copy size={14} />
             </Button>
             
             <Button

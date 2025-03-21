@@ -5,9 +5,10 @@ import {
   Facebook, 
   Linkedin, 
   Mail, 
-  Copy,
+  Link,
   MessageSquare,
-  X
+  X,
+  Share2
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
@@ -73,9 +74,23 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
     onClose();
   };
   
-  const copyToClipboard = () => {
+  const shareToReddit = () => {
+    const url = `https://www.reddit.com/submit?url=${window.location.href}&title=${encodedText}`;
+    window.open(url, '_blank');
+    onClose();
+  };
+  
+  const shareToThreads = () => {
+    // There's no direct sharing URL for Threads, but we can copy the content
+    // and suggest opening Threads
     navigator.clipboard.writeText(content);
-    toast.success('Copied to clipboard');
+    toast.success('Copied to clipboard for sharing to Threads');
+    onClose();
+  };
+  
+  const copyLinkToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Link copied to clipboard');
     onClose();
   };
   
@@ -151,10 +166,30 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
           variant="outline" 
           size="sm" 
           className="flex flex-col items-center p-2" 
-          onClick={copyToClipboard}
+          onClick={shareToReddit}
         >
-          <Copy size={16} className="mb-1" />
-          <span className="text-xs">Copy</span>
+          <Share2 size={16} className="mb-1" />
+          <span className="text-xs">Reddit</span>
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex flex-col items-center p-2" 
+          onClick={shareToThreads}
+        >
+          <Share2 size={16} className="mb-1" />
+          <span className="text-xs">Threads</span>
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex flex-col items-center p-2" 
+          onClick={copyLinkToClipboard}
+        >
+          <Link size={16} className="mb-1" />
+          <span className="text-xs">Copy Link</span>
         </Button>
       </div>
     </div>

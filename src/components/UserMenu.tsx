@@ -42,22 +42,22 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     if (user?.user_metadata?.avatar_url) {
       try {
         const rawUrl = user.user_metadata.avatar_url;
-        console.log('UserMenu - Raw Avatar URL:', rawUrl);
         
-        // Properly extract the base URL without any query parameters
-        let baseUrl;
-        
-        if (rawUrl.includes('?')) {
-          baseUrl = rawUrl.split('?')[0];
-        } else {
-          baseUrl = rawUrl;
+        // Create a URL object to properly parse the URL
+        let url;
+        try {
+          url = new URL(rawUrl);
+        } catch (e) {
+          // If URL parsing fails, use the raw URL
+          setAvatarUrl(`${rawUrl}?t=${Date.now()}`);
+          return;
         }
         
-        // Add a timestamp for cache busting
-        const timestamp = Date.now();
-        const finalUrl = `${baseUrl}?t=${timestamp}`;
+        // Get just the base URL without query parameters
+        const baseUrl = `${url.origin}${url.pathname}`;
         
-        console.log('UserMenu - Final Avatar URL:', finalUrl);
+        // Add timestamp to prevent caching
+        const finalUrl = `${baseUrl}?t=${Date.now()}`;
         setAvatarUrl(finalUrl);
       } catch (err) {
         console.error('Error processing avatar URL:', err);
