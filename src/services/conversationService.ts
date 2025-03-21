@@ -1,11 +1,13 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 export interface Conversation {
   id: string;
   title: string;
   created_at: string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface Message {
@@ -32,9 +34,19 @@ export const getConversations = async (): Promise<Conversation[]> => {
 };
 
 export const createConversation = async (title: string): Promise<Conversation> => {
+  // Get the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error('User must be logged in to create a conversation');
+  }
+
   const { data, error } = await supabase
     .from('conversations')
-    .insert({ title })
+    .insert({ 
+      title, 
+      user_id: user.id 
+    })
     .select()
     .single();
 
@@ -83,7 +95,7 @@ export const getMessages = async (conversationId: string): Promise<Message[]> =>
     throw error;
   }
 
-  return data || [];
+  return data as Message[] || [];
 };
 
 export const createMessage = async (conversationId: string, content: string, type: 'user' | 'assistant'): Promise<Message> => {
@@ -98,5 +110,5 @@ export const createMessage = async (conversationId: string, content: string, typ
     throw error;
   }
 
-  return data;
+  return data as Message;
 };
