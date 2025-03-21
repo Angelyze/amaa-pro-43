@@ -196,10 +196,12 @@ const Index = () => {
       if (uploadedFile && type !== 'web-search') {
         await processFileWithQuestion(content, uploadedFile);
       } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        
         const response = await supabase.functions.invoke('ai-service', {
           body: { message: content, type },
           headers: {
-            'Authorization': `Bearer ${supabase.auth.session()?.access_token || ''}`
+            'Authorization': `Bearer ${session?.access_token || ''}`
           }
         });
         
@@ -239,6 +241,8 @@ const Index = () => {
           return;
         }
         
+        const { data: { session } } = await supabase.auth.getSession();
+        
         const response = await supabase.functions.invoke('ai-service', {
           body: { 
             message: question,
@@ -251,7 +255,7 @@ const Index = () => {
             photoContext: question
           },
           headers: {
-            'Authorization': `Bearer ${supabase.auth.session()?.access_token || ''}`
+            'Authorization': `Bearer ${session?.access_token || ''}`
           }
         });
         
