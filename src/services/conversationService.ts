@@ -76,7 +76,8 @@ export const getConversations = async (): Promise<Conversation[]> => {
 
 export const createConversation = async (title: string): Promise<Conversation> => {
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
   
   if (!user) {
     throw new Error('User must be logged in to create a conversation');
@@ -144,29 +145,8 @@ export const getMessages = async (conversationId: string): Promise<Message[]> =>
 export const createMessage = async (conversationId: string, content: string, type: 'user' | 'assistant'): Promise<Message> => {
   console.log(`Creating ${type} message for conversation ${conversationId}`);
   
-  // Check if user is authenticated
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    throw new Error('User must be logged in to create a message');
-  }
-  
-  // Verify the conversation exists and belongs to the user
-  const { data: conversation, error: convError } = await supabase
-    .from('conversations')
-    .select('id, user_id')
-    .eq('id', conversationId)
-    .single();
-  
-  if (convError) {
-    console.error('Error verifying conversation ownership:', convError);
-    throw new Error('Cannot verify conversation ownership');
-  }
-  
-  if (!conversation || conversation.user_id !== user.id) {
-    console.error('Conversation not found or does not belong to current user');
-    throw new Error('Conversation not found or access denied');
-  }
-  
+  // With RLS policies in place, we don't need to explicitly check ownership anymore
+  // as the database will enforce that automatically
   const { data, error } = await supabase
     .from('messages')
     .insert({ conversation_id: conversationId, content, type })

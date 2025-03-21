@@ -268,19 +268,21 @@ async function handleOpenRouterSearch(message: string) {
       I need the MOST CURRENT AND UP-TO-DATE information about: ${message}
       
       CRITICAL INSTRUCTIONS:
-      1. ONLY use information from 2025 (or the most recent available if we're in a earlier year)
+      1. ONLY use information from 2025 (or the most recent available if we're in an earlier year)
       2. Start with a clear summary stating when the information was last updated
       3. Include SPECIFIC DATES for every piece of information
-      4. If searching for API documentation (like https://openrouter.ai/api/v1), fetch the LATEST version
+      4. If searching for API documentation or technical information, fetch the ABSOLUTE LATEST version 
       5. Explicitly note if any information seems outdated
       6. Format your response with clear headings and bullet points
       7. Provide FULL, working URLs to original sources
-      8. PRIORITIZE information from the last 30 days
+      8. PRIORITIZE information from the last 30 days, especially for technical documentation
+      9. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
+      10. Add a timestamp of when this search was conducted
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
     
-    // Using fetch with no-cache headers to ensure fresh data
+    // Using fetch with strict no-cache headers to ensure fresh data
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -289,18 +291,19 @@ async function handleOpenRouterSearch(message: string) {
         'HTTP-Referer': 'https://amaa.pro',
         'X-Title': 'AMAA Pro',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
       body: JSON.stringify({
         model: 'openai/gpt-4o-search-preview',
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Treat each query as requiring the most up-to-date information possible.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching.' 
           },
           { role: 'user', content: searchQuery }
         ],
-        temperature: 0.4,
+        temperature: 0.2, // Lower temperature for more factual responses
         max_tokens: 1500,
       }),
     });
@@ -323,6 +326,9 @@ async function handleOpenRouterSearch(message: string) {
       { 
         headers: { 
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
           ...corsHeaders
         } 
       }
