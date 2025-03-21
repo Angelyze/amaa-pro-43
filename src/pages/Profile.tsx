@@ -12,7 +12,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Layout } from '@/components/ui/layout';
 import { Separator } from '@/components/ui/separator';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
@@ -25,6 +24,12 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
   const [selectedVoice, setSelectedVoice] = useState('alloy');
   const [autoReadMessages, setAutoReadMessages] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'light';
+    }
+    return 'light';
+  });
   
   const voices = [
     { id: 'alloy', name: 'Alloy (Neutral)' },
@@ -33,6 +38,11 @@ const Profile = () => {
     { id: 'onyx', name: 'Onyx (Male)' },
     { id: 'nova', name: 'Nova (Female)' },
     { id: 'shimmer', name: 'Shimmer (Female)' }
+  ];
+
+  const themes = [
+    { id: 'light', name: 'Default' },
+    { id: 'dark', name: 'Default Dark' },
   ];
   
   const userInitials = user?.user_metadata?.full_name
@@ -102,20 +112,28 @@ const Profile = () => {
     localStorage.setItem('auto_read_messages', autoReadMessages.toString());
     toast.success('Voice settings saved!');
   };
+
+  const handleThemeChange = (theme: string) => {
+    setSelectedTheme(theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    toast.success('Theme updated successfully!');
+  };
   
   return (
-    <Layout>
+    <Layout showBackButton title="Profile Settings">
       <div className="container py-10 max-w-4xl">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Profile Settings</h1>
-          <p className="text-muted-foreground">Manage your account settings and preferences.</p>
-        </div>
-        
         <Tabs defaultValue="profile" className="w-full">
           <TabsList className="mb-8">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             {isPremium && (
               <>
+                <TabsTrigger value="appearance">Appearance</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
                 <TabsTrigger value="voice">Voice Settings</TabsTrigger>
               </>
@@ -182,8 +200,10 @@ const Profile = () => {
                 </div>
               </CardContent>
             </Card>
-            
-            {isPremium && (
+          </TabsContent>
+          
+          {isPremium && (
+            <TabsContent value="appearance" className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Appearance</CardTitle>
@@ -191,14 +211,29 @@ const Profile = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    <div className="max-w-xs">
-                      <ThemeToggle />
+                    <div>
+                      <Label htmlFor="theme-selection">Theme</Label>
+                      <Select
+                        value={selectedTheme}
+                        onValueChange={handleThemeChange}
+                      >
+                        <SelectTrigger id="theme-selection" className="mt-1.5">
+                          <SelectValue placeholder="Select a theme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {themes.map((theme) => (
+                            <SelectItem key={theme.id} value={theme.id}>
+                              {theme.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            )}
-          </TabsContent>
+            </TabsContent>
+          )}
           
           {isPremium && (
             <TabsContent value="subscription">
@@ -224,13 +259,6 @@ const Profile = () => {
                           </div>
                         </>
                       )}
-                    </div>
-                    
-                    <div className="flex gap-4">
-                      <Button onClick={() => refreshSubscriptionStatus()}>Refresh Status</Button>
-                      <Link to="/subscribe">
-                        <Button variant="outline">Manage Subscription</Button>
-                      </Link>
                     </div>
                   </div>
                 </CardContent>

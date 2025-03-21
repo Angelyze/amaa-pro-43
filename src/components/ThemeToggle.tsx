@@ -35,7 +35,7 @@ const ThemeToggle: React.FC = () => {
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-2">
         {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
-        <span className="text-sm">{isDarkMode ? 'Dark' : 'Light'} Mode</span>
+        <span className="text-sm">{isDarkMode ? 'Default Dark' : 'Default'}</span>
       </div>
       <Switch 
         checked={isDarkMode}

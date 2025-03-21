@@ -1,5 +1,5 @@
 
-import { User, LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -12,7 +12,6 @@ import {
 import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
 
 interface UserMenuProps {
   onLogout: () => Promise<void>;
@@ -45,12 +44,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        
-        {isPremium && (
-          <div className="px-2 py-1.5">
-            <ThemeToggle />
-          </div>
-        )}
         
         <Link to="/profile">
           <DropdownMenuItem>
