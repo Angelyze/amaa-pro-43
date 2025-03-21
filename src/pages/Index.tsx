@@ -351,7 +351,6 @@ const Index = () => {
   };
 
   const handleVoiceInput = () => {
-    // Toggle voice active state
     setIsVoiceActive(!isVoiceActive);
   };
 

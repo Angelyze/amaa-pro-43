@@ -31,6 +31,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const silenceTimerRef = useRef<number | null>(null);
   const lastTranscriptRef = useRef<string>('');
+  const lastSpeechTimeRef = useRef<number>(Date.now());
   
   useEffect(() => {
     // Initialize speech recognition if available
@@ -50,16 +51,20 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         
         // Reset silence timer on new speech
         if (transcript !== lastTranscriptRef.current) {
-          resetSilenceTimer();
+          lastSpeechTimeRef.current = Date.now();
+          clearSilenceTimer();
+          startSilenceTimer();
           lastTranscriptRef.current = transcript;
         }
       };
       
+      recognitionRef.current.onaudiostart = () => {
+        lastSpeechTimeRef.current = Date.now();
+      };
+      
       recognitionRef.current.onspeechend = () => {
-        // Start silence timer when speech ends
-        if (message.trim()) {
-          startSilenceTimer();
-        }
+        console.log('Speech ended, starting silence timer');
+        startSilenceTimer();
       };
       
       recognitionRef.current.onerror = (event) => {
@@ -105,23 +110,48 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     }
   }, [disabled]);
   
-  const resetSilenceTimer = () => {
+  // Set up a recurring check for silence while voice input is active
+  useEffect(() => {
+    let silenceCheckInterval: number | null = null;
+    
+    if (voiceInputActive && isListening) {
+      silenceCheckInterval = window.setInterval(() => {
+        const now = Date.now();
+        const timeSinceLastSpeech = now - lastSpeechTimeRef.current;
+        
+        console.log('Silence check: time since last speech', timeSinceLastSpeech);
+        
+        // If there has been silence for 1.5 seconds and we have a message
+        if (timeSinceLastSpeech > 1500 && message.trim()) {
+          console.log('Silence detected for 1.5s, sending message:', message);
+          handleSend();
+        }
+      }, 500);
+    }
+    
+    return () => {
+      if (silenceCheckInterval) {
+        clearInterval(silenceCheckInterval);
+      }
+    };
+  }, [voiceInputActive, isListening, message]);
+  
+  const clearSilenceTimer = () => {
     if (silenceTimerRef.current) {
+      console.log('Clearing silence timer');
       clearTimeout(silenceTimerRef.current);
       silenceTimerRef.current = null;
     }
   };
   
-  const clearSilenceTimer = () => {
-    resetSilenceTimer();
-  };
-  
   const startSilenceTimer = () => {
-    resetSilenceTimer();
+    clearSilenceTimer();
     
     // Auto-send message after 1.5 seconds of silence if there's a message
     silenceTimerRef.current = window.setTimeout(() => {
+      console.log('Silence timer triggered. Message:', message.trim() ? 'Yes' : 'No', 'Voice active:', voiceInputActive);
       if (message.trim() && voiceInputActive) {
+        console.log('Auto-sending message after silence');
         handleSend();
       }
     }, 1500);
@@ -173,12 +203,13 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   };
   
   const stopVoiceInput = () => {
+    console.log('Stopping voice input');
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
     setVoiceInputActive(false);
     setIsListening(false);
-    resetSilenceTimer();
+    clearSilenceTimer();
     toast.info('Voice input deactivated');
   };
 
@@ -198,6 +229,8 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         recognitionRef.current.start();
         setIsListening(true);
         lastTranscriptRef.current = '';
+        lastSpeechTimeRef.current = Date.now();
+        console.log('Voice input activated, last speech time set to now');
         toast.success('Voice input activated. Start speaking...');
       } catch (error) {
         console.error('Speech recognition start error:', error);
