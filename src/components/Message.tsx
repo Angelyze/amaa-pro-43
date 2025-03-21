@@ -1,10 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import { textToSpeech, stopSpeech, getAutoReadSetting } from '@/services/speechService';
+import ShareMenu from './ShareMenu';
 
 interface MessageProps {
   content: string;
@@ -12,7 +12,7 @@ interface MessageProps {
   timestamp?: string;
 }
 
-// Function to strip markdown for TTS
+// Function to strip all markdown for TTS
 const stripMarkdown = (text: string): string => {
   // Replace headers
   let cleaned = text.replace(/^#{1,6}\s+/gm, '');
@@ -38,9 +38,10 @@ const stripMarkdown = (text: string): string => {
 const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   
   // Auto-read assistant messages if enabled
-  useEffect(() => {
+  React.useEffect(() => {
     if (type === 'assistant' && getAutoReadSetting()) {
       handleTextToSpeech();
     }
@@ -59,8 +60,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
   };
   
   const handleShare = () => {
-    // This is a placeholder for the actual share functionality
-    toast.info('Sharing feature coming soon');
+    setIsShareMenuOpen(true);
   };
   
   const handleTextToSpeech = async () => {
@@ -226,6 +226,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
               <Share2 size={14} />
             </Button>
           </div>
+        )}
+        
+        {isShareMenuOpen && (
+          <ShareMenu 
+            content={content} 
+            onClose={() => setIsShareMenuOpen(false)} 
+          />
         )}
       </div>
     </div>

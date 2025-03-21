@@ -40,13 +40,28 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   // Set avatar URL whenever user changes
   useEffect(() => {
     if (user?.user_metadata?.avatar_url) {
-      const url = user.user_metadata.avatar_url;
-      console.log('UserMenu - Setting avatar URL from user metadata:', url);
-      
-      // Remove any existing query params and add a timestamp
-      const timestamp = Date.now();
-      const baseUrl = url.split('?')[0];
-      setAvatarUrl(`${baseUrl}?t=${timestamp}`);
+      try {
+        const rawUrl = user.user_metadata.avatar_url;
+        console.log('UserMenu - Raw Avatar URL:', rawUrl);
+        
+        // Properly extract the base URL without any query parameters
+        let baseUrl;
+        
+        if (rawUrl.includes('?')) {
+          baseUrl = rawUrl.split('?')[0];
+        } else {
+          baseUrl = rawUrl;
+        }
+        
+        // Add a timestamp for cache busting
+        const timestamp = Date.now();
+        const finalUrl = `${baseUrl}?t=${timestamp}`;
+        
+        console.log('UserMenu - Final Avatar URL:', finalUrl);
+        setAvatarUrl(finalUrl);
+      } catch (err) {
+        console.error('Error processing avatar URL:', err);
+      }
     }
   }, [user]);
   

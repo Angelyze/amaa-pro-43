@@ -110,47 +110,61 @@ export const textToSpeech = async (text: string): Promise<void> => {
 };
 
 // Break long text into smaller chunks to avoid browser TTS limits
-const chunkText = (text: string, maxLength = 200): string[] => {
+const chunkText = (text: string): string[] => {
+  // Use a smaller chunk size to ensure reliable processing
+  const maxLength = 150;
+  
   if (text.length <= maxLength) return [text];
+  
+  // Split by sentences - this is the most natural way to break text
+  const sentenceRegex = /(?<=[.!?])\s+/;
+  const sentences = text.split(sentenceRegex);
   
   const chunks: string[] = [];
   let currentChunk = '';
   
-  // Split by sentence boundaries
-  const sentences = text.split(/(?<=[.!?])\s+/);
-  
   for (const sentence of sentences) {
+    // If single sentence fits in a chunk
     if (currentChunk.length + sentence.length <= maxLength) {
       currentChunk += (currentChunk ? ' ' : '') + sentence;
     } else {
-      if (currentChunk) chunks.push(currentChunk);
-      // If a single sentence is longer than maxLength, we'll need to split it
+      // If current chunk has content, push it
+      if (currentChunk) {
+        chunks.push(currentChunk);
+      }
+      
+      // If sentence is longer than max length, break it further
       if (sentence.length > maxLength) {
-        // Split by commas, semicolons, or colons
-        const parts = sentence.split(/(?<=[,;:])\s+/);
+        // Try to break by phrases (commas, semicolons)
+        const phraseRegex = /(?<=[,;:])\s+/;
+        const phrases = sentence.split(phraseRegex);
         
         currentChunk = '';
-        for (const part of parts) {
-          if (currentChunk.length + part.length <= maxLength) {
-            currentChunk += (currentChunk ? ' ' : '') + part;
+        for (const phrase of phrases) {
+          if (currentChunk.length + phrase.length <= maxLength) {
+            currentChunk += (currentChunk ? ' ' : '') + phrase;
           } else {
-            if (currentChunk) chunks.push(currentChunk);
-            // If still too long, just add it as its own chunk
-            if (part.length > maxLength) {
-              // Split into words if needed
-              const words = part.split(/\s+/);
+            if (currentChunk) {
+              chunks.push(currentChunk);
+            }
+            
+            if (phrase.length > maxLength) {
+              // If phrases are still too long, break by words
+              const words = phrase.split(/\s+/);
               currentChunk = '';
               
               for (const word of words) {
                 if (currentChunk.length + word.length + 1 <= maxLength) {
                   currentChunk += (currentChunk ? ' ' : '') + word;
                 } else {
-                  if (currentChunk) chunks.push(currentChunk);
+                  if (currentChunk) {
+                    chunks.push(currentChunk);
+                  }
                   currentChunk = word;
                 }
               }
             } else {
-              currentChunk = part;
+              currentChunk = phrase;
             }
           }
         }
@@ -160,7 +174,11 @@ const chunkText = (text: string, maxLength = 200): string[] => {
     }
   }
   
-  if (currentChunk) chunks.push(currentChunk);
+  // Don't forget the last chunk
+  if (currentChunk) {
+    chunks.push(currentChunk);
+  }
+  
   return chunks;
 };
 
@@ -170,7 +188,7 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
       // Cancel any ongoing speech
       window.speechSynthesis.cancel();
       
-      // Split text into manageable chunks to avoid browser TTS limitations
+      // Split text into manageable chunks
       const textChunks = chunkText(text);
       console.log(`Speaking ${textChunks.length} chunks of text`);
       
