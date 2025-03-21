@@ -274,7 +274,7 @@ const Index = () => {
         onSendMessage={handleSendMessage}
         onScrollToTop={scrollToTop}
         isLoggedIn={!!user}
-        onLogin={() => {}} // We're using our custom auth now
+        onLogin={signOut}
       />
       
       <main className="container mx-auto px-4 pt-12 flex-grow">
@@ -283,12 +283,24 @@ const Index = () => {
             {user ? (
               <UserMenu onLogout={signOut} />
             ) : (
-              <Link to="/auth">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <LogIn size={16} />
-                  <span>Log in</span>
-                </Button>
-              </Link>
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <LogIn size={16} />
+                    <span>Log in</span>
+                  </Button>
+                </Link>
+                <Link to="/subscribe">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="bg-teal text-white hover:bg-teal-light flex items-center gap-2"
+                  >
+                    <CreditCard size={16} />
+                    <span>Subscribe</span>
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
           
@@ -310,11 +322,17 @@ const Index = () => {
             <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
               <Info size={12} />
               <span>
-                Free users have 5 queries. 
-                <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
-                  Go Premium
-                </Link> 
-                for unlimited access and much more.
+                {user ? (
+                  "You are a Premium user, using the unlimited capabilities of the app."
+                ) : (
+                  <>
+                    Free users have 5 queries. 
+                    <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
+                      Go Premium
+                    </Link> 
+                    for unlimited access and much more.
+                  </>
+                )}
               </span>
             </div>
 
