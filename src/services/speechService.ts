@@ -115,11 +115,12 @@ const chunkText = (text: string): string[] => {
   const sentences = text.split(/(?<=[.!?])\s+/);
   const chunks: string[] = [];
   
-  // Process sentences sequentially into chunks of reasonable size
+  // Smaller chunk size for better reliability
+  const maxChunkSize = 150;
   let currentChunk = '';
   
   for (const sentence of sentences) {
-    if (currentChunk.length + sentence.length < 200) {
+    if (currentChunk.length + sentence.length < maxChunkSize) {
       // Add sentence to current chunk if it fits
       currentChunk += (currentChunk ? ' ' : '') + sentence;
     } else {
@@ -163,6 +164,11 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
           }
         }
         
+        // Set additional properties for better speech
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
         return utterance;
       });
       
@@ -171,25 +177,28 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
       
       const speakNext = () => {
         if (currentIndex < utterances.length) {
-          window.speechSynthesis.speak(utterances[currentIndex]);
+          const currentUtterance = utterances[currentIndex];
+          try {
+            window.speechSynthesis.speak(currentUtterance);
+            
+            // Fix for Chrome issue where onend doesn't fire
+            // Force checking if speaking has finished
+            const checkSpeaking = setInterval(() => {
+              if (!window.speechSynthesis.speaking) {
+                clearInterval(checkSpeaking);
+                currentIndex++;
+                speakNext();
+              }
+            }, 100);
+          } catch (e) {
+            console.error('Error speaking chunk:', e);
+            currentIndex++;
+            speakNext();
+          }
         } else {
           resolve();
         }
       };
-      
-      // Attach event handlers to each utterance
-      utterances.forEach((utterance, index) => {
-        utterance.onend = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
-          currentIndex++;
-          speakNext();
-        };
-        
-        utterance.onerror = function(this: SpeechSynthesisUtterance, event: SpeechSynthesisEvent) {
-          console.error('TTS error:', event);
-          currentIndex++;
-          speakNext();
-        };
-      });
       
       // Start with the first utterance
       if (utterances.length > 0) {

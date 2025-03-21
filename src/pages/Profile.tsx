@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,24 +53,32 @@ const Profile = () => {
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
+  // Load user data including avatar when user object changes
   useEffect(() => {
-    if (user) {
-      setFullName(user.user_metadata?.full_name || '');
-      
-      if (user.user_metadata?.avatar_url) {
-        const timestamp = Date.now();
-        const avatarUrl = user.user_metadata.avatar_url;
+    const loadUserData = async () => {
+      if (user) {
+        setFullName(user.user_metadata?.full_name || '');
         
-        // Add timestamp to prevent caching issues
-        const urlWithTimestamp = avatarUrl.includes('?') 
-          ? `${avatarUrl}&t=${timestamp}`
-          : `${avatarUrl}?t=${timestamp}`;
-        
-        setAvatarUrl(urlWithTimestamp);
+        if (user.user_metadata?.avatar_url) {
+          // Force a timestamp to prevent caching
+          const timestamp = Date.now();
+          const avatarUrl = user.user_metadata.avatar_url;
+          
+          // Add timestamp to prevent caching issues
+          const urlWithTimestamp = avatarUrl.includes('?') 
+            ? `${avatarUrl}&t=${timestamp}`
+            : `${avatarUrl}?t=${timestamp}`;
+          
+          setAvatarUrl(urlWithTimestamp);
+          console.log('Set avatar URL to:', urlWithTimestamp);
+        }
       }
-    }
+    };
+    
+    loadUserData();
   }, [user]);
   
+  // Initialize TTS voices
   useEffect(() => {
     const voices = getAllVoices();
     setAvailableVoices(voices);
@@ -88,6 +97,7 @@ const Profile = () => {
     }
   }, []);
   
+  // Initialize voice settings
   useEffect(() => {
     const currentVoice = getCurrentVoice();
     setSelectedVoice(currentVoice.id);
@@ -107,8 +117,11 @@ const Profile = () => {
       const fileName = `${user!.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
       
+      console.log('Uploading file:', fileName);
+      console.log('File path:', filePath);
+      
       // Make sure we have access to Storage API
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data: uploadData } = await supabase.storage
         .from('amaa')
         .upload(filePath, file, {
           upsert: true,
@@ -120,6 +133,8 @@ const Profile = () => {
         throw uploadError;
       }
       
+      console.log('Upload successful, getting public URL for:', filePath);
+      
       // Get the public URL for the uploaded file
       const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
@@ -127,10 +142,10 @@ const Profile = () => {
         throw new Error('Failed to get public URL for uploaded file');
       }
       
-      console.log('Successfully uploaded to storage. Public URL:', data.publicUrl);
+      console.log('Public URL generated:', data.publicUrl);
       
       // Update user metadata with the new avatar URL
-      const { error: updateError } = await supabase.auth.updateUser({
+      const { error: updateError, data: userData } = await supabase.auth.updateUser({
         data: { avatar_url: data.publicUrl }
       });
       
@@ -138,6 +153,8 @@ const Profile = () => {
         console.error('User metadata update error:', updateError);
         throw updateError;
       }
+      
+      console.log('User metadata updated with new avatar URL');
       
       // Update the avatar URL in the UI with a timestamp to avoid caching
       const timestamp = Date.now();

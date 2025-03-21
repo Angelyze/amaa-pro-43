@@ -5,7 +5,7 @@ import {
   Twitter, 
   Linkedin, 
   Mail, 
-  Link,
+  Link2, 
   MessageSquare,
   X,
   Share2,
@@ -101,7 +101,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
       className="absolute bottom-10 right-0 bg-background border border-border rounded-lg shadow-lg p-3 z-50"
     >
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-sm font-medium">Share to</h3>
+        <h3 className="text-sm font-medium">Share</h3>
         <Button 
           variant="ghost" 
           size="icon" 
@@ -190,7 +190,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
           onClick={copyLinkToClipboard}
           title="Copy Link"
         >
-          <Link className="h-5 w-5 text-foreground" />
+          <Link2 className="h-5 w-5 text-foreground" />
         </Button>
       </div>
     </div>
