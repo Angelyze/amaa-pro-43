@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -45,7 +46,7 @@ const Index = () => {
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const activeMessageRef = useRef<HTMLDivElement>(null);
+  const loadingIndicatorRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (user) {
@@ -109,18 +110,12 @@ const Index = () => {
     }
   };
   
-  const scrollToMessages = () => {
-    if (messagesContainerRef.current && messages.length > 0) {
-      messagesContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const scrollToLoadingIndicator = () => {
+    if (loadingIndicatorRef.current) {
+      loadingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
-  const scrollToLatestMessage = () => {
-    if (activeMessageRef.current) {
-      activeMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-  
   const handleScroll = () => {
     if (!mainSearchRef.current) return;
     
@@ -140,16 +135,14 @@ const Index = () => {
   }, []);
   
   useEffect(() => {
-    if (messages.length > 0) {
-      scrollToLatestMessage();
+    if (isLoading && loadingIndicatorRef.current) {
+      scrollToLoadingIndicator();
     }
-  }, [messages]);
+  }, [isLoading]);
   
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
     try {
-      const userHasReachedLimit = !user ? 
-        getGuestQueryCount() >= MAX_GUEST_QUERIES : 
-        !isPremium && getGuestQueryCount() >= MAX_GUEST_QUERIES;
+      const userHasReachedLimit = !isPremium && guestQueriesCount >= MAX_GUEST_QUERIES;
       
       if (userHasReachedLimit) {
         toast.error(
@@ -259,8 +252,6 @@ const Index = () => {
           setMessages(prev => [...prev, assistantMessage]);
         }
       }
-      
-      setTimeout(scrollToLatestMessage, 100);
     } catch (error) {
       console.error('Error in conversation:', error);
       toast.error('An error occurred while processing your request');
@@ -355,7 +346,8 @@ const Index = () => {
   };
 
   const handleVoiceInput = () => {
-    toast.info('Voice input feature coming soon');
+    // This is now handled within the AMAAChatBox component
+    console.log('Voice input toggled from parent component');
   };
 
   const handleNewConversation = () => {
@@ -545,13 +537,14 @@ const Index = () => {
               className="w-full mx-auto mt-0 mb-8"
             >
               <div className="space-y-4">
-                {isLoading && <LoadingIndicator />}
+                {isLoading && (
+                  <div ref={loadingIndicatorRef}>
+                    <LoadingIndicator />
+                  </div>
+                )}
                 
                 {displayMessages.map((message, index) => (
-                  <div 
-                    key={message.id} 
-                    ref={index === 0 ? activeMessageRef : null}
-                  >
+                  <div key={message.id}>
                     <Message
                       content={message.content}
                       type={message.type}

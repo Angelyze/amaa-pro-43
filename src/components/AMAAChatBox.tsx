@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Upload, Globe, Bot } from 'lucide-react';
 import { Button } from './ui/button';
+import { toast } from 'sonner';
 
 interface AMAAChatBoxProps {
   onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
@@ -23,9 +24,43 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [voiceInputActive, setVoiceInputActive] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  useEffect(() => {
+    // Initialize speech recognition if available
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      
+      recognitionRef.current.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join('');
+        
+        setMessage(transcript);
+      };
+      
+      recognitionRef.current.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+        toast.error(`Voice input error: ${event.error}`);
+        setIsListening(false);
+        setVoiceInputActive(false);
+      };
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
@@ -71,7 +106,31 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
   const toggleVoiceInput = () => {
     if (disabled) return;
-    setVoiceInputActive(!voiceInputActive);
+    
+    if (!recognitionRef.current) {
+      toast.error('Voice input is not supported in your browser');
+      return;
+    }
+    
+    const newState = !voiceInputActive;
+    setVoiceInputActive(newState);
+    
+    if (newState) {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+        toast.success('Voice input activated. Start speaking...');
+      } catch (error) {
+        console.error('Speech recognition start error:', error);
+        toast.error('Could not start voice input');
+        setVoiceInputActive(false);
+      }
+    } else {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      toast.info('Voice input deactivated');
+    }
+    
     if (onVoiceInput) {
       onVoiceInput();
     }
@@ -124,8 +183,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
               disabled={disabled}
               className={`p-1.5 transition-colors focus:outline-none ${
                 disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                isListening ? 'text-red-500 animate-pulse' :
                 voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
               }`}
+              aria-label={isListening ? 'Listening...' : 'Toggle voice input'}
             >
               <Mic size={18} />
             </button>
@@ -190,7 +251,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             {disabled ? 'Sign in to continue chatting' :
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
-             uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
+             uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>
       )}

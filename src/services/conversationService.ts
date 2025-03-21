@@ -56,7 +56,6 @@ export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id'
 
 export const clearGuestMessages = (): void => {
   localStorage.removeItem(GUEST_STORAGE_KEY);
-  localStorage.removeItem(GUEST_COUNTER_KEY); // Also clear the query count when messages are cleared
 };
 
 // Conversation-related functions
