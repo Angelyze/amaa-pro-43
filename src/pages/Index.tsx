@@ -37,6 +37,7 @@ const Index = () => {
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const { user, signOut } = useAuth();
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   
@@ -190,23 +191,27 @@ const Index = () => {
         setIsLoading(true);
       }
       
-      const response = await supabase.functions.invoke('ai-service', {
-        body: { message: content, type },
-      });
-      
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-      
-      const assistantContent = response.data.response;
-      
-      if (user) {
-        const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
-        setMessages(prev => [...prev, assistantMessage]);
-        loadConversations();
+      if (uploadedFile && type !== 'web-search') {
+        await processFileWithQuestion(content, uploadedFile);
       } else {
-        const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
-        setMessages(prev => [...prev, assistantMessage]);
+        const response = await supabase.functions.invoke('ai-service', {
+          body: { message: content, type },
+        });
+        
+        if (response.error) {
+          throw new Error(response.error.message);
+        }
+        
+        const assistantContent = response.data.response;
+        
+        if (user) {
+          const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
+          setMessages(prev => [...prev, assistantMessage]);
+          loadConversations();
+        } else {
+          const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
+          setMessages(prev => [...prev, assistantMessage]);
+        }
       }
       
       setTimeout(scrollToLatestMessage, 100);
@@ -218,9 +223,10 @@ const Index = () => {
     }
   };
   
-  const handleUploadFile = async (file: File) => {
+  const processFileWithQuestion = async (question: string, file: File) => {
     try {
       const reader = new FileReader();
+      
       reader.onload = async (e) => {
         const fileData = e.target?.result;
         if (!fileData) {
@@ -228,34 +234,16 @@ const Index = () => {
           return;
         }
         
-        toast.success(`Analyzing file: ${file.name}`);
-        setIsLoading(true);
-        
-        const fileMessage = `Analyze this ${file.type.includes('image') ? 'image' : 'document'}: ${file.name}`;
-        
-        if (user && currentConversationId) {
-          await createMessage(currentConversationId, fileMessage, 'user');
-        } else {
-          saveGuestMessage({ content: fileMessage, type: 'user' });
-        }
-        
-        setMessages(prev => [...prev, { 
-          id: Date.now().toString(), 
-          content: fileMessage, 
-          type: 'user', 
-          created_at: new Date().toISOString(),
-          conversation_id: currentConversationId || GUEST_CONVERSATION_ID 
-        }]);
-        
         const response = await supabase.functions.invoke('ai-service', {
           body: { 
-            message: "Please analyze this file and provide insights", 
+            message: question,
             type: 'upload',
             file: {
               name: file.name,
               type: file.type,
               data: fileData
-            }
+            },
+            photoContext: question
           },
         });
         
@@ -276,10 +264,29 @@ const Index = () => {
       
       reader.readAsDataURL(file);
     } catch (error) {
-      console.error('Error processing file:', error);
+      console.error('Error processing file with question:', error);
       toast.error('An error occurred while processing your file');
-    } finally {
-      setIsLoading(false);
+      throw error;
+    }
+  };
+  
+  const handleUploadFile = async (file: File) => {
+    try {
+      setUploadedFile(file);
+      toast.success(`File uploaded: ${file.name}. Please ask a question about it.`);
+      
+      const fileMessage = `[File uploaded: ${file.name}]`;
+      
+      if (user && currentConversationId) {
+        const message = await createMessage(currentConversationId, fileMessage, 'user');
+        setMessages(prev => [...prev, message]);
+      } else {
+        const message = saveGuestMessage({ content: fileMessage, type: 'user' });
+        setMessages(prev => [...prev, message]);
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('An error occurred while uploading your file');
     }
   };
 
@@ -292,6 +299,7 @@ const Index = () => {
       if (confirm('Start a new conversation? This will clear the current conversation.')) {
         setMessages([]);
         setCurrentConversationId(null);
+        setUploadedFile(null);
         scrollToTop();
       }
     }
@@ -322,6 +330,7 @@ const Index = () => {
   const handleLoadConversation = (conversation: SavedConversation) => {
     const conversationId = conversation.id;
     setCurrentConversationId(conversationId);
+    setUploadedFile(null);
     toast.success(`Loaded conversation: ${conversation.title}`);
   };
 
@@ -345,6 +354,7 @@ const Index = () => {
       if (id === currentConversationId) {
         setCurrentConversationId(null);
         setMessages([]);
+        setUploadedFile(null);
       }
       
       loadConversations();
@@ -440,6 +450,12 @@ const Index = () => {
                 )}
               </span>
             </div>
+
+            {uploadedFile && (
+              <div className="mt-2 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-xs flex items-center">
+                <span className="mr-1">📎</span> {uploadedFile.name} uploaded - ask a question about it
+              </div>
+            )}
 
             {user && (
               <ConversationControls 

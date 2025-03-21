@@ -22,14 +22,20 @@ serve(async (req) => {
   }
   
   try {
-    const { message, type, file } = await req.json();
-    console.log('Received request:', { message, type, file: file ? 'File present' : 'No file' });
+    const { message, type, file, photoContext } = await req.json();
+    console.log('Received request:', { 
+      message, 
+      type, 
+      file: file ? 'File present' : 'No file',
+      photoContext: photoContext ? 'Photo context present' : 'No photo context' 
+    });
     
     // Choose appropriate API based on the type
     if (type === 'web-search') {
       return await handleOpenRouterSearch(message);
-    } else if (type === 'upload' && file) {
-      return await handleGeminiFileAnalysis(message, file);
+    } else if (type === 'upload' && file && photoContext) {
+      // Only process the file if we have context from the user
+      return await handleGeminiFileAnalysis(photoContext, file);
     } else {
       return await handleGeminiRegularChat(message);
     }
@@ -57,7 +63,8 @@ async function handleGeminiRegularChat(message: string) {
     if (!apiKey) continue;
     
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+      console.log('Trying Gemini API with key length:', apiKey.length);
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,9 +86,11 @@ async function handleGeminiRegularChat(message: string) {
       });
       
       const data = await response.json();
+      console.log('Gemini API response status:', response.status);
       
       if (data.error) {
-        throw new Error(`Gemini API error: ${data.error.message}`);
+        console.error('Gemini API returned error:', data.error);
+        throw new Error(`Gemini API error: ${data.error.message || JSON.stringify(data.error)}`);
       }
       
       // Extract the response text
@@ -90,7 +99,7 @@ async function handleGeminiRegularChat(message: string) {
       return new Response(
         JSON.stringify({ 
           response: aiResponse,
-          model: "gemini-2.0-flash"
+          model: "gemini-1.5-flash"
         }),
         { 
           headers: { 
@@ -100,7 +109,7 @@ async function handleGeminiRegularChat(message: string) {
         }
       );
     } catch (error) {
-      console.error(`Error with API key: ${error.message}`);
+      console.error(`Error with Gemini API key: ${error.message}`);
       lastError = error;
       // Continue to the next API key
     }
@@ -120,10 +129,7 @@ async function handleGeminiRegularChat(message: string) {
 }
 
 async function handleGeminiFileAnalysis(message: string, file: any) {
-  // Similar to regular chat but include file analysis
-  // This is a simplified version - in a real implementation, 
-  // you'd need to process the file data properly
-  
+  // Process file analysis only when we have context from the user
   const apiKey = GEMINI_API_KEYS.find(key => key) || '';
   
   if (!apiKey) {
@@ -140,38 +146,64 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
   }
   
   try {
-    // For file analysis, we'd need to handle the file data
-    // This is a simplified example
-    const promptWithFile = `Analyze this file and answer: ${message}`;
+    console.log('Processing file analysis with context:', message);
+    // Handle file analysis request
+    let fileData = file.data;
+    let imageData;
     
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+    // If the file data is in base64 format, use it directly
+    if (typeof fileData === 'string' && fileData.startsWith('data:')) {
+      imageData = fileData;
+    } else {
+      // Convert to base64 if needed
+      imageData = `data:${file.type};base64,${fileData}`;
+    }
+    
+    const payload = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { text: message },
+            { 
+              inline_data: {
+                mime_type: file.type,
+                data: fileData.replace(/^data:image\/\w+;base64,/, '')
+              }
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+        maxOutputTokens: 2048,
+      }
+    };
+    
+    console.log('Sending payload to Gemini with image data');
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: promptWithFile }]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          topP: 0.8,
-          topK: 40,
-          maxOutputTokens: 2048,
-        },
-      }),
+      body: JSON.stringify(payload),
     });
     
     const data = await response.json();
+    
+    if (data.error) {
+      console.error('Gemini file analysis returned error:', data.error);
+      throw new Error(`Gemini API error: ${data.error.message || JSON.stringify(data.error)}`);
+    }
+    
     const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't analyze the file.";
     
     return new Response(
       JSON.stringify({ 
         response: aiResponse,
-        model: "gemini-2.0-flash"
+        model: "gemini-1.5-flash"
       }),
       { 
         headers: { 
@@ -210,6 +242,9 @@ async function handleOpenRouterSearch(message: string) {
   }
   
   try {
+    const searchQuery = `Find the latest articles and information about: ${message}. Provide a comprehensive summary of the most current information, with specific dates when possible, and organize the information in a clear structure with headings.`;
+    
+    console.log('Sending web search query to OpenRouter:', searchQuery);
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -223,9 +258,9 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a web search assistant. Provide comprehensive, up-to-date information with sources when possible.' 
+            content: 'You are a web search assistant. Provide comprehensive, up-to-date information with sources when possible. Format your response clearly with sections and include dates of information when available. Always start by providing the most recent information first.' 
           },
-          { role: 'user', content: message }
+          { role: 'user', content: searchQuery }
         ],
         temperature: 0.7,
         max_tokens: 1024,
@@ -233,9 +268,11 @@ async function handleOpenRouterSearch(message: string) {
     });
     
     const data = await response.json();
+    console.log('OpenRouter response status:', response.status);
     
     if (data.error) {
-      throw new Error(`OpenRouter API error: ${data.error.message}`);
+      console.error('OpenRouter returned error:', data.error);
+      throw new Error(`OpenRouter API error: ${data.error.message || JSON.stringify(data.error)}`);
     }
     
     const searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";

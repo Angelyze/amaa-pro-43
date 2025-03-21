@@ -31,6 +31,8 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     if (message.trim() && !disabled) {
       onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
       setMessage('');
+      // If we're in upload mode and sent a message, don't clear the uploaded file
+      // This allows the user to ask multiple questions about the same file
     }
   };
 
@@ -45,10 +47,13 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     if (disabled) return;
     
     const file = e.target.files?.[0];
-    if (file && onUploadFile) {
+    if (file) {
       setActiveOption('upload');
       setUploadedFile(file);
-      onUploadFile(file);
+      
+      // We don't automatically upload and process the file anymore
+      // Just save it for when the user asks a question about it
+      
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -182,7 +187,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             {disabled ? 'Sign in to continue chatting' :
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
-             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
+             uploadedFile ? `${uploadedFile.type.includes('image') ? 'Photo' : 'Document'} uploaded - ask a question about it${voiceInputActive ? ' using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>
       )}
