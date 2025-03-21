@@ -1,81 +1,66 @@
 
-import React, { useEffect, useState } from 'react';
-import { Button } from './ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+import { User, LogOut, CreditCard, Settings } from 'lucide-react';
+import { Avatar, AvatarFallback } from './ui/avatar';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
 } from './ui/dropdown-menu';
-import { User, LogOut, Moon, Sun } from 'lucide-react';
+import { Badge } from './ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 interface UserMenuProps {
-  onLogout: () => void;
+  onLogout: () => Promise<void>;
+  isPremium?: boolean;
 }
 
-const UserMenu: React.FC<UserMenuProps> = ({ onLogout }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    // On mount, check if user has a theme preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme');
-    
-    const shouldUseDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    
-    if (shouldUseDark) {
-      document.documentElement.classList.add('dark');
-      setIsDarkMode(true);
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    }
-    
-    setIsDarkMode(!isDarkMode);
-  };
-
+const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
+  const { user } = useAuth();
+  
+  const userInitials = user?.user_metadata?.full_name
+    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
+    : user?.email?.substring(0, 2).toUpperCase() || 'U';
+  
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="rounded-full w-9 h-9 hover:bg-teal/10 hover:text-teal transition-all"
-        >
-          <User size={18} />
-        </Button>
+      <DropdownMenuTrigger className="focus:outline-none">
+        <div className="flex items-center gap-2">
+          <Avatar className="h-9 w-9 border border-border">
+            <AvatarFallback className="bg-muted text-muted-foreground">
+              {userInitials}
+            </AvatarFallback>
+          </Avatar>
+          
+          {isPremium && (
+            <Badge className="bg-teal hover:bg-teal">Premium</Badge>
+          )}
+        </div>
       </DropdownMenuTrigger>
+      
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={toggleTheme}>
-          {isDarkMode ? (
-            <>
-              <Sun className="mr-2 h-4 w-4" />
-              <span>Light Theme</span>
-            </>
-          ) : (
-            <>
-              <Moon className="mr-2 h-4 w-4" />
-              <span>Dark Theme</span>
-            </>
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        
+        {isPremium ? (
+          <Link to="/subscribe">
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Manage Subscription</span>
+            </DropdownMenuItem>
+          </Link>
+        ) : (
+          <Link to="/subscribe">
+            <DropdownMenuItem>
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>Upgrade to Premium</span>
+            </DropdownMenuItem>
+          </Link>
+        )}
+        
         <DropdownMenuItem onClick={onLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>

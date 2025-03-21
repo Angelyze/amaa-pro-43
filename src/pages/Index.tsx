@@ -39,7 +39,7 @@ const Index = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const { user, signOut } = useAuth();
+  const { user, signOut, isPremium } = useAuth();
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,13 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       loadConversations();
-      setGuestQueriesCount(0);
+      
+      if (isPremium) {
+        setGuestQueriesCount(0);
+      } else {
+        const queryCount = getGuestQueryCount();
+        setGuestQueriesCount(queryCount);
+      }
       
       if (messages.length > 0 && !currentConversationId) {
         const guestMessages = getGuestMessages();
@@ -88,7 +94,7 @@ const Index = () => {
         );
       }
     }
-  }, [user, currentConversationId]);
+  }, [user, currentConversationId, isPremium]);
 
   useEffect(() => {
     if (currentConversationId && user) {
@@ -154,7 +160,11 @@ const Index = () => {
   
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
     try {
-      if (!user && getGuestQueryCount() >= MAX_GUEST_QUERIES) {
+      const userHasReachedLimit = !user ? 
+        getGuestQueryCount() >= MAX_GUEST_QUERIES : 
+        !isPremium && getGuestQueryCount() >= MAX_GUEST_QUERIES;
+      
+      if (userHasReachedLimit) {
         toast.error(
           "You've reached the maximum number of free queries. Subscribe for unlimited access!",
           { 
@@ -181,22 +191,25 @@ const Index = () => {
         const userMessage = await createMessage(conversationId, content, 'user');
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
-      } else {
-        const queryCount = getGuestQueryCount();
-        if (queryCount >= MAX_GUEST_QUERIES) {
-          toast.error(
-            "You've reached the maximum number of free queries. Subscribe for unlimited access!",
-            { 
-              duration: 8000,
-              action: {
-                label: "Subscribe",
-                onClick: () => window.location.href = "/subscribe"
-              }
-            }
-          );
-          return;
-        }
         
+        if (!isPremium) {
+          const newCount = incrementGuestQueryCount();
+          setGuestQueriesCount(newCount);
+          
+          if (newCount === MAX_GUEST_QUERIES) {
+            toast.warning(
+              "This is your last free query. Subscribe for unlimited access.",
+              { 
+                duration: 5000,
+                action: {
+                  label: "Subscribe",
+                  onClick: () => window.location.href = "/subscribe"
+                }
+              }
+            );
+          }
+        }
+      } else {
         const newCount = incrementGuestQueryCount();
         setGuestQueriesCount(newCount);
         
@@ -460,7 +473,7 @@ const Index = () => {
         <div className="relative">
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             {user ? (
-              <UserMenu onLogout={signOut} />
+              <UserMenu onLogout={signOut} isPremium={isPremium} />
             ) : (
               <>
                 <Link to="/auth">
@@ -494,7 +507,7 @@ const Index = () => {
                 onSendMessage={handleSendMessage}
                 onUploadFile={handleUploadFile}
                 onVoiceInput={handleVoiceInput}
-                disabled={!user && guestQueriesCount >= MAX_GUEST_QUERIES}
+                disabled={user ? (!isPremium && guestQueriesCount >= MAX_GUEST_QUERIES) : guestQueriesCount >= MAX_GUEST_QUERIES}
               />
             </div>
             
@@ -502,7 +515,17 @@ const Index = () => {
               <Info size={12} />
               <span>
                 {user ? (
-                  "You are a Premium user, using the unlimited capabilities of the app."
+                  isPremium ? (
+                    "You are a Premium user, using the unlimited capabilities of the app."
+                  ) : (
+                    <>
+                      Free users have 5 queries. 
+                      <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
+                        Go Premium
+                      </Link> 
+                      for unlimited access and much more.
+                    </>
+                  )
                 ) : (
                   <>
                     Free users have 5 queries. 

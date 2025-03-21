@@ -1,14 +1,73 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft, Loader2 } from 'lucide-react';
+import { createCheckoutSession, createBillingPortalSession } from '@/services/subscriptionService';
+import { toast } from 'sonner';
 
 const Subscribe = () => {
-  const { user } = useAuth();
+  const { user, isPremium, refreshSubscriptionStatus } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check for Stripe redirection success
+    const success = searchParams.get('success');
+    if (success === 'true') {
+      toast.success('Subscription successful! You now have premium access.');
+      refreshSubscriptionStatus();
+    }
+    
+    const canceled = searchParams.get('canceled');
+    if (canceled === 'true') {
+      toast.info('Subscription process was canceled.');
+    }
+  }, [searchParams, refreshSubscriptionStatus]);
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      toast.error('Please log in to subscribe');
+      navigate('/auth', { state: { returnTo: '/subscribe' } });
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const checkoutUrl = await createCheckoutSession(window.location.origin + '/subscribe');
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        throw new Error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      toast.error('Failed to start subscription process. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleManageSubscription = async () => {
+    setLoading(true);
+    try {
+      const portalUrl = await createBillingPortalSession(window.location.origin + '/subscribe');
+      if (portalUrl) {
+        window.location.href = portalUrl;
+      } else {
+        throw new Error('Failed to create billing portal session');
+      }
+    } catch (error) {
+      console.error('Error creating billing portal session:', error);
+      toast.error('Failed to open subscription management. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4">
@@ -52,7 +111,9 @@ const Subscribe = () => {
             </CardContent>
             <CardFooter>
               <Link to="/" className="w-full">
-                <Button variant="outline" className="w-full">Current Plan</Button>
+                <Button variant="outline" className="w-full">
+                  {isPremium ? "Downgrade to Free" : "Current Plan"}
+                </Button>
               </Link>
             </CardFooter>
           </Card>
@@ -92,9 +153,37 @@ const Subscribe = () => {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-teal hover:bg-teal-light">
-                Subscribe Now
-              </Button>
+              {isPremium ? (
+                <Button 
+                  className="w-full bg-teal hover:bg-teal-light"
+                  onClick={handleManageSubscription}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 size={16} className="mr-2 animate-spin" />
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    'Manage Subscription'
+                  )}
+                </Button>
+              ) : (
+                <Button 
+                  className="w-full bg-teal hover:bg-teal-light"
+                  onClick={handleSubscribe}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 size={16} className="mr-2 animate-spin" />
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    'Subscribe Now'
+                  )}
+                </Button>
+              )}
             </CardFooter>
           </Card>
         </div>
