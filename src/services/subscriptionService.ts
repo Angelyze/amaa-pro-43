@@ -65,12 +65,24 @@ export const createBillingPortalSession = async (returnUrl: string): Promise<str
   }
 };
 
+// Cache the subscription status to reduce frequent checks
+let cachedStatus: SubscriptionStatus | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
 export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
       return { active: false };
+    }
+    
+    // Use cached data if available and not expired
+    const now = Date.now();
+    if (cachedStatus && (now - cacheTimestamp < CACHE_DURATION)) {
+      console.log('Using cached subscription status');
+      return cachedStatus;
     }
     
     // First check if we have a subscription in the database
@@ -96,6 +108,11 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
     }
     
     console.log('Subscription status response:', data);
+    
+    // Cache the response
+    cachedStatus = data;
+    cacheTimestamp = now;
+    
     return data;
   } catch (error) {
     console.error('Error in getSubscriptionStatus:', error);
@@ -126,9 +143,18 @@ export const syncSubscriptions = async (): Promise<boolean> => {
       throw error;
     }
     
+    // Invalidate cache after syncing
+    cachedStatus = null;
+    
     return data.success || false;
   } catch (error) {
     console.error('Error in syncSubscriptions:', error);
     return false;
   }
+};
+
+// Manually invalidate the cache if needed (e.g., after a user action)
+export const invalidateSubscriptionCache = (): void => {
+  cachedStatus = null;
+  cacheTimestamp = 0;
 };

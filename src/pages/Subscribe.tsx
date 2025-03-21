@@ -9,7 +9,8 @@ import { Check, ArrowLeft, Loader2, RefreshCw } from 'lucide-react';
 import { 
   createCheckoutSession, 
   createBillingPortalSession,
-  syncSubscriptions
+  syncSubscriptions,
+  invalidateSubscriptionCache
 } from '@/services/subscriptionService';
 import { toast } from 'sonner';
 
@@ -25,6 +26,8 @@ const Subscribe = () => {
     const success = searchParams.get('success');
     if (success === 'true') {
       toast.success('Subscription successful! You now have premium access.');
+      // Invalidate cache and refresh status
+      invalidateSubscriptionCache();
       refreshSubscriptionStatus();
     }
     
@@ -32,7 +35,13 @@ const Subscribe = () => {
     if (canceled === 'true') {
       toast.info('Subscription process was canceled.');
     }
-  }, [searchParams, refreshSubscriptionStatus]);
+    
+    // Force a subscription status refresh when component mounts
+    if (user) {
+      invalidateSubscriptionCache();
+      refreshSubscriptionStatus();
+    }
+  }, [searchParams, refreshSubscriptionStatus, user]);
 
   const handleSubscribe = async () => {
     if (!user) {
@@ -79,7 +88,13 @@ const Subscribe = () => {
     
     setSyncing(true);
     try {
+      // First invalidate the cache
+      invalidateSubscriptionCache();
+      
+      // Then sync with Stripe
       await syncSubscriptions();
+      
+      // Then refresh the status
       await refreshSubscriptionStatus();
       toast.success('Subscription status synchronized successfully');
     } catch (error) {

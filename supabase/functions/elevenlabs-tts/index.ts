@@ -19,8 +19,13 @@ serve(async (req) => {
       throw new Error('Text is required');
     }
 
+    // Use the voice ID provided by the client or default to Bella
+    const selectedVoiceId = voiceId || '9BWtsMINqrJLrRacOk9x';
+    
+    console.log(`Converting text to speech using voice ID: ${selectedVoiceId}`);
+
     // Call ElevenLabs API
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}/stream`, {
       method: 'POST',
       headers: {
         'xi-api-key': Deno.env.get('ELEVENLABS_API_KEY') || '',

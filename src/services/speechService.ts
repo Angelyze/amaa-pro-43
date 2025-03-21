@@ -11,6 +11,21 @@ const getAudioElement = (): HTMLAudioElement => {
   return audioElement;
 };
 
+export interface VoiceOption {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export const VOICE_OPTIONS: VoiceOption[] = [
+  { id: '9BWtsMINqrJLrRacOk9x', name: 'Aria', description: 'Professional and clear female voice' },
+  { id: 'FQvqzw2iFxiZjYjsDPRV', name: 'Bella', description: 'Warm and friendly female voice' },
+  { id: 'OnwwZ5PIQZXYdAel2BOZ', name: 'Oliver', description: 'British male voice with a confident tone' },
+  { id: 'eXtrPNUwgqEIyjUzKzKA', name: 'Sam', description: 'Warm American male voice' },
+  { id: 'vXXfFz9YJ0iXQyPcJn5L', name: 'Emily', description: 'Warm and friendly female voice with American accent' },
+  { id: 'mTSvIrm2hmcnOvb21nW2', name: 'Ethan', description: 'Mature male voice with a deeper tone' },
+];
+
 export const textToSpeech = async (text: string): Promise<void> => {
   try {
     // Get voice settings from localStorage
@@ -71,4 +86,21 @@ export const stopSpeech = (): void => {
 export const isSpeechAvailable = (): boolean => {
   // Check if device supports speech synthesis
   return 'speechSynthesis' in window;
+};
+
+export const getCurrentVoice = (): VoiceOption => {
+  const voiceId = localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x'; // Default to Aria
+  return VOICE_OPTIONS.find(voice => voice.id === voiceId) || VOICE_OPTIONS[0];
+};
+
+export const setVoice = (voiceId: string): void => {
+  localStorage.setItem('tts_voice', voiceId);
+};
+
+export const getAutoReadSetting = (): boolean => {
+  return localStorage.getItem('tts_auto_read') === 'true';
+};
+
+export const setAutoReadSetting = (autoRead: boolean): void => {
+  localStorage.setItem('tts_auto_read', autoRead.toString());
 };
