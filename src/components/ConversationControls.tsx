@@ -24,6 +24,7 @@ interface ConversationControlsProps {
   onRenameConversation: (id: string, newTitle: string) => void;
   onDeleteConversation: (id: string) => void;
   currentMessages: any[];
+  savedConversations: SavedConversation[];
 }
 
 const ConversationControls: React.FC<ConversationControlsProps> = ({
@@ -32,23 +33,9 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
   onLoadConversation,
   onRenameConversation,
   onDeleteConversation,
-  currentMessages
+  currentMessages,
+  savedConversations
 }) => {
-  const [savedConversations, setSavedConversations] = useState<SavedConversation[]>([]);
-  
-  useEffect(() => {
-    // Load saved conversations from localStorage
-    const saved = localStorage.getItem('savedConversations');
-    if (saved) {
-      try {
-        const parsedConversations = JSON.parse(saved);
-        setSavedConversations(parsedConversations);
-      } catch (error) {
-        console.error('Error parsing saved conversations:', error);
-      }
-    }
-  }, []);
-  
   const handleRename = (id: string) => {
     const conversation = savedConversations.find(c => c.id === id);
     if (!conversation) return;
@@ -56,24 +43,12 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
     const newTitle = prompt('Enter new name:', conversation.title);
     if (newTitle && newTitle.trim() !== '') {
       onRenameConversation(id, newTitle.trim());
-      
-      // Update local state
-      const updated = savedConversations.map(c => 
-        c.id === id ? { ...c, title: newTitle.trim() } : c
-      );
-      setSavedConversations(updated);
-      localStorage.setItem('savedConversations', JSON.stringify(updated));
     }
   };
   
   const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this conversation?')) {
       onDeleteConversation(id);
-      
-      // Update local state
-      const updated = savedConversations.filter(c => c.id !== id);
-      setSavedConversations(updated);
-      localStorage.setItem('savedConversations', JSON.stringify(updated));
     }
   };
 
