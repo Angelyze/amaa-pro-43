@@ -1,4 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
 
 // Get the cached audio element or create a new one
 let audioElement: HTMLAudioElement | null = null;
@@ -14,21 +13,13 @@ export interface VoiceOption {
   id: string;
   name: string;
   description?: string;
-  type: 'elevenlabs' | 'browser';
 }
-
-// ElevenLabs voices
-export const ELEVENLABS_VOICES: VoiceOption[] = [
-  { id: '9BWtsMINqrJLrRacOk9x', name: 'Aria', description: 'Professional and clear female voice', type: 'elevenlabs' },
-  { id: 'FQvqzw2iFxiZjYjsDPRV', name: 'Bella', description: 'Warm and friendly female voice', type: 'elevenlabs' },
-  { id: 'OnwwZ5PIQZXYdAel2BOZ', name: 'Oliver', description: 'British male voice with a confident tone', type: 'elevenlabs' },
-  { id: 'eXtrPNUwgqEIyjUzKzKA', name: 'Sam', description: 'Warm American male voice', type: 'elevenlabs' },
-  { id: 'vXXfFz9YJ0iXQyPcJn5L', name: 'Emily', description: 'Warm and friendly female voice with American accent', type: 'elevenlabs' },
-  { id: 'mTSvIrm2hmcnOvb21nW2', name: 'Ethan', description: 'Mature male voice with a deeper tone', type: 'elevenlabs' },
-];
 
 // Initialize browser voices
 let BROWSER_VOICES: VoiceOption[] = [];
+
+// Default voice ID for Google UK English Male
+const DEFAULT_VOICE_ID = 'browser-0';
 
 // Function to get available browser voices
 export const getBrowserVoices = (): VoiceOption[] => {
@@ -36,12 +27,24 @@ export const getBrowserVoices = (): VoiceOption[] => {
   
   if ('speechSynthesis' in window) {
     const voices = window.speechSynthesis.getVoices();
+    // Find UK English Male voice and prioritize it
+    const ukMaleIndex = voices.findIndex(voice => 
+      voice.name.toLowerCase().includes('uk english male') || 
+      (voice.lang === 'en-GB' && voice.name.toLowerCase().includes('male'))
+    );
+    
+    // Reorder voices to put UK English Male first if found
+    if (ukMaleIndex > 0) {
+      const ukMaleVoice = voices[ukMaleIndex];
+      voices.splice(ukMaleIndex, 1);
+      voices.unshift(ukMaleVoice);
+    }
+    
     if (voices.length > 0) {
       BROWSER_VOICES = voices.map((voice, index) => ({
         id: `browser-${index}`,
         name: voice.name,
-        description: `${voice.lang} (Browser)`,
-        type: 'browser' as const,
+        description: voice.lang
       }));
     }
   }
@@ -49,9 +52,9 @@ export const getBrowserVoices = (): VoiceOption[] => {
   return BROWSER_VOICES;
 };
 
-// Combine all available voices
+// Get all available voices
 export const getAllVoices = (): VoiceOption[] => {
-  return [...ELEVENLABS_VOICES, ...getBrowserVoices()];
+  return getBrowserVoices();
 };
 
 // Initialize voice list
@@ -67,49 +70,16 @@ if ('speechSynthesis' in window) {
 export const textToSpeech = async (text: string): Promise<void> => {
   try {
     // Get voice settings from localStorage
-    const voiceId = localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x'; // Default to Aria
+    const voiceId = localStorage.getItem('tts_voice') || DEFAULT_VOICE_ID;
     
-    // Check if it's a browser voice
-    if (voiceId.startsWith('browser-')) {
-      return useBrowserTTS(text, voiceId);
-    }
-    
-    // Otherwise use ElevenLabs
-    return useElevenLabsTTS(text, voiceId);
+    // Use browser TTS
+    return useBrowserTTS(text, voiceId);
   } catch (error) {
     console.error('Text-to-speech error:', error);
     
-    // Fallback to browser's built-in TTS if ElevenLabs fails
+    // Fallback to default voice if selected voice fails
     return useBrowserTTS(text);
   }
-};
-
-const useElevenLabsTTS = async (text: string, voiceId: string): Promise<void> => {
-  console.log(`Using ElevenLabs TTS with voice ID: ${voiceId}`);
-  
-  // Call the Edge Function to convert text to speech
-  const { data, error } = await supabase.functions.invoke('elevenlabs-tts', {
-    body: { text, voiceId },
-  });
-  
-  if (error) {
-    console.error('Error calling elevenlabs-tts function:', error);
-    throw error;
-  }
-  
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to generate speech');
-  }
-  
-  // Convert base64 to audio and play
-  const audio = getAudioElement();
-  audio.src = `data:audio/mp3;base64,${data.audioContent}`;
-  
-  return new Promise((resolve, reject) => {
-    audio.onended = () => resolve();
-    audio.onerror = (e) => reject(e);
-    audio.play().catch(reject);
-  });
 };
 
 const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
@@ -136,12 +106,6 @@ const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
 };
 
 export const stopSpeech = (): void => {
-  // Stop ElevenLabs audio if playing
-  if (audioElement) {
-    audioElement.pause();
-    audioElement.currentTime = 0;
-  }
-  
   // Stop browser's speech synthesis if running
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -150,11 +114,11 @@ export const stopSpeech = (): void => {
 
 export const isSpeechAvailable = (): boolean => {
   // Check if device supports speech synthesis
-  return 'speechSynthesis' in window || true; // Always return true since we have ElevenLabs
+  return 'speechSynthesis' in window;
 };
 
 export const getCurrentVoice = (): VoiceOption => {
-  const voiceId = localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x'; // Default to Aria
+  const voiceId = localStorage.getItem('tts_voice') || DEFAULT_VOICE_ID;
   const allVoices = getAllVoices();
   return allVoices.find(voice => voice.id === voiceId) || allVoices[0];
 };

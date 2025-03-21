@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,11 +14,9 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
-import { Loader2, Upload, User } from 'lucide-react';
+import { Loader2, Upload } from 'lucide-react';
 import { 
-  getAllVoices, 
-  getBrowserVoices, 
-  ELEVENLABS_VOICES, 
+  getAllVoices,
   setVoice, 
   setAutoReadSetting,
   getCurrentVoice,
@@ -31,9 +28,11 @@ const Profile = () => {
   const { user, isPremium, refreshSubscriptionStatus } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
-  const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || '');
+  const [avatarUrl, setAvatarUrl] = useState<string>(() => {
+    return user?.user_metadata?.avatar_url || '';
+  });
   const [selectedVoice, setSelectedVoice] = useState(() => {
-    return localStorage.getItem('tts_voice') || '9BWtsMINqrJLrRacOk9x';
+    return localStorage.getItem('tts_voice') || 'browser-0';
   });
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
     return getAutoReadSetting();
@@ -64,11 +63,9 @@ const Profile = () => {
   
   // Initialize voices
   useEffect(() => {
-    // Get all available voices
     const voices = getAllVoices();
     setAvailableVoices(voices);
     
-    // Listen for voices changed (Chrome loads voices asynchronously)
     if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
       const handleVoicesChanged = () => {
         const updatedVoices = getAllVoices();
@@ -174,12 +171,6 @@ const Profile = () => {
       localStorage.setItem('theme', 'light');
     }
     toast.success('Theme updated successfully!');
-  };
-  
-  // Group voices by type
-  const groupedVoices = {
-    elevenlabs: availableVoices.filter(voice => voice.type === 'elevenlabs'),
-    browser: availableVoices.filter(voice => voice.type === 'browser')
   };
   
   return (
@@ -343,33 +334,15 @@ const Profile = () => {
                           <SelectValue placeholder="Select a voice" />
                         </SelectTrigger>
                         <SelectContent>
-                          {/* ElevenLabs Premium Voices */}
-                          <SelectItem value="elevenlabs-group" disabled>
-                            Premium Voices (ElevenLabs)
-                          </SelectItem>
-                          {groupedVoices.elevenlabs.map((voice) => (
+                          {availableVoices.map((voice) => (
                             <SelectItem key={voice.id} value={voice.id}>
                               {voice.name} - {voice.description}
                             </SelectItem>
                           ))}
-                          
-                          {/* Browser Voices */}
-                          {groupedVoices.browser.length > 0 && (
-                            <>
-                              <SelectItem value="browser-group" disabled>
-                                Browser Voices
-                              </SelectItem>
-                              {groupedVoices.browser.map((voice) => (
-                                <SelectItem key={voice.id} value={voice.id}>
-                                  {voice.name} - {voice.description}
-                                </SelectItem>
-                              ))}
-                            </>
-                          )}
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Choose from ElevenLabs high-quality voices or your device's built-in voices.
+                        Choose from available text-to-speech voices.
                       </p>
                     </div>
                     

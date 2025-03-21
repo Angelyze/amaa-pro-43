@@ -1,6 +1,6 @@
 
 import { LogOut, Moon, Settings, Sun } from 'lucide-react';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -27,6 +27,7 @@ interface UserMenuProps {
 const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const { user } = useAuth();
   const [theme, setTheme] = useState<string>('light');
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
   
   useEffect(() => {
     // Get the current theme from localStorage or system preference
@@ -35,6 +36,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     
     setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
   }, []);
+  
+  useEffect(() => {
+    // Update avatar URL whenever user changes
+    if (user?.user_metadata?.avatar_url) {
+      setAvatarUrl(user.user_metadata.avatar_url);
+    }
+  }, [user]);
   
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
@@ -57,6 +65,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
+            {avatarUrl ? (
+              <AvatarImage src={avatarUrl} alt="Profile" />
+            ) : null}
             <AvatarFallback className="bg-muted text-muted-foreground">
               {userInitials}
             </AvatarFallback>
