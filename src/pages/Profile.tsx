@@ -58,7 +58,11 @@ const Profile = () => {
     if (user) {
       setFullName(user.user_metadata?.full_name || '');
       console.log('Profile component - User metadata avatar URL:', user.user_metadata?.avatar_url);
-      setAvatarUrl(user.user_metadata?.avatar_url || '');
+      
+      if (user.user_metadata?.avatar_url) {
+        const timestamp = new Date().getTime();
+        setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
+      }
     }
   }, [user]);
   
@@ -128,7 +132,8 @@ const Profile = () => {
         throw updateError;
       }
       
-      setAvatarUrl(data.publicUrl);
+      const timestamp = new Date().getTime();
+      setAvatarUrl(`${data.publicUrl}?t=${timestamp}`);
       
       toast.success('Avatar updated successfully!');
       

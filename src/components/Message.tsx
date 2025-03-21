@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -49,9 +50,8 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     setIsSpeaking(true);
     
     try {
-      // When we call textToSpeech, we want to pass in our ReactMarkdown rendered content
-      // But we can't extract that easily, so we'll let the textToSpeech function 
-      // handle the markdown parsing
+      console.log('Starting TTS with content length:', content.length);
+      // The textToSpeech function will handle markdown parsing
       await textToSpeech(content);
     } catch (error) {
       console.error('Error during text-to-speech:', error);

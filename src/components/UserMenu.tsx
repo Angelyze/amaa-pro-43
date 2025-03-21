@@ -37,12 +37,22 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
   }, []);
   
+  // Force re-fetch avatar whenever user or user metadata changes
   useEffect(() => {
-    // Update avatar URL whenever user changes
-    if (user?.user_metadata?.avatar_url) {
-      console.log('Setting avatar URL from user metadata:', user.user_metadata.avatar_url);
-      setAvatarUrl(user.user_metadata.avatar_url);
-    }
+    const fetchAvatar = () => {
+      if (user?.user_metadata?.avatar_url) {
+        console.log('UserMenu - Setting avatar URL from user metadata:', user.user_metadata.avatar_url);
+        const timestamp = new Date().getTime(); // Add cache-busting timestamp
+        setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
+      }
+    };
+    
+    fetchAvatar();
+    
+    // Refresh avatar every 5 seconds while component is mounted (helps with delayed updates)
+    const intervalId = setInterval(fetchAvatar, 5000);
+    
+    return () => clearInterval(intervalId);
   }, [user]);
   
   const userInitials = user?.user_metadata?.full_name

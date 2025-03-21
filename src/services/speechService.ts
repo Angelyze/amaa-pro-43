@@ -93,12 +93,13 @@ const cleanMarkdown = (text: string): string => {
 export const textToSpeech = async (text: string): Promise<void> => {
   // Clean markdown formatting for better text-to-speech
   const cleanedText = cleanMarkdown(text);
+  console.log('TTS Processing text length:', cleanedText.length, 'characters');
   
   try {
     // Get voice settings from localStorage
     const voiceId = localStorage.getItem('tts_voice') || DEFAULT_VOICE_ID;
     
-    // Use browser TTS
+    // Use browser TTS with chunking for long text
     return useBrowserTTS(cleanedText, voiceId);
   } catch (error) {
     console.error('Text-to-speech error:', error);
@@ -108,23 +109,107 @@ export const textToSpeech = async (text: string): Promise<void> => {
   }
 };
 
+// Break long text into smaller chunks to avoid browser TTS limits
+const chunkText = (text: string, maxLength = 200): string[] => {
+  if (text.length <= maxLength) return [text];
+  
+  const chunks: string[] = [];
+  let currentChunk = '';
+  
+  // Split by sentence boundaries
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  
+  for (const sentence of sentences) {
+    if (currentChunk.length + sentence.length <= maxLength) {
+      currentChunk += (currentChunk ? ' ' : '') + sentence;
+    } else {
+      if (currentChunk) chunks.push(currentChunk);
+      // If a single sentence is longer than maxLength, we'll need to split it
+      if (sentence.length > maxLength) {
+        // Split by commas, semicolons, or colons
+        const parts = sentence.split(/(?<=[,;:])\s+/);
+        
+        currentChunk = '';
+        for (const part of parts) {
+          if (currentChunk.length + part.length <= maxLength) {
+            currentChunk += (currentChunk ? ' ' : '') + part;
+          } else {
+            if (currentChunk) chunks.push(currentChunk);
+            // If still too long, just add it as its own chunk
+            if (part.length > maxLength) {
+              // Split into words if needed
+              const words = part.split(/\s+/);
+              currentChunk = '';
+              
+              for (const word of words) {
+                if (currentChunk.length + word.length + 1 <= maxLength) {
+                  currentChunk += (currentChunk ? ' ' : '') + word;
+                } else {
+                  if (currentChunk) chunks.push(currentChunk);
+                  currentChunk = word;
+                }
+              }
+            } else {
+              currentChunk = part;
+            }
+          }
+        }
+      } else {
+        currentChunk = sentence;
+      }
+    }
+  }
+  
+  if (currentChunk) chunks.push(currentChunk);
+  return chunks;
+};
+
 const useBrowserTTS = async (text: string, voiceId?: string): Promise<void> => {
   return new Promise((resolve) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
       
-      // If a specific browser voice is requested
-      if (voiceId && voiceId.startsWith('browser-')) {
-        const voiceIndex = parseInt(voiceId.split('-')[1], 10);
-        const voices = window.speechSynthesis.getVoices();
-        if (voices.length > voiceIndex) {
-          utterance.voice = voices[voiceIndex];
+      // Split text into manageable chunks to avoid browser TTS limitations
+      const textChunks = chunkText(text);
+      console.log(`Speaking ${textChunks.length} chunks of text`);
+      
+      let currentChunk = 0;
+      
+      // Function to speak the next chunk
+      const speakNextChunk = () => {
+        if (currentChunk >= textChunks.length) {
+          resolve();
+          return;
         }
-      }
+        
+        const utterance = new SpeechSynthesisUtterance(textChunks[currentChunk]);
+        
+        // If a specific browser voice is requested
+        if (voiceId && voiceId.startsWith('browser-')) {
+          const voiceIndex = parseInt(voiceId.split('-')[1], 10);
+          const voices = window.speechSynthesis.getVoices();
+          if (voices.length > voiceIndex) {
+            utterance.voice = voices[voiceIndex];
+          }
+        }
+        
+        utterance.onend = () => {
+          currentChunk++;
+          speakNextChunk();
+        };
+        
+        utterance.onerror = (event) => {
+          console.error('TTS error:', event);
+          currentChunk++;
+          speakNextChunk();
+        };
+        
+        window.speechSynthesis.speak(utterance);
+      };
       
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve(); // Resolve anyway on error to prevent hanging
-      window.speechSynthesis.speak(utterance);
+      // Start speaking chunks
+      speakNextChunk();
     } else {
       resolve(); // No TTS available
     }
