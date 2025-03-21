@@ -57,11 +57,11 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       setFullName(user.user_metadata?.full_name || '');
+      console.log('Profile component - User metadata avatar URL:', user.user_metadata?.avatar_url);
       setAvatarUrl(user.user_metadata?.avatar_url || '');
     }
   }, [user]);
   
-  // Initialize voices
   useEffect(() => {
     const voices = getAllVoices();
     setAvailableVoices(voices);
@@ -80,7 +80,6 @@ const Profile = () => {
     }
   }, []);
   
-  // Update voice settings
   useEffect(() => {
     const currentVoice = getCurrentVoice();
     setSelectedVoice(currentVoice.id);
@@ -336,7 +335,7 @@ const Profile = () => {
                         <SelectContent>
                           {availableVoices.map((voice) => (
                             <SelectItem key={voice.id} value={voice.id}>
-                              {voice.name} - {voice.description}
+                              {voice.name} {voice.description ? `- ${voice.description}` : ''}
                             </SelectItem>
                           ))}
                         </SelectContent>

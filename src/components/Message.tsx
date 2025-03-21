@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Copy, Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -50,13 +49,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     setIsSpeaking(true);
     
     try {
-      // Use our improved TTS service
+      // When we call textToSpeech, we want to pass in our ReactMarkdown rendered content
+      // But we can't extract that easily, so we'll let the textToSpeech function 
+      // handle the markdown parsing
       await textToSpeech(content);
     } catch (error) {
       console.error('Error during text-to-speech:', error);
       toast.error('Failed to read text. Falling back to browser voices.');
-      
-      // We don't need an explicit fallback here as it's handled in the textToSpeech function
     } finally {
       setIsSpeaking(false);
     }

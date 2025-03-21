@@ -40,6 +40,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   useEffect(() => {
     // Update avatar URL whenever user changes
     if (user?.user_metadata?.avatar_url) {
+      console.log('Setting avatar URL from user metadata:', user.user_metadata.avatar_url);
       setAvatarUrl(user.user_metadata.avatar_url);
     }
   }, [user]);
