@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
-import { Button } from './ui/button';
+import { Switch } from './ui/switch';
 
 const ThemeToggle: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -32,14 +32,16 @@ const ThemeToggle: React.FC = () => {
   };
 
   return (
-    <Button 
-      variant="ghost"
-      size="icon"
-      onClick={toggleTheme}
-      className="rounded-full w-9 h-9 text-muted-foreground hover:text-teal hover:bg-teal/10"
-    >
-      {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-    </Button>
+    <div className="flex items-center justify-between w-full">
+      <div className="flex items-center gap-2">
+        {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
+        <span className="text-sm">{isDarkMode ? 'Dark' : 'Light'} Mode</span>
+      </div>
+      <Switch 
+        checked={isDarkMode}
+        onCheckedChange={toggleTheme}
+      />
+    </div>
   );
 };
 

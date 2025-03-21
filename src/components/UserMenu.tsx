@@ -1,5 +1,5 @@
 
-import { User, LogOut, CreditCard, Settings, RefreshCw } from 'lucide-react';
+import { User, LogOut, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -12,8 +12,7 @@ import {
 import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import ThemeToggle from './ThemeToggle';
 
 interface UserMenuProps {
   onLogout: () => Promise<void>;
@@ -21,27 +20,11 @@ interface UserMenuProps {
 }
 
 const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
-  const { user, refreshSubscriptionStatus } = useAuth();
-  const [refreshing, setRefreshing] = useState(false);
+  const { user } = useAuth();
   
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
-  
-  const handleRefreshSubscription = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    setRefreshing(true);
-    try {
-      await refreshSubscriptionStatus();
-      toast.success('Subscription status refreshed');
-    } catch (error) {
-      toast.error('Failed to refresh subscription status');
-    } finally {
-      setRefreshing(false);
-    }
-  };
   
   return (
     <DropdownMenu>
@@ -63,28 +46,24 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem 
-          className="flex items-center justify-between cursor-pointer"
-          onClick={handleRefreshSubscription}
-          disabled={refreshing}
-        >
-          <span>Refresh Status</span>
-          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-        </DropdownMenuItem>
+        {isPremium && (
+          <div className="px-2 py-1.5">
+            <ThemeToggle />
+          </div>
+        )}
+        
+        <Link to="/profile">
+          <DropdownMenuItem>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Profile Settings</span>
+          </DropdownMenuItem>
+        </Link>
         
         <DropdownMenuSeparator />
         
-        {isPremium ? (
+        {!isPremium && (
           <Link to="/subscribe">
             <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Manage Subscription</span>
-            </DropdownMenuItem>
-          </Link>
-        ) : (
-          <Link to="/subscribe">
-            <DropdownMenuItem>
-              <CreditCard className="mr-2 h-4 w-4" />
               <span>Upgrade to Premium</span>
             </DropdownMenuItem>
           </Link>
