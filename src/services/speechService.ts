@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 
 export interface VoiceOption {
@@ -9,6 +10,8 @@ export interface VoiceOption {
 
 let currentUtterance: SpeechSynthesisUtterance | null = null;
 let isPlaying = false;
+let playQueue: string[] = [];
+let currentChunkIndex = 0;
 
 // Get all available browser voices and ElevenLabs voices
 export const getAllVoices = (): VoiceOption[] => {
@@ -68,6 +71,8 @@ export const stopSpeech = (): void => {
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
     isPlaying = false;
+    playQueue = [];
+    currentChunkIndex = 0;
     
     if (currentUtterance) {
       // Remove event listeners
@@ -158,19 +163,19 @@ export const textToSpeech = async (text: string): Promise<void> => {
       }
       
       // Split text into manageable chunks
-      const textChunks = splitTextIntoChunks(text);
-      console.log('Speaking', textChunks.length, 'chunks of text');
+      playQueue = splitTextIntoChunks(text, 150);
+      currentChunkIndex = 0;
       
-      let currentChunkIndex = 0;
+      console.log('Speaking', playQueue.length, 'chunks of text');
       
       const speakNextChunk = () => {
-        if (currentChunkIndex >= textChunks.length || !isPlaying) {
+        if (currentChunkIndex >= playQueue.length || !isPlaying) {
           isPlaying = false;
           resolve();
           return;
         }
         
-        const utterance = new SpeechSynthesisUtterance(textChunks[currentChunkIndex]);
+        const utterance = new SpeechSynthesisUtterance(playQueue[currentChunkIndex]);
         currentUtterance = utterance;
         
         // Set voice and other properties
@@ -181,8 +186,15 @@ export const textToSpeech = async (text: string): Promise<void> => {
         
         // Handle events
         utterance.onend = () => {
+          console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
           currentChunkIndex++;
-          speakNextChunk();
+          
+          // Add a small delay between chunks for more natural speech
+          setTimeout(() => {
+            if (isPlaying) {
+              speakNextChunk();
+            }
+          }, 50);
         };
         
         utterance.onerror = (event) => {
@@ -196,11 +208,11 @@ export const textToSpeech = async (text: string): Promise<void> => {
         const safetyTimeout = setTimeout(() => {
           if (isPlaying && currentUtterance === utterance) {
             console.log('Safety timeout triggered for chunk', currentChunkIndex);
-            utterance.onend = null;
+            window.speechSynthesis.cancel(); // Cancel the current utterance
             currentChunkIndex++;
             speakNextChunk();
           }
-        }, 10000); // 10 seconds should be enough for most chunks
+        }, 5000); // 5 seconds should be enough for most chunks
         
         // Clear the timeout when the utterance naturally ends
         const originalOnEnd = utterance.onend;

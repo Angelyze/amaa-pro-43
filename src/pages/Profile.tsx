@@ -164,10 +164,8 @@ const Profile = () => {
       
       setAvatarUrl(urlWithTimestamp);
       
-      // Force refresh of Auth context to update user object
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      // Force a quick refresh of the Auth context to update user object
+      refreshSubscriptionStatus();
       
       toast.success('Avatar updated successfully!');
       

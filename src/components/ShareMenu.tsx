@@ -98,7 +98,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({ content, onClose }) => {
   return (
     <div 
       ref={menuRef}
-      className="absolute bottom-10 right-0 bg-background border border-border rounded-lg shadow-lg p-3 z-50"
+      className="absolute top-10 right-0 bg-background border border-border rounded-lg shadow-lg p-3 z-50"
     >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>

@@ -214,6 +214,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
             >
               <Share2 size={14} />
             </Button>
+            
+            {isShareMenuOpen && (
+              <ShareMenu 
+                content={content} 
+                onClose={() => setIsShareMenuOpen(false)} 
+              />
+            )}
           </div>
         )}
         
@@ -234,13 +241,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
           <div className="mt-2 text-xs text-muted-foreground">
             {formatTimestamp()}
           </div>
-        )}
-        
-        {isShareMenuOpen && (
-          <ShareMenu 
-            content={content} 
-            onClose={() => setIsShareMenuOpen(false)} 
-          />
         )}
       </div>
     </div>
