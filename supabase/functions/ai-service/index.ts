@@ -294,6 +294,11 @@ async function handleOpenRouterSearch(message: string) {
       8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
       9. Add a timestamp of when this search was conducted
       10. Include the date when each source was published/updated
+      11. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic, including:
+          - Full article title as a link to the source
+          - Author name (if available)
+          - Publication date in format: YYYY-MM-DD
+          - Brief 1-2 sentence description of the article
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
@@ -315,7 +320,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL).' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, author names, and publication dates.' 
           },
           { role: 'user', content: searchQuery }
         ],

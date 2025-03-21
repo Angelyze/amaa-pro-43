@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { ArrowUp, LogIn, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
@@ -11,7 +10,7 @@ interface HeaderProps {
   onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
   onScrollToTop: () => void;
   isLoggedIn: boolean;
-  onLogin: () => void;
+  onLogin: () => Promise<void>;
 }
 
 const Header: React.FC<HeaderProps> = ({ 

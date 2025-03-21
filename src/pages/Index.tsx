@@ -80,19 +80,6 @@ const Index = () => {
           { duration: 5000 }
         );
       }
-      
-      if (queryCount >= MAX_GUEST_QUERIES) {
-        toast.error(
-          "You've reached the maximum number of free queries. Subscribe for unlimited access!",
-          { 
-            duration: 8000,
-            action: {
-              label: "Subscribe",
-              onClick: () => window.location.href = "/subscribe"
-            }
-          }
-        );
-      }
     }
   }, [user, currentConversationId, isPremium]);
 
@@ -239,9 +226,9 @@ const Index = () => {
         
         const response = await supabase.functions.invoke('ai-service', {
           body: { message: content, type },
-          headers: {
-            'Authorization': `Bearer ${session?.access_token || ''}`
-          }
+          headers: session ? {
+            'Authorization': `Bearer ${session.access_token}`
+          } : {}
         });
         
         if (response.error) {
@@ -307,9 +294,9 @@ const Index = () => {
             },
             photoContext: question
           },
-          headers: {
-            'Authorization': `Bearer ${session?.access_token || ''}`
-          }
+          headers: session ? {
+            'Authorization': `Bearer ${session.access_token}`
+          } : {}
         });
         
         if (response.error) {
@@ -507,7 +494,7 @@ const Index = () => {
                 onSendMessage={handleSendMessage}
                 onUploadFile={handleUploadFile}
                 onVoiceInput={handleVoiceInput}
-                disabled={user ? (!isPremium && guestQueriesCount >= MAX_GUEST_QUERIES) : guestQueriesCount >= MAX_GUEST_QUERIES}
+                disabled={guestQueriesCount >= MAX_GUEST_QUERIES && !isPremium}
               />
             </div>
             
