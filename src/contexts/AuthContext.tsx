@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (user) {
       try {
         console.log('Refreshing subscription status for user:', user.id);
+        console.log('User email:', user.email);
         
         // First try to sync with Stripe
         await syncSubscriptions();
@@ -47,6 +48,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         setSubscriptionStatus(status);
         setIsPremium(status.active);
+        
+        if (status.active) {
+          console.log('User is premium with subscription:', status);
+        } else {
+          console.log('User is not premium:', status);
+        }
       } catch (error) {
         console.error("Failed to refresh subscription status:", error);
       }

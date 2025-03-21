@@ -373,8 +373,25 @@ async function handleSubscriptionChange(subscription) {
       userId = subscription.metadata?.userId;
     }
     
+    // If we still don't have a userId, try to find by email
+    if (!userId && customer.email) {
+      // Look up user by email in Supabase
+      const { data: users, error: userError } = await supabase
+        .from('auth.users')
+        .select('id')
+        .eq('email', customer.email)
+        .limit(1);
+      
+      if (userError) {
+        console.error('Error finding user by email:', userError);
+      } else if (users && users.length > 0) {
+        userId = users[0].id;
+        console.log(`Found user ${userId} by email ${customer.email}`);
+      }
+    }
+    
     if (!userId) {
-      console.error('No userId found in metadata for subscription:', subscription.id);
+      console.error('No userId found for subscription:', subscription.id);
       return;
     }
     
@@ -408,9 +425,25 @@ async function syncUserSubscriptions(userId) {
   console.log(`Syncing subscriptions for user ${userId}`);
   
   try {
+    // Get user email from Supabase
+    const { data: userData, error: userError } = await supabase
+      .from('auth.users')
+      .select('email')
+      .eq('id', userId)
+      .single();
+    
+    if (userError) {
+      console.error('Error getting user email:', userError);
+      // Continue with the rest of the sync process
+    }
+    
+    const userEmail = userData?.email;
+    console.log(`User email for ${userId} is ${userEmail}`);
+    
     // List all subscriptions in Stripe that have this user ID in metadata
     const stripeSubscriptions = await stripe.subscriptions.list({
-      expand: ['data.customer', 'data.items.data.price']
+      expand: ['data.customer', 'data.items.data.price'],
+      status: 'all'
     });
     
     let userSubscriptions = [];
@@ -422,7 +455,7 @@ async function syncUserSubscriptions(userId) {
       }
     }
     
-    // If none found, try looking in customer metadata
+    // If none found by metadata, try looking in customer metadata
     if (userSubscriptions.length === 0) {
       const customers = await stripe.customers.list({
         limit: 100
@@ -437,6 +470,29 @@ async function syncUserSubscriptions(userId) {
           
           userSubscriptions = customerSubscriptions.data;
           break;
+        }
+      }
+    }
+    
+    // If we have a user email, try to find subscriptions by email
+    if (userSubscriptions.length === 0 && userEmail) {
+      const customers = await stripe.customers.list({
+        email: userEmail,
+        limit: 1
+      });
+      
+      if (customers.data.length > 0) {
+        const customer = customers.data[0];
+        console.log(`Found Stripe customer for email ${userEmail}: ${customer.id}`);
+        
+        // Get subscriptions for this customer
+        const customerSubscriptions = await stripe.subscriptions.list({
+          customer: customer.id
+        });
+        
+        if (customerSubscriptions.data.length > 0) {
+          console.log(`Found ${customerSubscriptions.data.length} subscriptions for customer ${customer.id}`);
+          userSubscriptions = customerSubscriptions.data;
         }
       }
     }
@@ -472,3 +528,4 @@ async function syncUserSubscriptions(userId) {
     throw error;
   }
 }
+

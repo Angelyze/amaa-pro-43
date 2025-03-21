@@ -75,6 +75,10 @@ export const getSubscriptionStatus = async (): Promise<SubscriptionStatus> => {
     
     // First check if we have a subscription in the database
     console.log('Checking for subscription in database for user:', user.id);
+    console.log('User email:', user.email);
+    
+    // Try to sync subscriptions first
+    await syncSubscriptions();
     
     // Check with Stripe via our edge function
     const { data, error } = await supabase.functions.invoke('stripe', {
@@ -104,6 +108,8 @@ export const syncSubscriptions = async (): Promise<boolean> => {
     if (!user) {
       return false;
     }
+    
+    console.log('Syncing subscriptions for user:', user.id, 'with email:', user.email);
     
     const { data, error } = await supabase.functions.invoke('stripe', {
       body: { 
