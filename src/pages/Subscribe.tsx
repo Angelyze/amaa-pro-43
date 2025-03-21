@@ -11,18 +11,20 @@ const Subscribe = () => {
   const { user } = useAuth();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-8">
+    <div className="flex min-h-screen flex-col items-center justify-start px-4 py-16">
       <div className="absolute inset-0 -z-10 background-pattern"></div>
       
       <div className="w-full max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
-          <Link to="/">
+        <div className="flex flex-col items-center mb-8">
+          <Link to="/" className="self-start mb-6">
             <Button variant="ghost" className="flex items-center gap-2">
               <ArrowLeft size={16} />
               <span>Back to App</span>
             </Button>
           </Link>
-          <Logo />
+          <div className="w-full flex justify-center">
+            <Logo />
+          </div>
         </div>
         
         <h1 className="text-3xl font-bold text-center mb-8">Upgrade to Premium</h1>
@@ -102,8 +104,14 @@ const Subscribe = () => {
           </Card>
         </div>
         
-        <div className="text-center text-sm text-muted-foreground mt-8">
-          By subscribing, you agree to our Terms of Service and Privacy Policy.
+        <div className="mt-12 flex justify-center gap-6 text-sm text-muted-foreground">
+          <Link to="/about" className="hover:text-teal transition-colors">About</Link>
+          <Link to="/terms" className="hover:text-teal transition-colors">Terms</Link>
+          <Link to="/privacy" className="hover:text-teal transition-colors">Privacy</Link>
+        </div>
+        
+        <div className="text-center text-sm text-muted-foreground mt-4">
+          By subscribing, you agree to our <Link to="/terms" className="text-teal hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-teal hover:underline">Privacy Policy</Link>.
         </div>
       </div>
     </div>
