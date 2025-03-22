@@ -1,4 +1,3 @@
-
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -48,11 +47,11 @@
 
   /* Theme-specific icon buttons */
   .dark-red .amaa-icon-button {
-    @apply hover:text-[#ff3131];
+    @apply hover:text-[#ff5757];
   }
   
   .dark-green .amaa-icon-button {
-    @apply hover:text-[#7ed957];
+    @apply hover:text-[#00bf63];
   }
   
   .dark-yellow .amaa-icon-button {
@@ -60,7 +59,7 @@
   }
   
   .dark-purple .amaa-icon-button {
-    @apply hover:text-[#8c52ff];
+    @apply hover:text-[#5e17eb];
   }
 
   .message-bubble {
@@ -73,11 +72,11 @@
 
   /* Theme-specific user messages */
   .dark-red .user-message {
-    @apply bg-[#ff3131]/10 border-[#ff3131]/10;
+    @apply bg-[#ff5757]/10 border-[#ff5757]/10;
   }
   
   .dark-green .user-message {
-    @apply bg-[#7ed957]/10 border-[#7ed957]/10;
+    @apply bg-[#00bf63]/10 border-[#00bf63]/10;
   }
   
   .dark-yellow .user-message {
@@ -85,7 +84,7 @@
   }
   
   .dark-purple .user-message {
-    @apply bg-[#8c52ff]/10 border-[#8c52ff]/10;
+    @apply bg-[#5e17eb]/10 border-[#5e17eb]/10;
   }
 
   .assistant-message {
@@ -105,7 +104,7 @@
   }
   
   .footer-link {
-    @apply text-foreground hover:text-primary transition-colors;
+    @apply text-foreground hover:text-[#0097b2] transition-colors;
   }
 
   /* Theme-specific footer links */
