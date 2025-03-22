@@ -20,4 +20,27 @@ export const initializeTheme = () => {
   }
 };
 
+// Function to change theme programmatically
+export const changeTheme = (theme: string) => {
+  // Remove all theme classes first
+  document.documentElement.classList.remove('dark', 'dark-red');
+  
+  // Apply the selected theme
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  } else if (theme === 'dark-red') {
+    document.documentElement.classList.add('dark-red');
+    localStorage.setItem('theme', 'dark-red');
+  } else {
+    localStorage.setItem('theme', 'light');
+  }
+  
+  // Dispatch a storage event for other components to detect the change
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'theme',
+    newValue: theme
+  }));
+};
+
 export default initializeTheme;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,6 +21,7 @@ import {
   getAutoReadSetting,
   VoiceOption 
 } from '@/services/speechService';
+import { changeTheme } from '@/themes/main';
 
 const Profile = () => {
   const { user, isPremium, refreshSubscriptionStatus } = useAuth();
@@ -75,7 +75,6 @@ const Profile = () => {
   }, [isPremium]);
   
   const uploadAvatar = async () => {
-    // Currently not functioning properly - display notification
     toast.error("Avatar upload is currently unavailable. Using default avatar.");
   };
   
@@ -95,27 +94,7 @@ const Profile = () => {
   
   const handleThemeChange = (theme: string) => {
     setSelectedTheme(theme);
-    
-    // Remove all theme classes first
-    document.documentElement.classList.remove('dark', 'dark-red');
-    
-    // Apply the selected theme
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else if (theme === 'dark-red') {
-      document.documentElement.classList.add('dark-red');
-      localStorage.setItem('theme', 'dark-red');
-    } else {
-      localStorage.setItem('theme', 'light');
-    }
-    
-    // Dispatch a storage event for other components to detect the change
-    window.dispatchEvent(new StorageEvent('storage', {
-      key: 'theme',
-      newValue: theme
-    }));
-    
+    changeTheme(theme);
     toast.success('Theme updated successfully!');
   };
   

@@ -18,6 +18,8 @@ import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { changeTheme } from '@/themes/main';
+import { toast } from 'sonner';
 
 interface UserMenuProps {
   onLogout: () => Promise<void>;
@@ -51,28 +53,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
-  const changeTheme = (value: string) => {
+  const handleThemeChange = (value: string) => {
     setTheme(value);
-    
-    // Remove all theme classes first
-    document.documentElement.classList.remove('dark', 'dark-red');
-    
-    // Apply the selected theme
-    if (value === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else if (value === 'dark-red') {
-      document.documentElement.classList.add('dark-red');
-      localStorage.setItem('theme', 'dark-red');
-    } else {
-      localStorage.setItem('theme', 'light');
-    }
-    
-    // Dispatch a storage event for other components to detect the change
-    window.dispatchEvent(new StorageEvent('storage', {
-      key: 'theme',
-      newValue: value
-    }));
+    changeTheme(value); // Use the centralized theme function
   };
   
   return (
@@ -115,7 +98,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             <span>Theme</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={theme} onValueChange={changeTheme}>
+            <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark">Default Dark</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
