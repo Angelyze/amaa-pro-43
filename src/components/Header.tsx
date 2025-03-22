@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { ArrowUp, LogIn, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
@@ -31,19 +32,22 @@ const Header: React.FC<HeaderProps> = ({
     <header 
       className={`header-container fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
     >
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="w-32 flex items-center">
+      <div className="container mx-auto px-4 py-3 flex items-center">
+        {/* Logo - adjusted to be immediately left of the chat box with minimal width */}
+        <div className="flex items-center mr-4">
           <img src="/AMAApp.png" alt="AMAA" className="h-8" />
         </div>
         
-        <div className="flex-1 flex justify-center px-4">
+        {/* Chat box - centered with flex-1 */}
+        <div className="flex-1 flex justify-center">
           <AMAAChatBox 
             onSendMessage={onSendMessage}
             isMinimized
           />
         </div>
         
-        <div className="w-32 flex items-center justify-end gap-2">
+        {/* Right side controls - adjusted to be immediately right of the chat box */}
+        <div className="flex items-center ml-4 gap-2">
           {isLoggedIn ? (
             <UserMenu onLogout={onLogin} />
           ) : (
