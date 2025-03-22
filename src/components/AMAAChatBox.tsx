@@ -262,7 +262,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           onBlur={handleBlur}
           placeholder={getPlaceholder()}
           disabled={disabled}
-          className={`amaa-input bg-white dark:bg-background/60 dark-red:bg-primary/10 dark-green:bg-primary/10 dark-yellow:bg-primary/10 dark-purple:bg-primary/10 pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
         />
         
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
