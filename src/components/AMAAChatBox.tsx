@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Upload, Globe, Bot } from 'lucide-react';
 import { Button } from './ui/button';
@@ -34,7 +33,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const lastSpeechTimeRef = useRef<number>(Date.now());
   
   useEffect(() => {
-    // Initialize speech recognition if available
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
@@ -49,7 +47,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         
         setMessage(transcript);
         
-        // Reset silence timer on new speech
         if (transcript !== lastTranscriptRef.current) {
           lastSpeechTimeRef.current = Date.now();
           clearSilenceTimer();
@@ -74,7 +71,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         setVoiceInputActive(false);
       };
       
-      // When recognition ends, restart it if voiceInputActive is still true
       recognitionRef.current.onend = () => {
         if (voiceInputActive) {
           try {
@@ -96,21 +92,18 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     };
   }, []);
   
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       clearSilenceTimer();
     };
   }, []);
   
-  // Turn off voice input when disabled changes
   useEffect(() => {
     if (disabled && voiceInputActive) {
       stopVoiceInput();
     }
   }, [disabled]);
   
-  // Set up a recurring check for silence while voice input is active
   useEffect(() => {
     let silenceCheckInterval: number | null = null;
     
@@ -121,7 +114,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
         
         console.log('Silence check: time since last speech', timeSinceLastSpeech);
         
-        // If there has been silence for 1.5 seconds and we have a message
         if (timeSinceLastSpeech > 1500 && message.trim()) {
           console.log('Silence detected for 1.5s, sending message:', message);
           handleSend();
@@ -147,7 +139,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   const startSilenceTimer = () => {
     clearSilenceTimer();
     
-    // Auto-send message after 1.5 seconds of silence if there's a message
     silenceTimerRef.current = window.setTimeout(() => {
       console.log('Silence timer triggered. Message:', message.trim() ? 'Yes' : 'No', 'Voice active:', voiceInputActive);
       if (message.trim() && voiceInputActive) {
@@ -159,11 +150,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
-      // Always send the message with the current active option type
       onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
       setMessage('');
       
-      // Turn off voice input after sending a message
       if (voiceInputActive) {
         stopVoiceInput();
       }
@@ -185,7 +174,6 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       setActiveOption('upload');
       setUploadedFile(file);
       
-      // Just notify that we've uploaded the file, but don't process it yet
       if (onUploadFile) {
         onUploadFile(file);
       }
@@ -274,7 +262,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           onBlur={handleBlur}
           placeholder={getPlaceholder()}
           disabled={disabled}
-          className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`amaa-input bg-white dark:bg-background/60 dark-red:bg-primary/10 dark-green:bg-primary/10 dark-yellow:bg-primary/10 dark-purple:bg-primary/10 pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
         />
         
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
