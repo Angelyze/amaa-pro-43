@@ -20,7 +20,7 @@ const About = () => {
             </div>
           </div>
           
-          <div className="bg-white/70 dark:bg-black/50 backdrop-blur-lg rounded-2xl p-8 shadow-glass">
+          <div className="bg-background/80 dark:bg-background/30 backdrop-blur-lg rounded-2xl p-8 shadow-glass">
             <h1 className="text-3xl font-bold mb-6 text-center">About AMAA</h1>
             
             <div className="space-y-6">
