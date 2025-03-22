@@ -29,10 +29,23 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const [theme, setTheme] = useState<string>('light');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   
+  // Ensure theme is synchronized on component mount and when localStorage changes
   useEffect(() => {
     // Get the current theme from localStorage
     const savedTheme = localStorage.getItem('theme');
     setTheme(savedTheme || 'light');
+    
+    // Listen for changes to the theme in localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        setTheme(e.newValue || 'light');
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   // Set avatar URL whenever user changes
@@ -66,6 +79,12 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+    
+    // Dispatch a storage event for other components to detect the change
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'theme',
+      newValue: value
+    }));
   };
   
   return (

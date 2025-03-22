@@ -60,6 +60,20 @@ const Profile = () => {
     }
   }, [user]);
   
+  // Listen for theme changes from other components
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        setSelectedTheme(e.newValue || 'light');
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+  
   // Initialize TTS voices
   useEffect(() => {
     const voices = getAllVoices();
@@ -159,6 +173,13 @@ const Profile = () => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+    
+    // Dispatch a storage event for other components to detect the change
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'theme',
+      newValue: theme
+    }));
+    
     toast.success('Theme updated successfully!');
   };
   
