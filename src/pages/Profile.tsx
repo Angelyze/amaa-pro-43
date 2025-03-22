@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -184,6 +185,8 @@ const Profile = () => {
                       <SelectItem value="light">Default</SelectItem>
                       <SelectItem value="dark">Default Dark</SelectItem>
                       <SelectItem value="dark-red">Dark Red</SelectItem>
+                      <SelectItem value="dark-green">Dark Green</SelectItem>
+                      <SelectItem value="dark-yellow">Dark Yellow</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

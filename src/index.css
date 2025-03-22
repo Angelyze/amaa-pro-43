@@ -5,6 +5,7 @@
 /* Import theme CSS files */
 @import url('./themes/darkRed.css');
 @import url('./themes/darkGreen.css');
+@import url('./themes/darkYellow.css');
 
 @layer base {
   :root {

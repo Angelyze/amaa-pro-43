@@ -16,6 +16,7 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
     { id: 'dark', name: 'Default Dark' },
     { id: 'dark-red', name: 'Dark Red' },
     { id: 'dark-green', name: 'Dark Green' },
+    { id: 'dark-yellow', name: 'Dark Yellow' },
   ];
 
   const handleThemeChange = (theme: string) => {

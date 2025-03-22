@@ -7,7 +7,7 @@ export const initializeTheme = () => {
   const savedTheme = localStorage.getItem('theme');
   
   // Remove any existing theme classes
-  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green');
+  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
@@ -15,6 +15,8 @@ export const initializeTheme = () => {
     document.documentElement.classList.add('dark-red');
   } else if (savedTheme === 'dark-green') {
     document.documentElement.classList.add('dark-green');
+  } else if (savedTheme === 'dark-yellow') {
+    document.documentElement.classList.add('dark-yellow');
   } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     // If no saved theme but user prefers dark mode
     document.documentElement.classList.add('dark');
@@ -25,7 +27,7 @@ export const initializeTheme = () => {
 // Function to change theme programmatically
 export const changeTheme = (theme: string) => {
   // Remove all theme classes first
-  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green');
+  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
   // Apply the selected theme
   if (theme === 'dark') {
@@ -37,6 +39,9 @@ export const changeTheme = (theme: string) => {
   } else if (theme === 'dark-green') {
     document.documentElement.classList.add('dark-green');
     localStorage.setItem('theme', 'dark-green');
+  } else if (theme === 'dark-yellow') {
+    document.documentElement.classList.add('dark-yellow');
+    localStorage.setItem('theme', 'dark-yellow');
   } else {
     localStorage.setItem('theme', 'light');
   }
