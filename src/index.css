@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('./themes/darkRed.css');
+
 @layer base {
   :root {
     --background: 0 0% 98%; /* #FAFAFA */

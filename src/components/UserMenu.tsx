@@ -1,5 +1,5 @@
 
-import { LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { LogOut, Moon, Settings, Sun, Flame } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -72,11 +72,17 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const changeTheme = (value: string) => {
     setTheme(value);
     
+    // Remove all theme classes first
+    document.documentElement.classList.remove('dark', 'dark-red');
+    
+    // Apply the selected theme
     if (value === 'dark') {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
+    } else if (value === 'dark-red') {
+      document.documentElement.classList.add('dark-red');
+      localStorage.setItem('theme', 'dark-red');
     } else {
-      document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
     
@@ -125,6 +131,8 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           <DropdownMenuSubTrigger>
             {theme === 'dark' ? (
               <Moon className="mr-2 h-4 w-4" />
+            ) : theme === 'dark-red' ? (
+              <Flame className="mr-2 h-4 w-4 text-red-500" />
             ) : (
               <Sun className="mr-2 h-4 w-4" />
             )}
@@ -134,6 +142,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             <DropdownMenuRadioGroup value={theme} onValueChange={changeTheme}>
               <DropdownMenuRadioItem value="light">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark">Default Dark</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>

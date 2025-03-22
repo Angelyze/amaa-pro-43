@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,6 +38,7 @@ const Profile = () => {
   const themes = [
     { id: 'light', name: 'Default' },
     { id: 'dark', name: 'Default Dark' },
+    { id: 'dark-red', name: 'Dark Red' },
   ];
   
   const userInitials = user?.user_metadata?.full_name
@@ -166,11 +166,18 @@ const Profile = () => {
 
   const handleThemeChange = (theme: string) => {
     setSelectedTheme(theme);
+    
+    // Remove all theme classes first
+    document.documentElement.classList.remove('dark', 'dark-red');
+    
+    // Apply the selected theme
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
+    } else if (theme === 'dark-red') {
+      document.documentElement.classList.add('dark-red');
+      localStorage.setItem('theme', 'dark-red');
     } else {
-      document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
     
