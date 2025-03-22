@@ -25,46 +25,57 @@
   overflow-wrap: break-word;
 }
 
-.markdown-content a {
+/* Theme-specific link colors */
+.markdown-content a,
+.theme-link {
   color: var(--teal, #0097b2);
   text-decoration: underline;
   transition: all 0.2s ease;
 }
 
-.markdown-content a:hover {
+.markdown-content a:hover,
+.theme-link:hover {
   color: var(--teal-light, #00afd1);
 }
 
 /* Apply theme-specific link colors */
-.dark-red .markdown-content a {
+.dark-red .markdown-content a,
+.dark-red .theme-link {
   color: #ff3131;
 }
 
-.dark-red .markdown-content a:hover {
+.dark-red .markdown-content a:hover,
+.dark-red .theme-link:hover {
   color: #ff5c5c;
 }
 
-.dark-green .markdown-content a {
+.dark-green .markdown-content a,
+.dark-green .theme-link {
   color: #7ed957;
 }
 
-.dark-green .markdown-content a:hover {
+.dark-green .markdown-content a:hover,
+.dark-green .theme-link:hover {
   color: #9ae67c;
 }
 
-.dark-yellow .markdown-content a {
+.dark-yellow .markdown-content a,
+.dark-yellow .theme-link {
   color: #ffde59;
 }
 
-.dark-yellow .markdown-content a:hover {
+.dark-yellow .markdown-content a:hover,
+.dark-yellow .theme-link:hover {
   color: #ffe67c;
 }
 
-.dark-purple .markdown-content a {
+.dark-purple .markdown-content a,
+.dark-purple .theme-link {
   color: #8c52ff;
 }
 
-.dark-purple .markdown-content a:hover {
+.dark-purple .markdown-content a:hover,
+.dark-purple .theme-link:hover {
   color: #a67dff;
 }
 

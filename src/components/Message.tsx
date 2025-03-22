@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -109,7 +108,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-teal hover:text-teal-light underline"
+        className="underline theme-link"
       >
         {children}
       </a>
@@ -136,7 +135,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
       <li className="mb-1">{children}</li>
     ),
     blockquote: ({ children }: { children: React.ReactNode }) => (
-      <blockquote className="border-l-4 border-teal pl-4 italic my-4">{children}</blockquote>
+      <blockquote className="border-l-4 border-primary pl-4 italic my-4">{children}</blockquote>
     ),
     code: ({ node, inline, className, children, ...props }: any) => {
       if (inline) {
