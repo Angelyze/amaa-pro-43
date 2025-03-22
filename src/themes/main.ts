@@ -9,15 +9,12 @@ export const initializeTheme = () => {
   // Remove any existing theme classes
   document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else if (savedTheme === 'dark-red') {
-    document.documentElement.classList.add('dark-red');
-  } else if (savedTheme === 'dark-green') {
-    document.documentElement.classList.add('dark-green');
-  } else if (savedTheme === 'dark-yellow') {
-    document.documentElement.classList.add('dark-yellow');
-  } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  // Apply the saved theme
+  if (savedTheme) {
+    if (savedTheme !== 'light') {
+      document.documentElement.classList.add(savedTheme);
+    }
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     // If no saved theme but user prefers dark mode
     document.documentElement.classList.add('dark');
     localStorage.setItem('theme', 'dark');
@@ -30,21 +27,12 @@ export const changeTheme = (theme: string) => {
   document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
   // Apply the selected theme
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  } else if (theme === 'dark-red') {
-    document.documentElement.classList.add('dark-red');
-    localStorage.setItem('theme', 'dark-red');
-  } else if (theme === 'dark-green') {
-    document.documentElement.classList.add('dark-green');
-    localStorage.setItem('theme', 'dark-green');
-  } else if (theme === 'dark-yellow') {
-    document.documentElement.classList.add('dark-yellow');
-    localStorage.setItem('theme', 'dark-yellow');
-  } else {
-    localStorage.setItem('theme', 'light');
+  if (theme !== 'light') {
+    document.documentElement.classList.add(theme);
   }
+  
+  // Always save the theme selection
+  localStorage.setItem('theme', theme);
   
   // Dispatch a storage event for other components to detect the change
   window.dispatchEvent(new StorageEvent('storage', {

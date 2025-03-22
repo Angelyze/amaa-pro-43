@@ -94,6 +94,8 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <Flame className="mr-2 h-4 w-4 text-red-500" />
             ) : theme === 'dark-green' ? (
               <Leaf className="mr-2 h-4 w-4 text-green-500" />
+            ) : theme === 'dark-yellow' ? (
+              <Sun className="mr-2 h-4 w-4 text-yellow-500" />
             ) : (
               <Sun className="mr-2 h-4 w-4" />
             )}
@@ -105,6 +107,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <DropdownMenuRadioItem value="dark">Default Dark</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-green">Dark Green</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-yellow">Dark Yellow</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
