@@ -13,7 +13,6 @@ export const initializeTheme = () => {
     document.documentElement.classList.add('dark');
   } else if (savedTheme === 'dark-red') {
     document.documentElement.classList.add('dark-red');
-    console.log('Setting dark-red theme');
   } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     // If no saved theme but user prefers dark mode
     document.documentElement.classList.add('dark');

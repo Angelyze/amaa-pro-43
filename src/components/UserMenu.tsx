@@ -52,10 +52,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   useEffect(() => {
     if (user?.user_metadata?.avatar_url) {
       try {
-        // Add a unique timestamp to prevent browser caching
+        // Force browser to reload the image by adding timestamp
         const timestamp = Date.now();
-        const url = `${user.user_metadata.avatar_url}?t=${timestamp}`;
-        setAvatarUrl(url);
+        setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
       } catch (err) {
         console.error('Error processing avatar URL:', err);
         setAvatarUrl('');
