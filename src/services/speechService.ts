@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 export interface VoiceOption {
@@ -19,16 +18,32 @@ export const getAllVoices = (): VoiceOption[] => {
   
   // Add browser voices if available
   if ('speechSynthesis' in window) {
-    const browserVoices = window.speechSynthesis.getVoices();
+    let browserVoices = window.speechSynthesis.getVoices();
     
-    browserVoices.forEach((voice, index) => {
-      voices.push({
-        id: `browser-${index}`,
-        name: voice.name,
-        lang: voice.lang,
-        description: 'Browser'
+    // If no voices are available yet, try getting them again
+    if (browserVoices.length === 0) {
+      // Set some default voices to ensure the dropdown is not empty
+      voices.push(
+        { id: 'browser-default-uk', name: 'Google UK English Male', lang: 'en-GB', description: 'Default UK Male' },
+        { id: 'browser-default-us', name: 'Google US English', lang: 'en-US', description: 'Default US' },
+        { id: 'browser-default-female', name: 'Google UK English Female', lang: 'en-GB', description: 'Default UK Female' }
+      );
+    } else {
+      browserVoices.forEach((voice, index) => {
+        voices.push({
+          id: `browser-${index}`,
+          name: voice.name,
+          lang: voice.lang,
+          description: 'Browser'
+        });
       });
-    });
+    }
+  } else {
+    // Fallback if speech synthesis is not available
+    voices.push(
+      { id: 'browser-default-uk', name: 'Google UK English Male', lang: 'en-GB', description: 'Default UK Male' },
+      { id: 'browser-default-us', name: 'Google US English', lang: 'en-US', description: 'Default US' }
+    );
   }
   
   // Sort voices alphabetically
@@ -37,7 +52,7 @@ export const getAllVoices = (): VoiceOption[] => {
 
 // Get the current voice setting from localStorage or use default
 export const getCurrentVoice = (): VoiceOption => {
-  const savedVoiceId = localStorage.getItem('tts_voice') || 'browser-0';
+  const savedVoiceId = localStorage.getItem('tts_voice') || 'browser-default-uk';
   const voices = getAllVoices();
   
   const foundVoice = voices.find(v => v.id === savedVoiceId);
@@ -45,8 +60,8 @@ export const getCurrentVoice = (): VoiceOption => {
   if (foundVoice) {
     return foundVoice;
   } else {
-    // Return the first available voice as fallback
-    return voices.length > 0 ? voices[0] : { id: 'browser-0', name: 'Default' };
+    // Return UK male voice as fallback
+    return { id: 'browser-default-uk', name: 'Google UK English Male', lang: 'en-GB', description: 'Default UK Male' };
   }
 };
 
@@ -146,20 +161,42 @@ export const textToSpeech = async (text: string): Promise<void> => {
       let voice: SpeechSynthesisVoice | null = null;
       
       if (voiceId.startsWith('browser-')) {
-        const voiceIndex = parseInt(voiceId.substring(8), 10);
-        const voices = window.speechSynthesis.getVoices();
-        
-        if (voices.length > 0 && voiceIndex < voices.length) {
-          voice = voices[voiceIndex];
+        // Handle default voices
+        if (voiceId === 'browser-default-uk') {
+          // Try to find Google UK English Male
+          const voices = window.speechSynthesis.getVoices();
+          voice = voices.find(v => v.name.includes('UK English Male')) || voices[0];
+        } else if (voiceId === 'browser-default-us') {
+          // Try to find Google US English
+          const voices = window.speechSynthesis.getVoices();
+          voice = voices.find(v => v.name.includes('US English')) || voices[0];
+        } else if (voiceId === 'browser-default-female') {
+          // Try to find Google UK English Female
+          const voices = window.speechSynthesis.getVoices();
+          voice = voices.find(v => v.name.includes('UK English Female')) || voices[0];
         } else {
-          // Fallback to the first available voice
-          voice = voices[0];
+          // Regular voice by index
+          const voiceIndex = parseInt(voiceId.substring(8), 10);
+          const voices = window.speechSynthesis.getVoices();
+          
+          if (voices.length > 0 && voiceIndex < voices.length) {
+            voice = voices[voiceIndex];
+          } else {
+            // Fallback to the first available voice
+            voice = voices[0];
+          }
         }
       }
       
       if (!voice) {
-        reject(new Error('Selected voice not available'));
-        return;
+        // If still no voice found, use the first available one
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          voice = voices[0];
+        } else {
+          reject(new Error('No voice available'));
+          return;
+        }
       }
       
       // Split text into manageable chunks with larger size (250 characters)

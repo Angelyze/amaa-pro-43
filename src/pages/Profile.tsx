@@ -33,10 +33,28 @@ const Profile = () => {
   });
   const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
   
-  // Initialize voice options
+  // Initialize voice options - ensure we get the voices after they've loaded
   useEffect(() => {
+    // Initial load
     const voices = getAllVoices();
     setAvailableVoices(voices);
+    
+    // Set up event listener for when voices are loaded
+    if ('speechSynthesis' in window) {
+      const handleVoicesChanged = () => {
+        const updatedVoices = getAllVoices();
+        setAvailableVoices(updatedVoices);
+      };
+      
+      window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+      
+      // Force load voices
+      window.speechSynthesis.getVoices();
+      
+      return () => {
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
   }, []);
   
   // Listen for theme changes from other components
