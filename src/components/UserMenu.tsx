@@ -28,14 +28,12 @@ interface UserMenuProps {
 
 const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const { user } = useAuth();
-  const [theme, setTheme] = useState<string>('light');
+  const [theme, setTheme] = useState<string>(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
   
   // Ensure theme is synchronized on component mount and when localStorage changes
   useEffect(() => {
-    // Get the current theme from localStorage
-    const savedTheme = localStorage.getItem('theme');
-    setTheme(savedTheme || 'light');
-    
     // Listen for changes to the theme in localStorage and custom event
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'theme') {
@@ -44,7 +42,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     };
     
     const handleThemeChange = () => {
-      setTheme(localStorage.getItem('theme') || 'light');
+      const newTheme = localStorage.getItem('theme') || 'light';
+      console.log(`UserMenu detected theme change: ${newTheme}`);
+      setTheme(newTheme);
     };
     
     window.addEventListener('storage', handleStorageChange);
@@ -61,8 +61,9 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
   const handleThemeChange = (value: string) => {
+    console.log(`UserMenu changing theme to: ${value}`);
     setTheme(value);
-    changeTheme(value); // Use the centralized theme function
+    changeTheme(value);
     toast.success(`Theme changed to ${value}`);
   };
   

@@ -31,6 +31,13 @@ export const initializeTheme = () => {
 export const changeTheme = (theme: string) => {
   console.log(`[Theme] Changing to: ${theme}`);
   
+  // First verify the theme is valid
+  const validThemes = ['light', 'dark', 'dark-red', 'dark-green', 'dark-yellow'];
+  if (!validThemes.includes(theme)) {
+    console.error(`[Theme] Invalid theme: ${theme}`);
+    return;
+  }
+  
   // Remove all theme classes first
   document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
@@ -45,14 +52,6 @@ export const changeTheme = (theme: string) => {
   
   // Dispatch a custom event for other components to detect the theme change
   window.dispatchEvent(new Event('themechange'));
-  
-  // Also dispatch a storage event for components listening to storage changes
-  window.dispatchEvent(new StorageEvent('storage', {
-    key: 'theme',
-    newValue: theme,
-    oldValue: localStorage.getItem('theme'),
-    storageArea: localStorage
-  }));
 };
 
 export default initializeTheme;

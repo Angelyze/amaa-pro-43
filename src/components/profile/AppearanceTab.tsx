@@ -20,9 +20,10 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
   ];
 
   const handleThemeChange = (theme: string) => {
+    console.log(`AppearanceTab changing theme to: ${theme}`);
     setSelectedTheme(theme);
-    changeTheme(theme); // Use centralized theme function to manage all theme changes
-    toast.success('Theme updated successfully!');
+    changeTheme(theme);
+    toast.success(`Theme updated to ${theme}!`);
   };
 
   return (

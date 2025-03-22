@@ -4,3 +4,8 @@
 @import url('./styles/utilities.css');
 @import url('./styles/components.css');
 @import url('./styles/animations.css');
+
+/* Make sure theme CSS files are directly imported here */
+@import url('./styles/darkRed.css');
+@import url('./styles/darkGreen.css');
+@import url('./styles/darkYellow.css');
