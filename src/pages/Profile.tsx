@@ -3,14 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/ui/layout';
-import { 
-  getAllVoices,
-  setVoice, 
-  setAutoReadSetting,
-  getCurrentVoice,
-  getAutoReadSetting,
-  VoiceOption 
-} from '@/services/speechService';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -22,19 +14,25 @@ import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { 
+  getAllVoices,
+  setVoice, 
+  setAutoReadSetting,
+  getCurrentVoice,
+  getAutoReadSetting,
+  VoiceOption 
+} from '@/services/speechService';
 
 const Profile = () => {
   const { user, isPremium, refreshSubscriptionStatus } = useAuth();
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '');
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
-  const [uploading, setUploading] = useState(false);
   
   // Theme settings
   const [selectedTheme, setSelectedTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
   
-  // Voice settings
+  // Voice settings (for premium users)
   const [selectedVoice, setSelectedVoice] = useState(getCurrentVoice().id);
   const [autoReadMessages, setAutoReadMessages] = useState(getAutoReadSetting());
   const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
@@ -42,16 +40,6 @@ const Profile = () => {
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
-  
-  // Load avatar URL
-  useEffect(() => {
-    if (user?.user_metadata?.avatar_url) {
-      const timestamp = Date.now(); // Add timestamp to prevent caching
-      setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
-    } else {
-      setAvatarUrl('');
-    }
-  }, [user]);
   
   // Listen for theme changes from other components
   useEffect(() => {
@@ -67,73 +55,28 @@ const Profile = () => {
     };
   }, []);
   
-  // Initialize TTS voices
+  // Initialize TTS voices for premium users
   useEffect(() => {
-    const voices = getAllVoices();
-    setAvailableVoices(voices);
-    
-    if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
-      const handleVoicesChanged = () => {
-        setAvailableVoices(getAllVoices());
-      };
+    if (isPremium) {
+      const voices = getAllVoices();
+      setAvailableVoices(voices);
       
-      window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
-      return () => {
-        window.speechSynthesis.onvoiceschanged = null;
-      };
-    }
-  }, []);
-  
-  const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      setUploading(true);
-      
-      if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
-      }
-      
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user!.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('amaa')
-        .upload(filePath, file, {
-          upsert: true,
-          contentType: file.type,
-        });
+      if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+        const handleVoicesChanged = () => {
+          setAvailableVoices(getAllVoices());
+        };
         
-      if (uploadError) {
-        throw uploadError;
+        window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+        return () => {
+          window.speechSynthesis.onvoiceschanged = null;
+        };
       }
-      
-      const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
-      
-      if (!data || !data.publicUrl) {
-        throw new Error('Failed to get public URL for uploaded file');
-      }
-      
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { avatar_url: data.publicUrl }
-      });
-      
-      if (updateError) {
-        throw updateError;
-      }
-      
-      // Force update the avatar URL with timestamp to prevent caching
-      setAvatarUrl(`${data.publicUrl}?t=${Date.now()}`);
-      
-      await refreshSubscriptionStatus();
-      
-      toast.success('Avatar updated successfully!');
-      
-    } catch (error: any) {
-      toast.error(`Error uploading avatar: ${error.message}`);
-    } finally {
-      setUploading(false);
     }
+  }, [isPremium]);
+  
+  const uploadAvatar = async () => {
+    // Currently not functioning properly - display notification
+    toast.error("Avatar upload is currently unavailable. Using default avatar.");
   };
   
   const updateProfile = async () => {
@@ -187,164 +130,155 @@ const Profile = () => {
       <div className="container py-10 max-w-4xl">
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>Update your profile information and avatar.</CardDescription>
+            <CardTitle>Profile Settings</CardTitle>
+            <CardDescription>Update your profile information and preferences in one place.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-                <Avatar className="w-24 h-24 border border-border">
-                  {avatarUrl ? (
-                    <AvatarImage src={avatarUrl} alt="Profile" />
-                  ) : (
-                    <>
-                      <AvatarImage src="/ppp.png" alt="Profile" />
-                      <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
-                    </>
-                  )}
-                </Avatar>
-                
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="avatar" className="cursor-pointer">
-                    <div className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 transition-colors text-secondary-foreground px-4 py-2 rounded-md">
-                      <Upload size={16} />
-                      <span>{uploading ? 'Uploading...' : 'Upload Avatar'}</span>
-                      {uploading && <Loader2 className="animate-spin ml-2" size={16} />}
-                    </div>
-                    <input 
-                      id="avatar" 
-                      type="file" 
-                      accept="image/*" 
-                      className="hidden" 
-                      onChange={uploadAvatar}
-                      disabled={uploading}
-                    />
-                  </Label>
-                  <p className="text-xs text-muted-foreground">Recommended: Square JPG, PNG. Max 4MB.</p>
+              {/* Profile Information */}
+              <div>
+                <h3 className="text-lg font-medium mb-4">Profile Information</h3>
+                <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                  <Avatar className="w-24 h-24 border border-border">
+                    <AvatarImage src="/ppp.png" alt="Profile" />
+                    <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="avatar" className="cursor-pointer">
+                      <div className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 transition-colors text-secondary-foreground px-4 py-2 rounded-md">
+                        <Upload size={16} />
+                        <span>Upload Avatar</span>
+                      </div>
+                      <input 
+                        id="avatar" 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={() => uploadAvatar()}
+                      />
+                    </Label>
+                    <p className="text-xs text-muted-foreground">Recommended: Square JPG, PNG. Max 4MB.</p>
+                  </div>
                 </div>
+                
+                <Separator className="my-6" />
+                
+                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input 
+                    id="fullName" 
+                    value={fullName} 
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="mt-1.5"
+                  />
+                </div>
+                
+                <div className="mt-4">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email" 
+                    value={user?.email || ''} 
+                    disabled 
+                    className="mt-1.5 bg-muted/30"
+                  />
+                </div>
+                
+                <Button onClick={updateProfile} className="mt-4">Update Profile</Button>
               </div>
               
               <Separator />
               
+              {/* Appearance Settings */}
               <div>
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input 
-                  id="fullName" 
-                  value={fullName} 
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1.5"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input 
-                  id="email" 
-                  value={user?.email || ''} 
-                  disabled 
-                  className="mt-1.5 bg-muted/30"
-                />
-              </div>
-              
-              <Button onClick={updateProfile}>Update Profile</Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Theme Settings */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>Customize the appearance of the application.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div>
-              <Label htmlFor="theme-selection">Theme</Label>
-              <Select
-                value={selectedTheme}
-                onValueChange={handleThemeChange}
-              >
-                <SelectTrigger id="theme-selection" className="mt-1.5">
-                  <SelectValue placeholder="Select a theme" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Default</SelectItem>
-                  <SelectItem value="dark">Default Dark</SelectItem>
-                  <SelectItem value="dark-red">Dark Red</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Subscription Details (Premium only) */}
-        {isPremium && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Subscription Details</CardTitle>
-              <CardDescription>Manage your subscription and billing.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="p-4 border rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Status</span>
-                  <Badge className="bg-teal hover:bg-teal">Premium</Badge>
-                </div>
-                
-                <div className="flex justify-between items-center mt-2">
-                  <span className="font-medium">Next billing</span>
-                  <span>{new Date().toLocaleDateString()}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-        
-        {/* Voice Settings (Premium only) */}
-        {isPremium && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Voice Settings</CardTitle>
-              <CardDescription>Customize your text-to-speech experience.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
+                <h3 className="text-lg font-medium mb-4">Appearance</h3>
                 <div>
-                  <Label htmlFor="voice-selection">Select Voice</Label>
+                  <Label htmlFor="theme-selection">Theme</Label>
                   <Select
-                    value={selectedVoice}
-                    onValueChange={setSelectedVoice}
+                    value={selectedTheme}
+                    onValueChange={handleThemeChange}
                   >
-                    <SelectTrigger id="voice-selection" className="mt-1.5">
-                      <SelectValue placeholder="Select a voice" />
+                    <SelectTrigger id="theme-selection" className="mt-1.5">
+                      <SelectValue placeholder="Select a theme" />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableVoices.map((voice) => (
-                        <SelectItem key={voice.id} value={voice.id}>
-                          {voice.name} {voice.description ? `- ${voice.description}` : ''}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="light">Default</SelectItem>
+                      <SelectItem value="dark">Default Dark</SelectItem>
+                      <SelectItem value="dark-red">Dark Red</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="auto-read">Auto-read messages</Label>
-                    <p className="text-xs text-muted-foreground">Automatically read incoming messages</p>
-                  </div>
-                  <Switch
-                    id="auto-read"
-                    checked={autoReadMessages}
-                    onCheckedChange={setAutoReadMessages}
-                  />
-                </div>
-                
-                <Button onClick={saveVoiceSettings}>Save Voice Settings</Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
+              
+              {/* Subscription Details (Premium only) */}
+              {isPremium && (
+                <>
+                  <Separator />
+                  
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Subscription</h3>
+                    <div className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Status</span>
+                        <Badge className="bg-teal hover:bg-teal">Premium</Badge>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="font-medium">Next billing</span>
+                        <span>{new Date().toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {/* Voice Settings (Premium only) */}
+              {isPremium && (
+                <>
+                  <Separator />
+                  
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Voice Settings</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="voice-selection">Select Voice</Label>
+                        <Select
+                          value={selectedVoice}
+                          onValueChange={setSelectedVoice}
+                        >
+                          <SelectTrigger id="voice-selection" className="mt-1.5">
+                            <SelectValue placeholder="Select a voice" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableVoices.map((voice) => (
+                              <SelectItem key={voice.id} value={voice.id}>
+                                {voice.name} {voice.description ? `- ${voice.description}` : ''}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label htmlFor="auto-read">Auto-read messages</Label>
+                          <p className="text-xs text-muted-foreground">Automatically read incoming messages</p>
+                        </div>
+                        <Switch
+                          id="auto-read"
+                          checked={autoReadMessages}
+                          onCheckedChange={setAutoReadMessages}
+                        />
+                      </div>
+                      
+                      <Button onClick={saveVoiceSettings}>Save Voice Settings</Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );

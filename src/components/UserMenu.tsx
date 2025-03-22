@@ -27,7 +27,6 @@ interface UserMenuProps {
 const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const { user } = useAuth();
   const [theme, setTheme] = useState<string>('light');
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
   
   // Ensure theme is synchronized on component mount and when localStorage changes
   useEffect(() => {
@@ -47,22 +46,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
-  
-  // Set avatar URL whenever user changes
-  useEffect(() => {
-    if (user?.user_metadata?.avatar_url) {
-      try {
-        // Force browser to reload the image by adding timestamp
-        const timestamp = Date.now();
-        setAvatarUrl(`${user.user_metadata.avatar_url}?t=${timestamp}`);
-      } catch (err) {
-        console.error('Error processing avatar URL:', err);
-        setAvatarUrl('');
-      }
-    } else {
-      setAvatarUrl('');
-    }
-  }, [user]);
   
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
@@ -97,16 +80,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
-            {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="Profile" />
-            ) : (
-              <>
-                <AvatarImage src="/ppp.png" alt="Profile" />
-                <AvatarFallback className="bg-muted text-muted-foreground">
-                  {userInitials}
-                </AvatarFallback>
-              </>
-            )}
+            <AvatarImage src="/ppp.png" alt="Profile" />
+            <AvatarFallback className="bg-muted text-muted-foreground">
+              {userInitials}
+            </AvatarFallback>
           </Avatar>
           
           {isPremium && (
