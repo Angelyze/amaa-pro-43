@@ -56,6 +56,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const handleThemeChange = (value: string) => {
     setTheme(value);
     changeTheme(value); // Use the centralized theme function
+    toast.success(`Theme changed to ${value}`);
   };
   
   return (

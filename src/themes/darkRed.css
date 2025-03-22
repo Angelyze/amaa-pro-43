@@ -4,10 +4,10 @@
     --background: 0 0% 7%; /* #111111 - same as dark theme */
     --foreground: 210 40% 98%; /* same as dark theme */
 
-    --card: 0 0% 10%; /* slightly lighter than background */
+    --card: 0 10% 10%; /* slightly red-tinted dark for cards */
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 10%;
+    --popover: 0 10% 10%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 0 100% 60%; /* #ff3131 - main red color */
