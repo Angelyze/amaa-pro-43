@@ -45,7 +45,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         setAvatarUrl(url);
       } catch (err) {
         console.error('Error processing avatar URL:', err);
+        setAvatarUrl('');
       }
+    } else {
+      setAvatarUrl('');
     }
   }, [user]);
   
@@ -73,9 +76,12 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
             ) : (
-              <AvatarFallback className="bg-muted text-muted-foreground">
-                {userInitials}
-              </AvatarFallback>
+              <>
+                <AvatarImage src="/ppp.png" alt="Profile" className="object-cover" />
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  {userInitials}
+                </AvatarFallback>
+              </>
             )}
           </Avatar>
           

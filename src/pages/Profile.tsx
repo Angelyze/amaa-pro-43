@@ -54,6 +54,8 @@ const Profile = () => {
         const timestamp = Date.now();
         const url = `${user.user_metadata.avatar_url}?t=${timestamp}`;
         setAvatarUrl(url);
+      } else {
+        setAvatarUrl('');
       }
     }
   }, [user]);
@@ -188,7 +190,10 @@ const Profile = () => {
                       {avatarUrl ? (
                         <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
                       ) : (
-                        <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                        <>
+                          <AvatarImage src="/ppp.png" alt="Profile" className="object-cover" />
+                          <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                        </>
                       )}
                     </Avatar>
                     
