@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Upload, Globe, Bot } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface AMAAChatBoxProps {
   onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
@@ -276,69 +277,114 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           />
           
           <div className="flex items-center gap-0">
-            <button 
-              onClick={toggleVoiceInput}
-              disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                isListening ? 'text-red-500 animate-pulse' :
-                voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
-              }`}
-              aria-label={isListening ? 'Listening...' : 'Toggle voice input'}
-            >
-              <Mic size={18} />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    onClick={toggleVoiceInput}
+                    disabled={disabled}
+                    className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                      disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                      isListening ? 'text-red-500 animate-pulse' :
+                      voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                    }`}
+                    aria-label={isListening ? 'Listening...' : 'Toggle voice input'}
+                  >
+                    <Mic size={18} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Voice input</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <button
-              onClick={triggerFileUpload}
-              disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                activeOption === 'upload' 
-                  ? (uploadedFile ? 'text-green-500' : 'text-teal') 
-                  : 'text-muted-foreground hover:text-teal'
-              }`}
-            >
-              <Upload size={18} />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={triggerFileUpload}
+                    disabled={disabled}
+                    className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                      disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                      activeOption === 'upload' 
+                        ? (uploadedFile ? 'text-green-500' : 'text-teal') 
+                        : 'text-muted-foreground hover:text-teal'
+                    }`}
+                  >
+                    <Upload size={18} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Upload file</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <button
-              onClick={() => !disabled && setActiveOption('web-search')}
-              disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
-              }`}
-            >
-              <Globe size={18} />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => !disabled && setActiveOption('web-search')}
+                    disabled={disabled}
+                    className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                      disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                      activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                    }`}
+                  >
+                    <Globe size={18} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Web search</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <button
-              onClick={() => !disabled && setActiveOption('regular')}
-              disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
-              }`}
-            >
-              <Bot size={18} />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => !disabled && setActiveOption('regular')}
+                    disabled={disabled}
+                    className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                      disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                      activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                    }`}
+                  >
+                    <Bot size={18} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>AMAA</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <button
-              onClick={handleSend}
-              disabled={!message.trim() || disabled}
-              className={`ml-1 p-1.5 transition-all duration-300 focus:outline-none ${
-                disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-teal-light hover:scale-110 hover:drop-shadow-md'
-              }`}
-            >
-              <img 
-                src="/AskIcon.png" 
-                alt="Ask" 
-                className={`w-6 h-6 transition-opacity duration-300 ${
-                  disabled ? 'opacity-30' : inputFocused ? 'opacity-80' : 'opacity-50'
-                } ${!disabled && 'hover:opacity-100'}`} 
-              />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleSend}
+                    disabled={!message.trim() || disabled}
+                    className={`ml-1 p-1.5 transition-all duration-300 focus:outline-none ${
+                      disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-teal-light hover:scale-110 hover:drop-shadow-md'
+                    }`}
+                  >
+                    <img 
+                      src="/AskIcon.png" 
+                      alt="Ask" 
+                      className={`w-6 h-6 transition-opacity duration-300 ${
+                        disabled ? 'opacity-30' : inputFocused ? 'opacity-80' : 'opacity-50'
+                      } ${!disabled && 'hover:opacity-100'} ask-icon`} 
+                    />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Send</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
