@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -216,10 +217,10 @@ const Profile = () => {
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     <Avatar className="w-24 h-24">
                       {avatarUrl ? (
-                        <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
+                        <AvatarImage src={avatarUrl} alt="Profile" />
                       ) : (
                         <>
-                          <AvatarImage src="/ppp.png" alt="Profile" className="object-cover" />
+                          <AvatarImage src="/ppp.png" alt="Profile" />
                           <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
                         </>
                       )}

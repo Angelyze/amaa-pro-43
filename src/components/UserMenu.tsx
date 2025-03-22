@@ -99,10 +99,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
             {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
+              <AvatarImage src={avatarUrl} alt="Profile" />
             ) : (
               <>
-                <AvatarImage src="/ppp.png" alt="Profile" className="object-cover" />
+                <AvatarImage src="/ppp.png" alt="Profile" />
                 <AvatarFallback className="bg-muted text-muted-foreground">
                   {userInitials}
                 </AvatarFallback>
