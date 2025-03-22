@@ -35,6 +35,39 @@
   color: var(--teal-light, #00afd1);
 }
 
+/* Apply theme-specific link colors */
+.dark-red .markdown-content a {
+  color: #ff3131;
+}
+
+.dark-red .markdown-content a:hover {
+  color: #ff5c5c;
+}
+
+.dark-green .markdown-content a {
+  color: #7ed957;
+}
+
+.dark-green .markdown-content a:hover {
+  color: #9ae67c;
+}
+
+.dark-yellow .markdown-content a {
+  color: #ffde59;
+}
+
+.dark-yellow .markdown-content a:hover {
+  color: #ffe67c;
+}
+
+.dark-purple .markdown-content a {
+  color: #8c52ff;
+}
+
+.dark-purple .markdown-content a:hover {
+  color: #a67dff;
+}
+
 .markdown-content pre {
   border-radius: 0.5rem;
   margin: 1rem 0;
@@ -75,6 +108,23 @@
 
 .footer-link:hover {
   color: var(--teal, #0097b2);
+}
+
+/* Theme-specific footer links */
+.dark-red .footer-link:hover {
+  color: #ff3131;
+}
+
+.dark-green .footer-link:hover {
+  color: #7ed957;
+}
+
+.dark-yellow .footer-link:hover {
+  color: #ffde59;
+}
+
+.dark-purple .footer-link:hover {
+  color: #8c52ff;
 }
 
 .copyright {

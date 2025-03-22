@@ -1,3 +1,4 @@
+
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -5,27 +6,61 @@
 
   /* Dark theme variants - using darker backgrounds for consistency with default dark theme */
   .dark-red .amaa-input {
-    @apply bg-background/50;
+    @apply bg-background/50 focus:border-[#ff3131] focus:ring-[#ff3131];
   }
   
   .dark-green .amaa-input {
-    @apply bg-background/50;
+    @apply bg-background/50 focus:border-[#7ed957] focus:ring-[#7ed957];
   }
   
   .dark-yellow .amaa-input {
-    @apply bg-background/50;
+    @apply bg-background/50 focus:border-[#ffde59] focus:ring-[#ffde59];
   }
   
   .dark-purple .amaa-input {
-    @apply bg-background/50;
+    @apply bg-background/50 focus:border-[#8c52ff] focus:ring-[#8c52ff];
   }
 
   .amaa-button {
     @apply px-6 py-3 rounded-full bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-300 shadow-glass-sm hover:shadow-glass active:scale-[0.98];
   }
 
+  /* Theme-specific buttons */
+  .dark-red .amaa-button {
+    @apply bg-[#ff3131] hover:bg-[#ff3131]/90;
+  }
+  
+  .dark-green .amaa-button {
+    @apply bg-[#7ed957] hover:bg-[#7ed957]/90;
+  }
+  
+  .dark-yellow .amaa-button {
+    @apply bg-[#ffde59] hover:bg-[#ffde59]/90;
+  }
+  
+  .dark-purple .amaa-button {
+    @apply bg-[#8c52ff] hover:bg-[#8c52ff]/90;
+  }
+
   .amaa-icon-button {
-    @apply p-3 rounded-full text-foreground/80 hover:text-teal transition-all duration-300;
+    @apply p-3 rounded-full text-foreground/80 hover:text-primary transition-all duration-300;
+  }
+
+  /* Theme-specific icon buttons */
+  .dark-red .amaa-icon-button {
+    @apply hover:text-[#ff3131];
+  }
+  
+  .dark-green .amaa-icon-button {
+    @apply hover:text-[#7ed957];
+  }
+  
+  .dark-yellow .amaa-icon-button {
+    @apply hover:text-[#ffde59];
+  }
+  
+  .dark-purple .amaa-icon-button {
+    @apply hover:text-[#8c52ff];
   }
 
   .message-bubble {
@@ -33,7 +68,24 @@
   }
 
   .user-message {
-    @apply message-bubble bg-teal/10 text-foreground border border-teal/10 w-[90%] md:w-[50%];
+    @apply message-bubble bg-primary/10 text-foreground border border-primary/10 w-[90%] md:w-[50%];
+  }
+
+  /* Theme-specific user messages */
+  .dark-red .user-message {
+    @apply bg-[#ff3131]/10 border-[#ff3131]/10;
+  }
+  
+  .dark-green .user-message {
+    @apply bg-[#7ed957]/10 border-[#7ed957]/10;
+  }
+  
+  .dark-yellow .user-message {
+    @apply bg-[#ffde59]/10 border-[#ffde59]/10;
+  }
+  
+  .dark-purple .user-message {
+    @apply bg-[#8c52ff]/10 border-[#8c52ff]/10;
   }
 
   .assistant-message {
@@ -53,7 +105,24 @@
   }
   
   .footer-link {
-    @apply text-foreground hover:text-teal transition-colors;
+    @apply text-foreground hover:text-primary transition-colors;
+  }
+
+  /* Theme-specific footer links */
+  .dark-red .footer-link {
+    @apply hover:text-[#ff3131];
+  }
+  
+  .dark-green .footer-link {
+    @apply hover:text-[#7ed957];
+  }
+  
+  .dark-yellow .footer-link {
+    @apply hover:text-[#ffde59];
+  }
+  
+  .dark-purple .footer-link {
+    @apply hover:text-[#8c52ff];
   }
   
   .copyright {
