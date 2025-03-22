@@ -34,22 +34,22 @@ const Header: React.FC<HeaderProps> = ({
     >
       <div className="flex items-center justify-center h-16 px-4 md:px-6 max-w-4xl mx-auto">
         {/* Centered container with max width to contain all three elements */}
-        <div className="flex items-center w-full max-w-2xl">
-          {/* Logo positioned immediately left of the chat box with minimal spacing */}
-          <div className="mr-3">
+        <div className="flex items-center justify-between w-full max-w-2xl">
+          {/* Logo positioned immediately left of the chat box */}
+          <div className="flex-shrink-0">
             <img src="/AMAApp.png" alt="AMAA" className="h-8" />
           </div>
           
-          {/* Chatbox in center, taking available space */}
-          <div className="flex-1">
+          {/* Chatbox in center */}
+          <div className="flex-1 mx-3">
             <AMAAChatBox 
               onSendMessage={onSendMessage}
               isMinimized
             />
           </div>
           
-          {/* Controls positioned immediately right of the chat box with minimal spacing */}
-          <div className="ml-3 flex items-center gap-2">
+          {/* Controls positioned immediately right of the chat box */}
+          <div className="flex items-center gap-2 flex-shrink-0">
             {isLoggedIn ? (
               <UserMenu onLogout={onLogin} />
             ) : (

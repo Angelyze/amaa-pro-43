@@ -28,35 +28,35 @@
 /* Theme-specific link colors */
 .markdown-content a,
 .theme-link {
-  color: var(--teal, #0097b2);
+  color: #0097b2;
   text-decoration: underline;
   transition: all 0.2s ease;
 }
 
 .markdown-content a:hover,
 .theme-link:hover {
-  color: var(--teal-light, #00afd1);
+  color: #0cc0df;
 }
 
 /* Apply theme-specific link colors */
 .dark-red .markdown-content a,
 .dark-red .theme-link {
-  color: #ff3131;
+  color: #ff5757;
 }
 
 .dark-red .markdown-content a:hover,
 .dark-red .theme-link:hover {
-  color: #ff5c5c;
+  color: #ff3131;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link {
-  color: #7ed957;
+  color: #00bf63;
 }
 
 .dark-green .markdown-content a:hover,
 .dark-green .theme-link:hover {
-  color: #9ae67c;
+  color: #7ed957;
 }
 
 .dark-yellow .markdown-content a,
@@ -66,17 +66,17 @@
 
 .dark-yellow .markdown-content a:hover,
 .dark-yellow .theme-link:hover {
-  color: #ffe67c;
+  color: #ffe371;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link {
-  color: #8c52ff;
+  color: #5e17eb;
 }
 
 .dark-purple .markdown-content a:hover,
 .dark-purple .theme-link:hover {
-  color: #a67dff;
+  color: #8c52ff;
 }
 
 .markdown-content pre {
@@ -118,7 +118,7 @@
 }
 
 .footer-link:hover {
-  color: var(--teal, #0097b2);
+  color: #0097b2;
 }
 
 /* Theme-specific footer links */
@@ -131,7 +131,7 @@
 }
 
 .dark-yellow .footer-link:hover {
-  color: #ffde59;
+  color: #ffe371;
 }
 
 .dark-purple .footer-link:hover {
