@@ -1,5 +1,5 @@
 
-import { LogOut, Moon, Settings, Sun, Flame, Leaf } from 'lucide-react';
+import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -105,6 +105,8 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <Leaf className="mr-2 h-4 w-4 text-green-500" />
             ) : theme === 'dark-yellow' ? (
               <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+            ) : theme === 'dark-purple' ? (
+              <Cloud className="mr-2 h-4 w-4 text-purple-500" />
             ) : (
               <Sun className="mr-2 h-4 w-4" />
             )}
@@ -117,6 +119,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-green">Dark Green</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-yellow">Dark Yellow</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-purple">Dark Purple</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>

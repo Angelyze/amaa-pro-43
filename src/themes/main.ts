@@ -7,7 +7,7 @@ export const initializeTheme = () => {
   const savedTheme = localStorage.getItem('theme');
   
   // Remove any existing theme classes first
-  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
+  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow', 'dark-purple');
   
   // Apply the saved theme
   if (savedTheme) {
@@ -32,14 +32,14 @@ export const changeTheme = (theme: string) => {
   console.log(`[Theme] Changing to: ${theme}`);
   
   // First verify the theme is valid
-  const validThemes = ['light', 'dark', 'dark-red', 'dark-green', 'dark-yellow'];
+  const validThemes = ['light', 'dark', 'dark-red', 'dark-green', 'dark-yellow', 'dark-purple'];
   if (!validThemes.includes(theme)) {
     console.error(`[Theme] Invalid theme: ${theme}`);
     return;
   }
   
   // Remove all theme classes first
-  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
+  document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow', 'dark-purple');
   
   // Apply the selected theme (if not light)
   if (theme !== 'light') {
