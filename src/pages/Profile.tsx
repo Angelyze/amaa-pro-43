@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -95,7 +96,6 @@ const Profile = () => {
         });
         
       if (uploadError) {
-        console.error('Upload error details:', uploadError);
         throw uploadError;
       }
       
@@ -110,7 +110,6 @@ const Profile = () => {
       });
       
       if (updateError) {
-        console.error('User metadata update error:', updateError);
         throw updateError;
       }
       
@@ -123,7 +122,6 @@ const Profile = () => {
       toast.success('Avatar updated successfully!');
       
     } catch (error: any) {
-      console.error('Complete error details:', error);
       toast.error(`Error uploading avatar: ${error.message}`);
     } finally {
       setUploading(false);
@@ -189,8 +187,9 @@ const Profile = () => {
                     <Avatar className="w-24 h-24">
                       {avatarUrl ? (
                         <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
-                      ) : null}
-                      <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                      ) : (
+                        <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                      )}
                     </Avatar>
                     
                     <div className="flex flex-col gap-2">

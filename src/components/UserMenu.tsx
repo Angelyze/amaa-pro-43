@@ -72,10 +72,11 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           <Avatar className="h-9 w-9 border border-border">
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
-            ) : null}
-            <AvatarFallback className="bg-muted text-muted-foreground">
-              {userInitials}
-            </AvatarFallback>
+            ) : (
+              <AvatarFallback className="bg-muted text-muted-foreground">
+                {userInitials}
+              </AvatarFallback>
+            )}
           </Avatar>
           
           {isPremium && (
