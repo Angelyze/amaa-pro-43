@@ -1,5 +1,5 @@
 
-import { LogOut, Moon, Settings, Sun, Flame } from 'lucide-react';
+import { LogOut, Moon, Settings, Sun, Flame, Leaf } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
   DropdownMenu, 
@@ -70,7 +70,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           </Avatar>
           
           {isPremium && (
-            <Badge className="bg-teal hover:bg-teal">Premium</Badge>
+            <Badge className="bg-primary hover:bg-primary">Premium</Badge>
           )}
         </div>
       </DropdownMenuTrigger>
@@ -92,6 +92,8 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <Moon className="mr-2 h-4 w-4" />
             ) : theme === 'dark-red' ? (
               <Flame className="mr-2 h-4 w-4 text-red-500" />
+            ) : theme === 'dark-green' ? (
+              <Leaf className="mr-2 h-4 w-4 text-green-500" />
             ) : (
               <Sun className="mr-2 h-4 w-4" />
             )}
@@ -102,6 +104,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
               <DropdownMenuRadioItem value="light">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark">Default Dark</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-green">Dark Green</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
