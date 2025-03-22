@@ -13,7 +13,6 @@ export const initializeTheme = () => {
   if (savedTheme) {
     if (savedTheme !== 'light') {
       document.documentElement.classList.add(savedTheme);
-      console.log(`Applied theme: ${savedTheme}`);
     }
   } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     // If no saved theme but user prefers dark mode
@@ -24,15 +23,12 @@ export const initializeTheme = () => {
 
 // Function to change theme programmatically
 export const changeTheme = (theme: string) => {
-  console.log(`Changing theme to: ${theme}`);
-  
   // Remove all theme classes first
   document.documentElement.classList.remove('dark', 'dark-red', 'dark-green', 'dark-yellow');
   
   // Apply the selected theme
   if (theme !== 'light') {
     document.documentElement.classList.add(theme);
-    console.log(`Applied theme class: ${theme}`);
   }
   
   // Always save the theme selection
