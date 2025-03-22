@@ -63,6 +63,23 @@
     @apply hover:text-[#5e17eb];
   }
 
+  /* Update AMAAChatBox icons for theme colors */
+  .dark-red .amaa-chatbox-icon {
+    @apply text-[#ff5757] hover:text-[#ff3131];
+  }
+  
+  .dark-green .amaa-chatbox-icon {
+    @apply text-[#00bf63] hover:text-[#7ed957];
+  }
+  
+  .dark-yellow .amaa-chatbox-icon {
+    @apply text-[#ffde59] hover:text-[#ffe371];
+  }
+  
+  .dark-purple .amaa-chatbox-icon {
+    @apply text-[#5e17eb] hover:text-[#8c52ff];
+  }
+
   .message-bubble {
     @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300 backdrop-blur-md;
   }
@@ -90,6 +107,23 @@
 
   .assistant-message {
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
+  }
+
+  /* Theme-specific links for markdown content */
+  .dark-red .markdown-content a {
+    @apply text-[#ff5757] hover:text-[#ff3131];
+  }
+  
+  .dark-green .markdown-content a {
+    @apply text-[#00bf63] hover:text-[#7ed957];
+  }
+  
+  .dark-yellow .markdown-content a {
+    @apply text-[#ffde59] hover:text-[#ffe371];
+  }
+  
+  .dark-purple .markdown-content a {
+    @apply text-[#5e17eb] hover:text-[#8c52ff];
   }
 
   .header-container {

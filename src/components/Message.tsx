@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -108,7 +109,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link"
+        className="theme-link underline"
       >
         {children}
       </a>

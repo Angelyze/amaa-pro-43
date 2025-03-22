@@ -279,7 +279,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button 
               onClick={toggleVoiceInput}
               disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none ${
+              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                 disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
                 isListening ? 'text-red-500 animate-pulse' :
                 voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
@@ -292,7 +292,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button
               onClick={triggerFileUpload}
               disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none ${
+              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                 disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
                 activeOption === 'upload' 
                   ? (uploadedFile ? 'text-green-500' : 'text-teal') 
@@ -305,7 +305,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button
               onClick={() => !disabled && setActiveOption('web-search')}
               disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none ${
+              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                 disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
                 activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
               }`}
@@ -316,7 +316,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <button
               onClick={() => !disabled && setActiveOption('regular')}
               disabled={disabled}
-              className={`p-1.5 transition-colors focus:outline-none ${
+              className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                 disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
                 activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
               }`}
