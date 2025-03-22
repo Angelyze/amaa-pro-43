@@ -31,12 +31,30 @@ const Profile = () => {
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
     return getAutoReadSetting();
   });
-  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
+  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>(() => {
+    return getAllVoices();
+  });
   
-  // Initialize voice options
+  // Initialize voice options with a useEffect that responds to voices changed event
   useEffect(() => {
-    const voices = getAllVoices();
-    setAvailableVoices(voices);
+    const loadVoices = () => {
+      const voices = getAllVoices();
+      setAvailableVoices(voices);
+    };
+
+    // Load voices immediately
+    loadVoices();
+    
+    // Setup event listener for when voices are loaded (this happens asynchronously in some browsers)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
   }, []);
   
   // Listen for theme changes from other components

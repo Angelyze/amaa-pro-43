@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 export interface VoiceOption {
@@ -13,6 +12,14 @@ let isPlaying = false;
 let playQueue: string[] = [];
 let currentChunkIndex = 0;
 
+// Helper to identify the UK male voice
+const findGoogleUKMaleVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
+  return voices.find(voice => 
+    voice.name.toLowerCase().includes('uk english male') || 
+    (voice.name.toLowerCase().includes('uk') && voice.name.toLowerCase().includes('male'))
+  );
+};
+
 // Get all available browser voices
 export const getAllVoices = (): VoiceOption[] => {
   const voices: VoiceOption[] = [];
@@ -21,14 +28,24 @@ export const getAllVoices = (): VoiceOption[] => {
   if ('speechSynthesis' in window) {
     const browserVoices = window.speechSynthesis.getVoices();
     
-    browserVoices.forEach((voice, index) => {
-      voices.push({
-        id: `browser-${index}`,
-        name: voice.name,
-        lang: voice.lang,
-        description: 'Browser'
+    if (browserVoices.length > 0) {
+      browserVoices.forEach((voice, index) => {
+        voices.push({
+          id: `browser-${index}`,
+          name: voice.name,
+          lang: voice.lang,
+          description: 'Browser'
+        });
       });
-    });
+    } else {
+      // Add some default voices if no browser voices are available
+      voices.push(
+        { id: 'browser-default-uk-male', name: 'Google UK English Male', lang: 'en-GB', description: 'Default' },
+        { id: 'browser-default-uk-female', name: 'Google UK English Female', lang: 'en-GB', description: 'Default' },
+        { id: 'browser-default-us-male', name: 'Google US English Male', lang: 'en-US', description: 'Default' },
+        { id: 'browser-default-us-female', name: 'Google US English Female', lang: 'en-US', description: 'Default' }
+      );
+    }
   }
   
   // Sort voices alphabetically
@@ -37,17 +54,25 @@ export const getAllVoices = (): VoiceOption[] => {
 
 // Get the current voice setting from localStorage or use default
 export const getCurrentVoice = (): VoiceOption => {
-  const savedVoiceId = localStorage.getItem('tts_voice') || 'browser-0';
+  const savedVoiceId = localStorage.getItem('tts_voice');
   const voices = getAllVoices();
   
-  const foundVoice = voices.find(v => v.id === savedVoiceId);
-  
-  if (foundVoice) {
-    return foundVoice;
-  } else {
-    // Return the first available voice as fallback
-    return voices.length > 0 ? voices[0] : { id: 'browser-0', name: 'Default' };
+  // If we have a saved voice and it exists in our available voices, use it
+  if (savedVoiceId) {
+    const foundVoice = voices.find(v => v.id === savedVoiceId);
+    if (foundVoice) return foundVoice;
   }
+  
+  // Otherwise, try to find the UK male voice
+  const ukMaleVoice = voices.find(v => 
+    v.name.toLowerCase().includes('uk english male') || 
+    (v.name.toLowerCase().includes('uk') && v.name.toLowerCase().includes('male'))
+  );
+  
+  if (ukMaleVoice) return ukMaleVoice;
+  
+  // Return the first available voice as fallback
+  return voices.length > 0 ? voices[0] : { id: 'browser-default-uk-male', name: 'Google UK English Male', lang: 'en-GB', description: 'Default' };
 };
 
 // Save voice setting to localStorage
@@ -64,6 +89,33 @@ export const getAutoReadSetting = (): boolean => {
 // Save auto-read setting
 export const setAutoReadSetting = (value: boolean): void => {
   localStorage.setItem('auto_read_messages', value.toString());
+};
+
+// Helper function to find the actual SpeechSynthesisVoice from voice ID
+const getSpeechSynthesisVoiceFromId = (voiceId: string): SpeechSynthesisVoice | null => {
+  if ('speechSynthesis' in window) {
+    const voices = window.speechSynthesis.getVoices();
+    
+    if (voices.length > 0 && voiceId.startsWith('browser-')) {
+      const index = parseInt(voiceId.replace('browser-', ''), 10);
+      if (!isNaN(index) && index < voices.length) {
+        return voices[index];
+      }
+      
+      // Handle our default voices
+      if (voiceId === 'browser-default-uk-male') {
+        const ukMale = findGoogleUKMaleVoice(voices);
+        if (ukMale) return ukMale;
+      }
+      
+      // Handle other default voices based on name matching
+      const voiceName = voiceId.replace('browser-default-', '').replace(/-/g, ' ');
+      const matchedVoice = voices.find(v => v.name.toLowerCase().includes(voiceName));
+      if (matchedVoice) return matchedVoice;
+    }
+  }
+  
+  return null;
 };
 
 // Stop any currently playing speech
@@ -142,27 +194,23 @@ export const textToSpeech = async (text: string): Promise<void> => {
       const voiceSetting = getCurrentVoice();
       const voiceId = voiceSetting.id;
       
-      // Parse the voice index for browser voices
-      let voice: SpeechSynthesisVoice | null = null;
+      // Get actual SpeechSynthesisVoice
+      let voice = getSpeechSynthesisVoiceFromId(voiceId);
       
-      if (voiceId.startsWith('browser-')) {
-        const voiceIndex = parseInt(voiceId.substring(8), 10);
-        const voices = window.speechSynthesis.getVoices();
-        
-        if (voices.length > 0 && voiceIndex < voices.length) {
-          voice = voices[voiceIndex];
-        } else {
-          // Fallback to the first available voice
-          voice = voices[0];
-        }
+      // Fallback to first available voice if selected voice is not available
+      if (!voice && window.speechSynthesis.getVoices().length > 0) {
+        voice = window.speechSynthesis.getVoices()[0];
+        console.log('Using fallback voice:', voice.name);
       }
       
       if (!voice) {
-        reject(new Error('Selected voice not available'));
+        console.error('No voice available for TTS');
+        toast.error('No voice available for text-to-speech');
+        reject(new Error('No voice available'));
         return;
       }
       
-      // Split text into manageable chunks with larger size (250 characters)
+      // Split text into manageable chunks
       playQueue = splitTextIntoChunks(text, 250);
       currentChunkIndex = 0;
       
