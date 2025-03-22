@@ -8,12 +8,36 @@ import ProfileDetailsTab from '@/components/profile/ProfileDetailsTab';
 import AppearanceTab from '@/components/profile/AppearanceTab';
 import SubscriptionTab from '@/components/profile/SubscriptionTab';
 import VoiceSettingsTab from '@/components/profile/VoiceSettingsTab';
+import { toast } from 'sonner';
+import { 
+  getAllVoices, 
+  getCurrentVoice, 
+  setVoice, 
+  getAutoReadSetting, 
+  setAutoReadSetting,
+  VoiceOption
+} from '@/services/speechService';
 
 const Profile = () => {
   const { user, isPremium } = useAuth();
   const [selectedTheme, setSelectedTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
+  
+  // Voice settings state
+  const [selectedVoice, setSelectedVoice] = useState(() => {
+    return getCurrentVoice().id;
+  });
+  const [autoReadMessages, setAutoReadMessages] = useState(() => {
+    return getAutoReadSetting();
+  });
+  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>([]);
+  
+  // Initialize voice options
+  useEffect(() => {
+    const voices = getAllVoices();
+    setAvailableVoices(voices);
+  }, []);
   
   // Listen for theme changes from other components
   useEffect(() => {
@@ -28,6 +52,13 @@ const Profile = () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+  
+  // Save voice settings
+  const saveVoiceSettings = () => {
+    setVoice(selectedVoice);
+    setAutoReadSetting(autoReadMessages);
+    toast.success('Voice settings saved successfully!');
+  };
   
   return (
     <Layout showBackButton title="Profile Settings">
@@ -62,7 +93,14 @@ const Profile = () => {
               {isPremium && (
                 <>
                   <Separator />
-                  <VoiceSettingsTab />
+                  <VoiceSettingsTab 
+                    selectedVoice={selectedVoice}
+                    setSelectedVoice={setSelectedVoice}
+                    autoReadMessages={autoReadMessages}
+                    setAutoReadMessages={setAutoReadMessages}
+                    availableVoices={availableVoices}
+                    saveVoiceSettings={saveVoiceSettings}
+                  />
                 </>
               )}
             </div>
