@@ -1,4 +1,5 @@
 
+/* Base styles */
 @import url('./styles/base.css');
 @import url('./styles/utilities.css');
 @import url('./styles/components.css');

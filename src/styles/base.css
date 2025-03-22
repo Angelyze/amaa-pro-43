@@ -3,10 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import theme CSS files */
-@import url('../themes/darkRed.css');
-@import url('../themes/darkGreen.css');
-@import url('../themes/darkYellow.css');
+/* Direct inclusion of theme CSS to ensure proper loading */
+@import './darkRed.css';
+@import './darkGreen.css';
+@import './darkYellow.css';
 
 @layer base {
   :root {
@@ -83,3 +83,4 @@
     --pattern-accent-rgb: 0, 170, 200;
   }
 }
+
