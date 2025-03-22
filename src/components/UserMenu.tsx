@@ -36,16 +36,23 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     const savedTheme = localStorage.getItem('theme');
     setTheme(savedTheme || 'light');
     
-    // Listen for changes to the theme in localStorage
+    // Listen for changes to the theme in localStorage and custom event
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'theme') {
         setTheme(e.newValue || 'light');
       }
     };
     
+    const handleThemeChange = () => {
+      setTheme(localStorage.getItem('theme') || 'light');
+    };
+    
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('themechange', handleThemeChange);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('themechange', handleThemeChange);
     };
   }, []);
   
