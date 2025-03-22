@@ -1,25 +1,23 @@
-
-
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
   }
 
-  /* Dark theme variants - moved from inline to component class for consistency */
+  /* Dark theme variants - using darker backgrounds for consistency with default dark theme */
   .dark-red .amaa-input {
-    @apply bg-primary/10;
+    @apply bg-background/50;
   }
   
   .dark-green .amaa-input {
-    @apply bg-primary/10;
+    @apply bg-background/50;
   }
   
   .dark-yellow .amaa-input {
-    @apply bg-primary/10;
+    @apply bg-background/50;
   }
   
   .dark-purple .amaa-input {
-    @apply bg-primary/10;
+    @apply bg-background/50;
   }
 
   .amaa-button {
@@ -62,4 +60,3 @@
     @apply text-xs text-muted-foreground flex justify-center items-center;
   }
 }
-
