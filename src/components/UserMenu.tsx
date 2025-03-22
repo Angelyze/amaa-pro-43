@@ -39,13 +39,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   useEffect(() => {
     if (user?.user_metadata?.avatar_url) {
       try {
+        // Add a unique timestamp to prevent browser caching
         const timestamp = Date.now();
-        const avatarUrl = user.user_metadata.avatar_url;
-        
-        // Add timestamp to prevent caching issues
-        const urlWithTimestamp = `${avatarUrl}?t=${timestamp}`;
-          
-        setAvatarUrl(urlWithTimestamp);
+        const url = `${user.user_metadata.avatar_url}?t=${timestamp}`;
+        setAvatarUrl(url);
       } catch (err) {
         console.error('Error processing avatar URL:', err);
       }
@@ -74,7 +71,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
             {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="Profile" />
+              <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
             ) : null}
             <AvatarFallback className="bg-muted text-muted-foreground">
               {userInitials}

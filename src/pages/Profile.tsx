@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,13 +51,8 @@ const Profile = () => {
       
       if (user.user_metadata?.avatar_url) {
         const timestamp = Date.now();
-        const avatarUrl = user.user_metadata.avatar_url;
-        
-        // Add timestamp to prevent caching issues
-        const urlWithTimestamp = `${avatarUrl}?t=${timestamp}`;
-        
-        setAvatarUrl(urlWithTimestamp);
-        console.log('Set avatar URL to:', urlWithTimestamp);
+        const url = `${user.user_metadata.avatar_url}?t=${timestamp}`;
+        setAvatarUrl(url);
       }
     }
   }, [user]);
@@ -93,11 +87,7 @@ const Profile = () => {
       const fileName = `${user!.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
       
-      console.log('Uploading file:', fileName);
-      console.log('File path:', filePath);
-      
-      // Upload file to Storage
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('amaa')
         .upload(filePath, file, {
           upsert: true,
@@ -109,16 +99,12 @@ const Profile = () => {
         throw uploadError;
       }
       
-      // Get the public URL
       const { data } = supabase.storage.from('amaa').getPublicUrl(filePath);
       
       if (!data || !data.publicUrl) {
         throw new Error('Failed to get public URL for uploaded file');
       }
       
-      console.log('Public URL generated:', data.publicUrl);
-      
-      // Update user metadata with the new avatar URL
       const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: data.publicUrl }
       });
@@ -128,12 +114,11 @@ const Profile = () => {
         throw updateError;
       }
       
-      // Update the avatar URL with timestamp to avoid caching
       const timestamp = Date.now();
       const urlWithTimestamp = `${data.publicUrl}?t=${timestamp}`;
-      
       setAvatarUrl(urlWithTimestamp);
-      refreshSubscriptionStatus();
+      
+      await refreshSubscriptionStatus();
       
       toast.success('Avatar updated successfully!');
       
@@ -203,7 +188,7 @@ const Profile = () => {
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     <Avatar className="w-24 h-24">
                       {avatarUrl ? (
-                        <AvatarImage src={avatarUrl} alt="Profile" />
+                        <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
                       ) : null}
                       <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
                     </Avatar>
