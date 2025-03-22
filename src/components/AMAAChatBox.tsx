@@ -374,9 +374,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                     <img 
                       src="/AskIcon.png" 
                       alt="Ask" 
-                      className={`w-6 h-6 transition-opacity duration-300 ${
+                      className={`w-6 h-6 transition-opacity duration-300 ask-icon ${
                         disabled ? 'opacity-30' : inputFocused ? 'opacity-80' : 'opacity-50'
-                      } ${!disabled && 'hover:opacity-100'} ask-icon`} 
+                      } ${!disabled && 'hover:opacity-100'}`} 
                     />
                   </button>
                 </TooltipTrigger>

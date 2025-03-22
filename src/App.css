@@ -1,3 +1,4 @@
+
 /* Dynamic opacity changes to the AskIcon are now handled in the component via Tailwind classes */
 
 .amaa-input {
@@ -78,22 +79,7 @@
   color: #8c52ff;
 }
 
-/* Theme-specific Ask icon filters */
-.dark-red .ask-icon {
-  filter: hue-rotate(320deg) saturate(1.5);
-}
-
-.dark-green .ask-icon {
-  filter: hue-rotate(140deg) saturate(1.5);
-}
-
-.dark-yellow .ask-icon {
-  filter: hue-rotate(60deg) saturate(1.2);
-}
-
-.dark-purple .ask-icon {
-  filter: hue-rotate(240deg) saturate(1.5);
-}
+/* Cursor pointer for Ask icon is now handled in components.css */
 
 .markdown-content pre {
   border-radius: 0.5rem;
