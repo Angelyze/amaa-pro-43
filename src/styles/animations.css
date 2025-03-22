@@ -1,0 +1,90 @@
+
+@layer base {
+  /* Enhanced background pattern with more abstract and visible elements */
+  .background-pattern {
+    background-image: 
+      radial-gradient(circle at 30% 20%, hsl(var(--pattern-secondary-color) / 0.95) 0%, transparent 35%),
+      radial-gradient(circle at 70% 70%, hsl(var(--pattern-secondary-color) / 0.9) 0%, transparent 45%),
+      radial-gradient(circle at 90% 10%, hsl(var(--pattern-color) / 0.8) 0%, transparent 30%),
+      radial-gradient(circle at 10% 90%, hsl(var(--pattern-color) / 0.8) 0%, transparent 30%),
+      linear-gradient(135deg, hsl(var(--pattern-color) / 0.6) 0%, hsl(var(--pattern-color) / 0) 70%),
+      radial-gradient(circle at 50% 50%, hsl(var(--background)) 0%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .background-pattern::before,
+  .background-pattern::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    opacity: 0.85; /* Increased opacity for more visibility */
+    transition: all 15s ease-in-out;
+    animation: patternFloat 25s ease-in-out infinite alternate;
+  }
+  
+  .background-pattern::before {
+    /* More abstract shapes with vibrant teal accent */
+    background-image: 
+      radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.3) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 45% 60%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 45%);
+    animation-delay: -8s;
+    filter: blur(30px);
+  }
+  
+  .background-pattern::after {
+    /* Additional layer with different shapes */
+    background-image: 
+      radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 20%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(var(--pattern-accent-rgb), 0.25) 0%, transparent 30%);
+    animation-delay: -15s;
+    filter: blur(20px);
+  }
+  
+  @keyframes patternFloat {
+    0% {
+      transform: translate(0%, 0%) rotate(0deg);
+    }
+    33% {
+      transform: translate(3%, -2%) rotate(1deg);
+    }
+    66% {
+      transform: translate(-2%, 3%) rotate(-1deg);
+    }
+    100% {
+      transform: translate(2%, 2%) rotate(1.5deg);
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-teal to-teal-light bg-clip-text text-transparent;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-glass;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,151,178,0.3)];
+  }
+
+  .thinking-to-message {
+    @apply transition-all duration-500 ease-in-out transform;
+  }
+}

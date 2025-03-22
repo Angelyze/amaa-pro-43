@@ -1,0 +1,35 @@
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  .glass {
+    @apply bg-white/70 dark:bg-black/50 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-glass;
+  }
+
+  .glass-hover {
+    @apply transition-all duration-300 hover:shadow-glass-lg;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted/70 dark:bg-muted/40 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted dark:bg-muted/60;
+  }
+}

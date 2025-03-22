@@ -27,22 +27,25 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
 
   return (
     <div>
-      <Label htmlFor="theme-selection">Theme</Label>
-      <Select
-        value={selectedTheme}
-        onValueChange={handleThemeChange}
-      >
-        <SelectTrigger id="theme-selection" className="mt-1.5">
-          <SelectValue placeholder="Select a theme" />
-        </SelectTrigger>
-        <SelectContent>
-          {themes.map((theme) => (
-            <SelectItem key={theme.id} value={theme.id}>
-              {theme.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <h3 className="text-lg font-medium mb-4">Appearance</h3>
+      <div>
+        <Label htmlFor="theme-selection">Theme</Label>
+        <Select
+          value={selectedTheme}
+          onValueChange={handleThemeChange}
+        >
+          <SelectTrigger id="theme-selection" className="mt-1.5">
+            <SelectValue placeholder="Select a theme" />
+          </SelectTrigger>
+          <SelectContent>
+            {themes.map((theme) => (
+              <SelectItem key={theme.id} value={theme.id}>
+                {theme.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };
