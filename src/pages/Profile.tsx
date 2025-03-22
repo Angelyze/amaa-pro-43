@@ -12,6 +12,7 @@ import {
   getAutoReadSetting,
   VoiceOption 
 } from '@/services/speechService';
+import { toast } from 'sonner'; // Add this import for toast
 
 // Import the component tabs
 import ProfileDetailsTab from '@/components/profile/ProfileDetailsTab';
