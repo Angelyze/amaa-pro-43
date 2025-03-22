@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -65,9 +64,16 @@ const Profile = () => {
       }
     };
     
+    const handleThemeChange = () => {
+      setSelectedTheme(localStorage.getItem('theme') || 'light');
+    };
+    
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('themechange', handleThemeChange);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('themechange', handleThemeChange);
     };
   }, []);
   
