@@ -108,7 +108,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="underline theme-link"
+        className="theme-link"
       >
         {children}
       </a>
