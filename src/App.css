@@ -79,8 +79,6 @@
   color: #8c52ff;
 }
 
-/* Cursor pointer for Ask icon is now handled in components.css */
-
 .markdown-content pre {
   border-radius: 0.5rem;
   margin: 1rem 0;

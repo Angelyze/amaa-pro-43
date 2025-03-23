@@ -19,6 +19,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   isMinimized = false,
   disabled = false
 }) => {
+  
   const [message, setMessage] = useState('');
   const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload'>('regular');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -308,7 +309,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                     className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                       disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
                       activeOption === 'upload' 
-                        ? (uploadedFile ? 'text-green-500' : 'text-teal') 
+                        ? 'text-teal'
                         : 'text-muted-foreground hover:text-teal'
                     }`}
                   >
@@ -329,7 +330,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                     disabled={disabled}
                     className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                       disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                      activeOption === 'web-search' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                      activeOption === 'web-search' 
+                        ? 'text-teal'
+                        : 'text-muted-foreground hover:text-teal'
                     }`}
                   >
                     <Globe size={18} />
@@ -349,7 +352,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                     disabled={disabled}
                     className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
                       disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                      activeOption === 'regular' ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                      activeOption === 'regular' 
+                        ? 'text-teal'
+                        : 'text-muted-foreground hover:text-teal'
                     }`}
                   >
                     <Bot size={18} />
