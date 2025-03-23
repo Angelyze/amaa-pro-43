@@ -27,17 +27,17 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Our Mission</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA (Ask Me Almost Anything) is designed to provide users with an advanced AI assistant that can help answer questions, generate content, and assist with various tasks. Our mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience to our premium users.
+                  AMAA (Ask Me About Anything) is designed to provide users with an advanced AI assistant that can help answer questions, search the web, generate, describe and transcribe content, and assist with various tasks. Our mission is to make AI technology accessible, helpful, simple, and user-friendly for everyone while providing a superior experience to our premium users.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">What We Offer</h2>
                 <p className="text-foreground/80 leading-relaxed mb-4">
-                  AMAA combines cutting-edge AI models with a simple, intuitive interface to provide:
+                  AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:
                 </p>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
-                  <li>Instant answers to a wide range of questions</li>
+                  <li>Instant and up-to-date answers to a wide range of questions</li>
                   <li>Content generation and creative writing assistance</li>
                   <li>Research help and information summarization</li>
                   <li>Personalized conversation experiences</li>
@@ -60,7 +60,7 @@ const About = () => {
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
                     <li>Unlimited conversations and queries</li>
-                    <li>Access to advanced AI models</li>
+                    <li>Theme customization options</li>
                     <li>Priority processing for faster responses</li>
                     <li>Enhanced file analysis capabilities</li>
                     <li>Ad-free experience and premium support</li>
