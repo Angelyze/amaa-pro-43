@@ -131,6 +131,10 @@
   }
 
   /* Theme-specific links for markdown content */
+  .markdown-content a {
+    @apply text-[#0097b2] hover:text-[#0cc0df] underline transition-all duration-200;
+  }
+
   .dark-red .markdown-content a {
     @apply text-[#ff5757] hover:text-[#ff3131];
   }
