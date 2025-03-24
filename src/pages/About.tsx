@@ -27,7 +27,7 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Our Mission</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA (Ask Me About Anything) is designed to provide users with an advanced AI assistant that can help answer questions, search the internet, generate various types of content, and assist with various tasks. Our mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience to our premium users. Think of it as Google 2.0!
+                  AMAA.pro (Ask Me About Anything) is designed to provide users with an advanced AI models that can help answer questions, search the internet, generate various types of content, and assist with various tasks. The mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience. Think of it as Google 2.0!
                 </p>
               </section>
               
