@@ -148,7 +148,7 @@
   }
   
   .dark-purple .markdown-content a {
-    @apply text-[#5e17eb] hover:text-[#8c52ff];
+    @apply text-[#8c52ff] hover:text-[#5e17eb];
   }
 
   .header-container {
