@@ -178,7 +178,6 @@ const Subscribe = () => {
                   <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>Voice input and basic Text to Speech</span>
                 </li>
-                </li>
               </ul>
             </CardContent>
             <CardFooter>
