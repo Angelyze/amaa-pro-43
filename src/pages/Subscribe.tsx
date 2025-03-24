@@ -179,7 +179,6 @@ const Subscribe = () => {
                   <span>Voice input and basic Text to Speech</span>
                 </li>
                 </li>
-                </li>
               </ul>
             </CardContent>
             <CardFooter>
