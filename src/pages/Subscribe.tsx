@@ -208,11 +208,11 @@ const Subscribe = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
-                  <span>Web search integration</span>
+                  <span>Profile and themes customization options</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
-                  <span>File upload and analysis</span>
+                  <span>Text to Speech voice options</span>
                 </li>
               </ul>
             </CardContent>
