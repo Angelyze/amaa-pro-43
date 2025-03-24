@@ -5,7 +5,7 @@ import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
 
 const Privacy = () => {
-  const lastUpdated = "June 15, 2025";
+  const lastUpdated = "March 24, 2025";
   
   return (
     <Layout showBackButton title="Privacy Policy">
