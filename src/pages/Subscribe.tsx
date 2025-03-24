@@ -169,6 +169,10 @@ const Subscribe = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
+                  <span>Code creation and edit</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>Voice input and basic Text to Speech</span>
                 </li>
               </ul>
@@ -192,11 +196,11 @@ const Subscribe = () => {
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
-                  <span>Unlimited AI queries</span>
+                  <span>Everything in Free Plan</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
-                  <span>Priority response processing</span>
+                  <span>Unlimited AI queries</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
