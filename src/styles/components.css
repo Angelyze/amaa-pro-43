@@ -98,7 +98,7 @@
   }
   
   .dark-purple .ask-icon {
-    filter: hue-rotate(120deg) saturate(1.1) brightness(1);
+    filter: hue-rotate(110deg) saturate(1.1) brightness(1);
   }
 
   .message-bubble {
