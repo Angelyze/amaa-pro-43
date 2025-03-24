@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,11 +21,9 @@ const Subscribe = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check for Stripe redirection success
     const success = searchParams.get('success');
     if (success === 'true') {
       toast.success('Subscription successful! You now have premium access.');
-      // Invalidate cache and refresh status
       invalidateSubscriptionCache();
       refreshSubscriptionStatus();
     }
@@ -36,7 +33,6 @@ const Subscribe = () => {
       toast.info('Subscription process was canceled.');
     }
     
-    // Force a subscription status refresh when component mounts
     if (user) {
       invalidateSubscriptionCache();
       refreshSubscriptionStatus();
@@ -88,13 +84,8 @@ const Subscribe = () => {
     
     setSyncing(true);
     try {
-      // First invalidate the cache
       invalidateSubscriptionCache();
-      
-      // Then sync with Stripe
       await syncSubscriptions();
-      
-      // Then refresh the status
       await refreshSubscriptionStatus();
       toast.success('Subscription status synchronized successfully');
     } catch (error) {
@@ -171,9 +162,11 @@ const Subscribe = () => {
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>File upload and analysis</span>
+                </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>Web search integration</span>
+                </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>Voice input and basic Text to Speech</span>
