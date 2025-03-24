@@ -165,7 +165,7 @@ const Privacy = () => {
               <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
             <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. All rights reserved.
+              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. Powered by AMAA
             </div>
           </div>
         </div>
