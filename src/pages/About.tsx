@@ -40,13 +40,12 @@ const About = () => {
                   <li>Instant and up-to-date answers to a wide range of questions</li>
                   <li>Content generation and creative writing assistance</li>
                   <li>Research help and information summarization</li>
-                  <li>Personalized conversation experiences</li>
+                  <li>Web search integration</li>
                   <li>File analysis and data extraction capabilities</li>
                   {isPremium && (
                     <>
                       <li>Enhanced processing power for premium users</li>
                       <li>Priority response times and advanced model access</li>
-                      <li>Unlimited conversations and message history</li>
                     </>
                   )}
                 </ul>
@@ -60,10 +59,11 @@ const About = () => {
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
                     <li>Unlimited conversations and queries</li>
-                    <li>Theme customization options</li>
-                    <li>Priority processing for faster responses</li>
-                    <li>Enhanced file analysis capabilities</li>
-                    <li>Ad-free experience and premium support</li>
+                    <li>Profile and Theme customization options</li>
+                    <li>Advanced AI models and capabilities</li>
+                    <li>Save and manage conversations</li>
+                    <li>Text to Speech voice options</li>
+                    <li>Premium support</li>
                   </ul>
                   <div className="flex justify-center">
                     <Link to="/subscribe">
