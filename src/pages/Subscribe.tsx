@@ -179,6 +179,14 @@ const Subscribe = () => {
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>File upload and analysis</span>
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-muted-foreground mt-0.5" />
+                  <span>Web search integration</span>
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-muted-foreground mt-0.5" />
+                  <span>Voice input and basic Text to Speech</span>
+                </li>
+                </li>
                 </li>
               </ul>
             </CardContent>
