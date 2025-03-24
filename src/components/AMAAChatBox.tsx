@@ -237,9 +237,9 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   };
 
   const getPlaceholder = () => {
-    if (disabled) return "Sign in to continue chatting...";
-    if (activeOption === 'web-search') return "Search the internet...";
-    if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the uploaded file...";
+    if (disabled) return "Sign in to continue...";
+    if (activeOption === 'web-search') return "Search the web...";
+    if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the file...";
     return "Ask me anything...";
   };
 
