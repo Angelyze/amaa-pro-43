@@ -170,10 +170,6 @@ const Subscribe = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
-                  <span>Basic AI responses</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check size={18} className="text-muted-foreground mt-0.5" />
                   <span>File upload and analysis</span>
                 <li className="flex items-start gap-2">
                   <Check size={18} className="text-muted-foreground mt-0.5" />
