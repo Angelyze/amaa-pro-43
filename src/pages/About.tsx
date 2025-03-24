@@ -42,6 +42,8 @@ const About = () => {
                   <li>Research help and information summarization</li>
                   <li>Web search integration</li>
                   <li>File analysis and data extraction capabilities</li>
+                  <li>Various Themes</li>
+
                   {isPremium && (
                     <>
                       <li>Enhanced processing power for premium users</li>
