@@ -282,6 +282,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     td: ({ children }: { children: React.ReactNode }) => (
       <td className="border border-border p-2">{children}</td>
     ),
+    // Make sure strong and em elements do not have any special coloring
+    strong: ({ children }: { children: React.ReactNode }) => (
+      <strong className="font-semibold text-foreground">{children}</strong>
+    ),
+    em: ({ children }: { children: React.ReactNode }) => (
+      <em className="italic text-foreground">{children}</em>
+    )
   };
 
   return (

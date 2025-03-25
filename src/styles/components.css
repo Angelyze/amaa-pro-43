@@ -1,3 +1,4 @@
+
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -129,7 +130,7 @@
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Theme-specific links for markdown content */
+  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
   .markdown-content a {
     @apply text-[#0097b2] hover:text-[#0cc0df] underline transition-all duration-200;
   }
@@ -148,6 +149,14 @@
   
   .dark-purple .markdown-content a {
     @apply text-[#8c52ff] hover:text-[#5e17eb];
+  }
+
+  /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
+  .markdown-content strong, 
+  .markdown-content em,
+  .markdown-content b,
+  .markdown-content i {
+    @apply text-foreground;
   }
 
   .header-container {
@@ -228,8 +237,9 @@
     @apply p-4;
   }
 
+  /* Article title should use theme link colors */
   .article-preview .article-title {
-    @apply text-base font-medium mb-1.5 text-foreground hover:text-primary line-clamp-2;
+    @apply text-base font-medium mb-1.5 hover:text-primary line-clamp-2;
   }
 
   .article-preview .article-meta {
@@ -283,7 +293,7 @@
   
   /* New - Search result emphasis */
   .search-results strong {
-    @apply font-medium text-primary;
+    @apply font-medium;
   }
   
   /* New - Search result links */

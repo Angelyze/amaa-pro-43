@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -396,7 +397,7 @@ async function processSearchResponseForImages(text: string): Promise<string> {
       // Add to our collection of image URLs
       imageUrls.push(imageUrl);
       
-      // Replace with markdown image syntax
+      // Replace with markdown image syntax - adding search-result-image class
       processedText = processedText.replace(
         fullMatch, 
         `![Search result image](${imageUrl}){: .search-result-image}`
@@ -408,11 +409,13 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   }
   
   // Replace the Recent Articles section marker without class information
-  // We'll handle the special styling on the frontend
   processedText = processedText.replace(
-    /## Recent Articles/g, 
+    /## Recent Articles\s*\{\.\w+\}/g, 
     '## Recent Articles'
   );
+  
+  // Also replace any other remaining class markers
+  processedText = processedText.replace(/\{\.[\w-]+\}/g, '');
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);
   return processedText;
