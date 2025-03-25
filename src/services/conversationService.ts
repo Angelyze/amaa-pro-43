@@ -16,6 +16,11 @@ export interface Message {
   content: string;
   type: 'user' | 'assistant';
   created_at: string;
+  fileData?: {
+    type: string;
+    name: string;
+    data: string;
+  };
 }
 
 // Guest session management
@@ -39,14 +44,17 @@ export const getGuestMessages = (): Message[] => {
   return storedMessages ? JSON.parse(storedMessages) : [];
 };
 
-export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id' | 'created_at'>): Message => {
+export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id' | 'created_at'> & { 
+  fileData?: { type: string; name: string; data: string; } 
+}): Message => {
   const messages = getGuestMessages();
   const newMessage: Message = {
     id: crypto.randomUUID(),
     conversation_id: GUEST_CONVERSATION_ID,
     content: message.content,
     type: message.type,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    fileData: message.fileData
   };
   
   const updatedMessages = [...messages, newMessage];

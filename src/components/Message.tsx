@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -11,6 +10,11 @@ interface MessageProps {
   content: string;
   type: 'user' | 'assistant';
   timestamp?: string;
+  fileData?: {
+    type: string;
+    name: string;
+    data: string;
+  };
 }
 
 // Function to strip all markdown for TTS
@@ -36,7 +40,7 @@ const stripMarkdown = (text: string): string => {
   return cleaned;
 };
 
-const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
+const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
@@ -101,6 +105,9 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
     navigator.clipboard.writeText(content);
     toast.success('Copied to clipboard');
   };
+
+  // Determine if the file is an image
+  const isImage = fileData?.type.startsWith('image/');
 
   // Custom renderer components for ReactMarkdown
   const renderers = {
@@ -220,6 +227,23 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp }) => {
                 content={content} 
                 onClose={() => setIsShareMenuOpen(false)} 
               />
+            )}
+          </div>
+        )}
+        
+        {fileData && type === 'user' && (
+          <div className="mb-3 p-2 border rounded-md bg-muted/30">
+            <div className="text-sm font-medium mb-1">Uploaded: {fileData.name}</div>
+            {isImage ? (
+              <img 
+                src={fileData.data} 
+                alt={fileData.name} 
+                className="max-w-full max-h-64 rounded-md object-contain"
+              />
+            ) : (
+              <div className="text-xs text-muted-foreground">
+                File type: {fileData.type}
+              </div>
             )}
           </div>
         )}

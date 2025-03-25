@@ -33,12 +33,18 @@ import { SavedConversation } from '@/components/ConversationControls';
 const MAX_GUEST_QUERIES = 5;
 
 const Index = () => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messages, setMessages] = useState<ExtendedMessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFileData, setUploadedFileData] = useState<{
+    type: string;
+    name: string;
+    data: string;
+  } | null>(null);
+  
   const { user, signOut, isPremium } = useAuth();
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
@@ -169,7 +175,12 @@ const Index = () => {
         }
         
         const userMessage = await createMessage(conversationId, content, 'user');
-        setMessages(prev => [...prev, userMessage]);
+        const messageWithFile: ExtendedMessageType = {
+          ...userMessage,
+          fileData: uploadedFileData
+        };
+        
+        setMessages(prev => [...prev, messageWithFile]);
         setIsLoading(true);
         
         if (!isPremium) {
@@ -207,7 +218,13 @@ const Index = () => {
         }
         
         const userMessage = saveGuestMessage({ content, type: 'user' });
-        setMessages(prev => [...prev, userMessage]);
+        
+        const messageWithFile: ExtendedMessageType = {
+          ...userMessage,
+          fileData: uploadedFileData
+        };
+        
+        setMessages(prev => [...prev, messageWithFile]);
         setIsLoading(true);
       }
       
@@ -252,13 +269,14 @@ const Index = () => {
           setMessages(prev => [...prev, assistantMessage]);
         }
         
-        // Set isVoiceActive to false after receiving a response
+        setUploadedFile(null);
+        setUploadedFileData(null);
+        
         setIsVoiceActive(false);
       }
     } catch (error) {
       console.error('Error in conversation:', error);
       toast.error('An error occurred while processing your request');
-      // Also turn off voice in case of error
       setIsVoiceActive(false);
     } finally {
       setIsLoading(false);
@@ -320,6 +338,9 @@ const Index = () => {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
           setMessages(prev => [...prev, assistantMessage]);
         }
+        
+        setUploadedFile(null);
+        setUploadedFileData(null);
       };
       
       reader.readAsDataURL(file);
@@ -333,6 +354,18 @@ const Index = () => {
   const handleUploadFile = async (file: File) => {
     try {
       setUploadedFile(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileData = e.target?.result as string;
+        setUploadedFileData({
+          type: file.type,
+          name: file.name,
+          data: fileData
+        });
+      };
+      reader.readAsDataURL(file);
+      
       toast.success(`File uploaded: ${file.name}. Please ask a question about it.`);
       
       const fileMessage = `[File uploaded: ${file.name}]`;
@@ -430,7 +463,8 @@ const Index = () => {
     id: msg.id,
     content: msg.content,
     type: msg.type,
-    timestamp: msg.created_at
+    timestamp: msg.created_at,
+    fileData: msg.fileData
   })).reverse();
 
   const savedConversations: SavedConversation[] = conversations.map(conv => ({
@@ -553,6 +587,7 @@ const Index = () => {
                       content={message.content}
                       type={message.type}
                       timestamp={message.timestamp}
+                      fileData={message.fileData}
                     />
                   </div>
                 ))}
