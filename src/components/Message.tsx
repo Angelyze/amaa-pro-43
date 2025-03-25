@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Share2, Volume2, VolumeX } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -41,13 +41,51 @@ const stripMarkdown = (text: string): string => {
   return cleaned;
 };
 
+// Component to render article previews in search results
+const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
+  title: string;
+  url: string;
+  date: string;
+  description: string;
+  imageUrl?: string;
+  source: string;
+}) => (
+  <div className="article-preview mb-4 rounded-lg overflow-hidden border border-border bg-card/30 hover:bg-card/50 transition-all">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="flex flex-col md:flex-row gap-4">
+      {imageUrl && (
+        <div className="article-image w-full md:w-1/4 h-40 md:h-auto">
+          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="article-content p-4 flex-1">
+        <h3 className="text-base font-medium mb-1 text-foreground hover:text-primary">{title}</h3>
+        <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
+          <Globe size={12} />
+          <span>{source}</span>
+          <Calendar size={12} className="ml-2" />
+          <span>{date}</span>
+        </div>
+        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+      </div>
+    </a>
+  </div>
+);
+
 const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
+  const [processedContent, setProcessedContent] = useState<string>(content);
+  
+  // Process content to extract article data when the content changes
+  useEffect(() => {
+    if (type === 'assistant') {
+      setProcessedContent(content);
+    }
+  }, [content, type]);
   
   // Auto-read assistant messages if enabled
-  React.useEffect(() => {
+  useEffect(() => {
     if (type === 'assistant' && getAutoReadSetting()) {
       handleTextToSpeech();
     }
@@ -117,20 +155,55 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link underline"
+        className="theme-link underline flex items-center gap-1"
       >
         {children}
+        <ExternalLink size={12} className="inline-block" />
       </a>
     ),
-    p: ({ children }: { children: React.ReactNode }) => (
-      <p className="mb-4 last:mb-0">{children}</p>
-    ),
+    p: ({ children, className }: { children: React.ReactNode, className?: string }) => {
+      // Check if this paragraph contains an image with search-result-image class
+      const hasSearchImage = className?.includes('search-result-image') || 
+                            (React.Children.toArray(children).some(child => 
+                              React.isValidElement(child) && 
+                              child.props.className?.includes('search-result-image')));
+      
+      if (hasSearchImage) {
+        return <div className="search-image-container my-2">{children}</div>;
+      }
+      return <p className="mb-4 last:mb-0">{children}</p>;
+    },
+    img: ({ src, alt, className }: { src?: string; alt?: string; className?: string }) => {
+      if (className?.includes('search-result-image')) {
+        return (
+          <div className="inline-block mx-1 my-1">
+            <img 
+              src={src} 
+              alt={alt || 'Search result image'} 
+              className="h-20 max-w-20 rounded-md object-cover inline-block align-middle shadow-sm border border-border"
+            />
+          </div>
+        );
+      }
+      return <img src={src} alt={alt} className="max-w-full h-auto rounded-md my-2" />;
+    },
     h1: ({ children }: { children: React.ReactNode }) => (
       <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
     ),
-    h2: ({ children }: { children: React.ReactNode }) => (
-      <h2 className="text-lg font-bold mb-3 mt-5 first:mt-0">{children}</h2>
-    ),
+    h2: ({ children, className }: { children: React.ReactNode, className?: string }) => {
+      // Special styling for the Recent Articles section
+      if (className?.includes('search-result-articles')) {
+        return (
+          <div className="search-results-header mt-8 mb-4">
+            <h2 className="text-lg font-bold pb-2 border-b border-border flex items-center gap-2">
+              <FileText size={18} />
+              {children}
+            </h2>
+          </div>
+        );
+      }
+      return <h2 className="text-lg font-bold mb-3 mt-5 first:mt-0">{children}</h2>;
+    },
     h3: ({ children }: { children: React.ReactNode }) => (
       <h3 className="text-md font-bold mb-2 mt-4 first:mt-0">{children}</h3>
     ),
@@ -270,9 +343,9 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           ) : (
             <ReactMarkdown 
               components={renderers}
-              className="markdown-content"
+              className="markdown-content search-results"
             >
-              {content}
+              {processedContent}
             </ReactMarkdown>
           )}
         </div>

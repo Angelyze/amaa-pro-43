@@ -187,4 +187,33 @@
   .copyright {
     @apply text-xs text-muted-foreground flex justify-center items-center;
   }
+
+  /* Search results styling */
+  .search-results h2 {
+    @apply border-b border-border/50 pb-2 mb-4;
+  }
+
+  .search-results ul, .search-results ol {
+    @apply my-3;
+  }
+
+  .search-results .search-image-container {
+    @apply flex flex-wrap gap-2 my-4 justify-center md:justify-start;
+  }
+
+  .search-results .search-image-container img {
+    @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md;
+  }
+
+  .article-preview {
+    @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-md bg-background/50 backdrop-blur-sm;
+  }
+
+  .article-preview .article-image img {
+    @apply object-cover w-full h-full transition-transform duration-500 hover:scale-105;
+  }
+
+  .article-preview:hover {
+    @apply border-primary/30;
+  }
 }

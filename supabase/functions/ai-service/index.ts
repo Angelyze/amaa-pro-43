@@ -299,6 +299,8 @@ async function handleOpenRouterSearch(message: string) {
           - Author name (if available)
           - Publication date in format: YYYY-MM-DD
           - Brief 1-2 sentence description of the article
+          - For each article extract a featured image URL if available, labeled as "IMAGE_URL:"
+      12. For any links you mention throughout your answer, try to include IMAGE_URL: [url] on a new line after the link if the page has a relevant image
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
@@ -320,7 +322,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, author names, and publication dates.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, author names, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -337,11 +339,14 @@ async function handleOpenRouterSearch(message: string) {
       throw new Error(`OpenRouter API error: ${data.error.message || JSON.stringify(data.error)}`);
     }
     
-    const searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
+    let searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
+    
+    // Process the searchResponse to extract image URLs and prepare them for display
+    const processedResponse = await processSearchResponseForImages(searchResponse);
     
     return new Response(
       JSON.stringify({ 
-        response: searchResponse,
+        response: processedResponse,
         model: "gpt-4o-search-preview"
       }),
       { 
@@ -367,4 +372,36 @@ async function handleOpenRouterSearch(message: string) {
       }
     );
   }
+}
+
+// Helper function to process the search response and prepare image data
+async function processSearchResponseForImages(text: string): Promise<string> {
+  // Extract image URLs from the format "IMAGE_URL: [url]"
+  const imageRegex = /IMAGE_URL:\s*(\S+)/g;
+  let match;
+  let processedText = text;
+  
+  // Replace the IMAGE_URL references with special markdown that our frontend will interpret
+  while ((match = imageRegex.exec(text)) !== null) {
+    const [fullMatch, imageUrl] = match;
+    
+    // If URL is valid, replace the IMAGE_URL line with our custom image markdown
+    if (imageUrl && imageUrl.startsWith('http')) {
+      processedText = processedText.replace(
+        fullMatch, 
+        `![Image](${imageUrl}){.search-result-image}`
+      );
+    } else {
+      // Remove invalid image references
+      processedText = processedText.replace(fullMatch, '');
+    }
+  }
+  
+  // Add special marker for the Recent Articles section so the frontend can style it properly
+  processedText = processedText.replace(
+    /## Recent Articles/g, 
+    '## Recent Articles {.search-result-articles}'
+  );
+  
+  return processedText;
 }

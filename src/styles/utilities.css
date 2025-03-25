@@ -32,4 +32,14 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted dark:bg-muted/60;
   }
+  
+  /* Image hover effects for search results */
+  .search-result-image {
+    @apply transition-all duration-300 hover:scale-110 cursor-zoom-in;
+  }
+  
+  /* Enhanced article styling */
+  .search-result-articles {
+    @apply mt-8 border-t border-border pt-4;
+  }
 }
