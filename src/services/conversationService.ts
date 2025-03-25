@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
@@ -16,14 +15,13 @@ export interface Message {
   content: string;
   type: 'user' | 'assistant';
   created_at: string;
-  fileData?: {
+  file_data?: {
     type: string;
     name: string;
     data: string;
-  };
+  } | null;
 }
 
-// Define a type for extended message that includes file data
 export interface ExtendedMessage extends Message {
   fileData?: {
     type: string;
@@ -175,8 +173,6 @@ export const createMessage = async (conversationId: string, content: string, typ
     messageData.file_data = fileData;
   }
   
-  // With RLS policies in place, we don't need to explicitly check ownership anymore
-  // as the database will enforce that automatically
   const { data, error } = await supabase
     .from('messages')
     .insert(messageData)

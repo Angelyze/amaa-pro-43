@@ -38,6 +38,7 @@ export type Database = {
           content: string
           conversation_id: string
           created_at: string
+          file_data: Json | null
           id: string
           type: string
         }
@@ -45,6 +46,7 @@ export type Database = {
           content: string
           conversation_id: string
           created_at?: string
+          file_data?: Json | null
           id?: string
           type: string
         }
@@ -52,6 +54,7 @@ export type Database = {
           content?: string
           conversation_id?: string
           created_at?: string
+          file_data?: Json | null
           id?: string
           type?: string
         }
