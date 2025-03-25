@@ -5,7 +5,7 @@ import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
 
 const Terms = () => {
-  const lastUpdated = "June 15, 2025";
+  const lastUpdated = "March 25, 2025";
   
   return (
     <Layout showBackButton title="Terms of Service">
@@ -111,7 +111,7 @@ const Terms = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">12. Contact Information</h2>
                 <p className="leading-relaxed">
-                  If you have any questions about these Terms, please contact us at <a href="mailto:angelyzeshop@gmail.com" className="text-primary hover:underline">angelyzeshop@gmail.com</a>.
+                  If you have any questions about these Terms, please contact us at <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a>.
                 </p>
                 <p className="mt-2">
                   Angelyze<br />
