@@ -23,6 +23,15 @@ export interface Message {
   };
 }
 
+// Define a type for extended message that includes file data
+export interface ExtendedMessage extends Message {
+  fileData?: {
+    type: string;
+    name: string;
+    data: string;
+  };
+}
+
 // Guest session management
 const GUEST_STORAGE_KEY = 'amaa_guest_messages';
 const GUEST_COUNTER_KEY = 'amaa_guest_query_count';
@@ -39,16 +48,16 @@ export const incrementGuestQueryCount = (): number => {
   return newCount;
 };
 
-export const getGuestMessages = (): Message[] => {
+export const getGuestMessages = (): ExtendedMessage[] => {
   const storedMessages = localStorage.getItem(GUEST_STORAGE_KEY);
   return storedMessages ? JSON.parse(storedMessages) : [];
 };
 
 export const saveGuestMessage = (message: Omit<Message, 'id' | 'conversation_id' | 'created_at'> & { 
   fileData?: { type: string; name: string; data: string; } 
-}): Message => {
+}): ExtendedMessage => {
   const messages = getGuestMessages();
-  const newMessage: Message = {
+  const newMessage: ExtendedMessage = {
     id: crypto.randomUUID(),
     conversation_id: GUEST_CONVERSATION_ID,
     content: message.content,
@@ -134,7 +143,7 @@ export const updateConversationTitle = async (id: string, title: string): Promis
 };
 
 // Message-related functions
-export const getMessages = async (conversationId: string): Promise<Message[]> => {
+export const getMessages = async (conversationId: string): Promise<ExtendedMessage[]> => {
   const { data, error } = await supabase
     .from('messages')
     .select('*')
@@ -146,17 +155,27 @@ export const getMessages = async (conversationId: string): Promise<Message[]> =>
     throw error;
   }
 
-  return data as Message[] || [];
+  return data as ExtendedMessage[] || [];
 };
 
-export const createMessage = async (conversationId: string, content: string, type: 'user' | 'assistant'): Promise<Message> => {
+export const createMessage = async (conversationId: string, content: string, type: 'user' | 'assistant', fileData?: { type: string; name: string; data: string }): Promise<ExtendedMessage> => {
   console.log(`Creating ${type} message for conversation ${conversationId}`);
+  
+  const messageData: any = { 
+    conversation_id: conversationId, 
+    content, 
+    type 
+  };
+  
+  if (fileData) {
+    messageData.file_data = fileData;
+  }
   
   // With RLS policies in place, we don't need to explicitly check ownership anymore
   // as the database will enforce that automatically
   const { data, error } = await supabase
     .from('messages')
-    .insert({ conversation_id: conversationId, content, type })
+    .insert(messageData)
     .select()
     .single();
 
@@ -165,5 +184,8 @@ export const createMessage = async (conversationId: string, content: string, typ
     throw error;
   }
 
-  return data as Message;
+  return {
+    ...data,
+    fileData: data.file_data
+  } as ExtendedMessage;
 };

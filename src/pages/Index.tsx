@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -15,6 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Conversation,
   Message as MessageType,
+  ExtendedMessage,
   createConversation,
   createMessage,
   getConversations,
@@ -33,7 +35,7 @@ import { SavedConversation } from '@/components/ConversationControls';
 const MAX_GUEST_QUERIES = 5;
 
 const Index = () => {
-  const [messages, setMessages] = useState<ExtendedMessageType[]>([]);
+  const [messages, setMessages] = useState<ExtendedMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -164,6 +166,11 @@ const Index = () => {
         return;
       }
       
+      // Prepare the message content and file data
+      let messageContent = content;
+      let finalFileData = uploadedFileData;
+      
+      // Process user message
       if (user) {
         let conversationId = currentConversationId;
         if (!conversationId) {
@@ -174,13 +181,15 @@ const Index = () => {
           setConversations([newConversation, ...conversations]);
         }
         
-        const userMessage = await createMessage(conversationId, content, 'user');
-        const messageWithFile: ExtendedMessageType = {
-          ...userMessage,
-          fileData: uploadedFileData
-        };
+        // Create user message with file data if present
+        const userMessage = await createMessage(
+          conversationId, 
+          messageContent, 
+          'user',
+          finalFileData
+        );
         
-        setMessages(prev => [...prev, messageWithFile]);
+        setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
         
         if (!isPremium) {
@@ -217,14 +226,14 @@ const Index = () => {
           );
         }
         
-        const userMessage = saveGuestMessage({ content, type: 'user' });
+        // Create guest message with file data if present
+        const userMessage = saveGuestMessage({ 
+          content: messageContent, 
+          type: 'user',
+          fileData: finalFileData
+        });
         
-        const messageWithFile: ExtendedMessageType = {
-          ...userMessage,
-          fileData: uploadedFileData
-        };
-        
-        setMessages(prev => [...prev, messageWithFile]);
+        setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
       }
       
@@ -318,10 +327,22 @@ const Index = () => {
         }
         
         const assistantContent = response.data.response;
+        const fileResponse = {
+          type: file.type,
+          name: file.name,
+          data: fileData as string
+        };
         
         if (user && currentConversationId) {
           try {
-            const assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
+            // Pass the file data to be displayed with the assistant message
+            const assistantMessage = await createMessage(
+              currentConversationId, 
+              assistantContent, 
+              'assistant',
+              isImageFile(file.type) ? fileResponse : undefined
+            );
+            
             setMessages(prev => [...prev, assistantMessage]);
           } catch (error) {
             console.error('Error creating assistant message:', error);
@@ -331,11 +352,17 @@ const Index = () => {
               conversation_id: currentConversationId,
               content: assistantContent,
               type: 'assistant',
-              created_at: new Date().toISOString()
+              created_at: new Date().toISOString(),
+              fileData: isImageFile(file.type) ? fileResponse : undefined
             }]);
           }
         } else {
-          const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
+          const assistantMessage = saveGuestMessage({ 
+            content: assistantContent, 
+            type: 'assistant',
+            fileData: isImageFile(file.type) ? fileResponse : undefined
+          });
+          
           setMessages(prev => [...prev, assistantMessage]);
         }
         
@@ -349,6 +376,10 @@ const Index = () => {
       toast.error('An error occurred while processing your file');
       throw error;
     }
+  };
+  
+  const isImageFile = (fileType: string): boolean => {
+    return fileType.startsWith('image/');
   };
   
   const handleUploadFile = async (file: File) => {
@@ -367,16 +398,6 @@ const Index = () => {
       reader.readAsDataURL(file);
       
       toast.success(`File uploaded: ${file.name}. Please ask a question about it.`);
-      
-      const fileMessage = `[File uploaded: ${file.name}]`;
-      
-      if (user && currentConversationId) {
-        const message = await createMessage(currentConversationId, fileMessage, 'user');
-        setMessages(prev => [...prev, message]);
-      } else {
-        const message = saveGuestMessage({ content: fileMessage, type: 'user' });
-        setMessages(prev => [...prev, message]);
-      }
     } catch (error) {
       console.error('Error uploading file:', error);
       toast.error('An error occurred while uploading your file');

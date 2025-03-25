@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Share2, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
@@ -107,7 +108,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
   };
 
   // Determine if the file is an image
-  const isImage = fileData?.type.startsWith('image/');
+  const isImage = fileData?.type?.startsWith('image/');
 
   // Custom renderer components for ReactMarkdown
   const renderers = {
@@ -231,9 +232,20 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           </div>
         )}
         
+        {/* For assistant messages, show file at the top if present */}
+        {fileData && type === 'assistant' && isImage && (
+          <div className="mb-4 w-full flex justify-center">
+            <img 
+              src={fileData.data} 
+              alt={fileData.name} 
+              className="max-w-full rounded-md object-contain"
+            />
+          </div>
+        )}
+        
+        {/* For user messages, show file inline */}
         {fileData && type === 'user' && (
-          <div className="mb-3 p-2 border rounded-md bg-muted/30">
-            <div className="text-sm font-medium mb-1">Uploaded: {fileData.name}</div>
+          <div className="mb-3">
             {isImage ? (
               <img 
                 src={fileData.data} 
@@ -241,8 +253,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                 className="max-w-full max-h-64 rounded-md object-contain"
               />
             ) : (
-              <div className="text-xs text-muted-foreground">
-                File type: {fileData.type}
+              <div className="p-2 border rounded-md bg-muted/30">
+                <div className="text-sm font-medium mb-1">Uploaded: {fileData.name}</div>
+                <div className="text-xs text-muted-foreground">
+                  File type: {fileData.type}
+                </div>
               </div>
             )}
           </div>
