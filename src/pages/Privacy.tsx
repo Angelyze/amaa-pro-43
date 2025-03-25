@@ -5,7 +5,7 @@ import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
 
 const Privacy = () => {
-  const lastUpdated = "March 24, 2025";
+  const lastUpdated = "March 25, 2025";
   
   return (
     <Layout showBackButton title="Privacy Policy">
@@ -144,7 +144,7 @@ const Privacy = () => {
                   If you have any questions about this Privacy Policy, please contact us at:
                 </p>
                 <p className="mt-2">
-                  Email: <a href="mailto:angelyzeshop@gmail.com" className="text-primary hover:underline">angelyzeshop@gmail.com</a><br />
+                  Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a><br />
                   Angelyze<br />
                   10430 Samobor<br />
                   Zagreb County, Croatia - EU
