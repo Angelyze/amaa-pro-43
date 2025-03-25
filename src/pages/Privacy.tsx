@@ -106,7 +106,7 @@ const Privacy = () => {
                   <li>Rights related to automated decision-making and profiling</li>
                 </ul>
                 <p className="mt-3 leading-relaxed">
-                  To exercise these rights, please contact us at <a href="mailto:angelyzeshop@gmail.com" className="text-primary hover:underline">angelyzeshop@gmail.com</a>.
+                  To exercise these rights, please contact us at <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a>.
                 </p>
               </section>
               
