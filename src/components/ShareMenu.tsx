@@ -36,31 +36,35 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
 
   // Prepare content for sharing (truncate if too long)
   const shareText = content.length > 280 ? content.substring(0, 277) + '...' : content;
+  const sourceText = "\n\nSource: AMAA.PRO";
+  const shareTextWithSource = shareText + sourceText;
 
   // Encode for URLs
-  const encodedText = encodeURIComponent(shareText);
+  const encodedText = encodeURIComponent(shareTextWithSource);
+  const encodedSource = encodeURIComponent("AMAA.PRO");
+  const sourceUrl = "https://amaa.pro";
+  const encodedSourceUrl = encodeURIComponent(sourceUrl);
 
   // Format image data for sharing if available
   const hasImage = fileData?.type?.startsWith('image/');
   
   // Different share functions
   const shareToFacebook = () => {
-    // Facebook supports image sharing through Open Graph meta tags on the shared page
-    // For direct image sharing, we'd need a server-side solution that hosts the image
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${encodedText}`;
+    // Facebook sharing - using actual website URL with proper OG tags would be better
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodedSourceUrl}&quote=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
   const shareToTwitter = () => {
     // Twitter supports text only through the web intent API
-    const url = `https://twitter.com/intent/tweet?text=${encodedText}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedSourceUrl}`;
     window.open(url, '_blank');
     onClose();
   };
   
   const shareToReddit = () => {
-    const url = `https://www.reddit.com/submit?url=${window.location.href}&title=${encodedText}`;
+    const url = `https://www.reddit.com/submit?url=${encodedSourceUrl}&title=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
@@ -68,8 +72,8 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   const shareToThreads = () => {
     // Copy content to clipboard for Threads
     const textToShare = hasImage 
-      ? `${content}\n\n[Image attached - copy from original source]` 
-      : content;
+      ? `${content}${sourceText}\n\n[Image attached]` 
+      : `${content}${sourceText}`;
     
     navigator.clipboard.writeText(textToShare);
     toast.success('Copied to clipboard for sharing to Threads');
@@ -77,7 +81,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   };
   
   const shareToLinkedIn = () => {
-    const url = `https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=Shared%20from%20AMAA&summary=${encodedText}`;
+    const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedSourceUrl}&title=Shared from AMAA&summary=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
@@ -93,8 +97,8 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     // Email can handle text content
     const subject = "Shared from AMAA";
     const body = hasImage 
-      ? `${content}\n\n[Image attached - copy from original source]` 
-      : content;
+      ? `${content}${sourceText}\n\n[Image attached]` 
+      : `${content}${sourceText}`;
     
     const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = url;
@@ -104,8 +108,8 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   const copyLinkToClipboard = () => {
     // For clipboard, we can include both content and describe the image
     const textToCopy = hasImage 
-      ? `${content}\n\n[Image from conversation at ${window.location.href}]` 
-      : content;
+      ? `${content}${sourceText}\n\n[Image from conversation]` 
+      : `${content}${sourceText}`;
     
     navigator.clipboard.writeText(textToCopy);
     toast.success('Content copied to clipboard');
