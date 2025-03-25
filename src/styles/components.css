@@ -1,4 +1,3 @@
-
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -199,22 +198,22 @@
 
   /* Improved image container with flex display */
   .search-results .search-image-container {
-    @apply flex flex-wrap gap-2 my-4 justify-center md:justify-start;
+    @apply flex flex-wrap gap-3 my-4 justify-center md:justify-start;
   }
 
   /* Enhanced image styling with hover effects */
   .search-results .search-image-container img {
-    @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md max-h-24 object-cover;
+    @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md max-h-28 object-cover;
   }
 
   /* Enhanced styling for individual search result images */
   .search-result-image {
-    @apply transition-all duration-300 hover:scale-110 cursor-zoom-in max-h-24 object-cover;
+    @apply transition-all duration-300 hover:scale-110 cursor-zoom-in max-h-28 object-cover shadow-sm hover:shadow-md;
   }
 
   /* Better article preview layout and styling */
   .article-preview {
-    @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-md bg-background/50 backdrop-blur-sm my-4;
+    @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-md bg-background/50 backdrop-blur-sm my-4;
   }
 
   .article-preview .article-image {
@@ -230,7 +229,7 @@
   }
 
   .article-preview .article-title {
-    @apply text-base font-medium mb-1 text-foreground hover:text-primary line-clamp-2;
+    @apply text-base font-medium mb-1.5 text-foreground hover:text-primary line-clamp-2;
   }
 
   .article-preview .article-meta {
@@ -258,5 +257,37 @@
     .article-preview .article-content {
       @apply w-3/4 flex-1;
     }
+  }
+  
+  /* New - Search results header styling */
+  .search-results-header {
+    @apply border-t border-border/40 pt-4 mt-8;
+  }
+  
+  /* New - Make image previews more visually appealing */
+  .search-image-container {
+    @apply flex flex-wrap gap-3 my-4;
+  }
+  
+  .search-image-container img {
+    @apply rounded-md border border-border/50 shadow-sm hover:shadow-md transition-all duration-300;
+    max-height: 112px;
+    object-fit: cover;
+  }
+  
+  /* New - Image hover effects */
+  .search-image-container img:hover {
+    transform: scale(1.05);
+    border-color: rgba(var(--primary), 0.5);
+  }
+  
+  /* New - Search result emphasis */
+  .search-results strong {
+    @apply font-medium text-primary;
+  }
+  
+  /* New - Search result links */
+  .search-results a:not(.article-preview a) {
+    @apply text-primary hover:underline transition-colors;
   }
 }

@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -305,6 +304,8 @@ async function handleOpenRouterSearch(message: string) {
           - For each article extract a featured image URL if available, labeled as "IMAGE_URL:"
       12. For any links you mention throughout your answer, try to include IMAGE_URL: [url] on a new line after the link if the page has a relevant image
       13. RESPOND IN THE SAME LANGUAGE as the user's query. Detect the language of "${message}" and respond in that language.
+      
+      IMPORTANT: Do not include any special class markers like {.class-name} in your response. Just use plain markdown.
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
@@ -326,7 +327,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, publication sources, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, publication sources, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query. DO NOT include any special class formatting like {.class-name} in your output.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -385,7 +386,7 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   let match;
   let processedText = text;
   
-  // Replace the IMAGE_URL references with special markdown that our frontend will interpret
+  // Replace the IMAGE_URL references with markdown images that our frontend will interpret
   const imageUrls: string[] = [];
   while ((match = imageRegex.exec(text)) !== null) {
     const [fullMatch, imageUrl] = match;
@@ -395,9 +396,10 @@ async function processSearchResponseForImages(text: string): Promise<string> {
       // Add to our collection of image URLs
       imageUrls.push(imageUrl);
       
+      // Replace with markdown image syntax
       processedText = processedText.replace(
         fullMatch, 
-        `![Search result image](${imageUrl}){.search-result-image}`
+        `![Search result image](${imageUrl}){: .search-result-image}`
       );
     } else {
       // Remove invalid image references
@@ -405,10 +407,11 @@ async function processSearchResponseForImages(text: string): Promise<string> {
     }
   }
   
-  // Add special marker for the Recent Articles section so the frontend can style it properly
+  // Replace the Recent Articles section marker without class information
+  // We'll handle the special styling on the frontend
   processedText = processedText.replace(
     /## Recent Articles/g, 
-    '## Recent Articles {.search-result-articles}'
+    '## Recent Articles'
   );
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);

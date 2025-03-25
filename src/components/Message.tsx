@@ -77,9 +77,20 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [processedContent, setProcessedContent] = useState<string>(content);
   
-  // Process content to extract article data when the content changes
+  // Process content to extract article data and clean up any special formatting
   useEffect(() => {
     if (type === 'assistant') {
+      // Clean up any special class markers that might appear in the text
+      let cleanedContent = content;
+      
+      // Remove the {.search-result-articles} marker from the Recent Articles heading
+      cleanedContent = cleanedContent.replace(/## Recent Articles \{\.search-result-articles\}/g, '## Recent Articles');
+      
+      // Remove any other special class markers
+      cleanedContent = cleanedContent.replace(/\{\.[\w-]+\}/g, '');
+      
+      setProcessedContent(cleanedContent);
+    } else {
       setProcessedContent(content);
     }
   }, [content, type]);
@@ -174,6 +185,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       return <p className="mb-4 last:mb-0">{children}</p>;
     },
     img: ({ src, alt, className }: { src?: string; alt?: string; className?: string }) => {
+      // Special handling for search result images
       if (className?.includes('search-result-image')) {
         return (
           <div className="inline-block mx-1 my-1">
@@ -193,6 +205,8 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           </div>
         );
       }
+      
+      // Default image handling
       return (
         <img 
           src={src} 
@@ -213,13 +227,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
     ),
     h2: ({ children, className }: { children: React.ReactNode, className?: string }) => {
-      // Special styling for the Recent Articles section
-      if (className?.includes('search-result-articles')) {
+      // Special styling for the Recent Articles section - match without class marker
+      if (String(children).includes('Recent Articles') || className?.includes('search-result-articles')) {
         return (
           <div className="search-results-header mt-8 mb-4">
             <h2 className="text-lg font-bold pb-2 border-b border-border flex items-center gap-2">
               <FileText size={18} />
-              {children}
+              Recent Articles
             </h2>
           </div>
         );
