@@ -188,7 +188,7 @@
     @apply text-xs text-muted-foreground flex justify-center items-center;
   }
 
-  /* Search results styling */
+  /* Enhanced search results styling */
   .search-results h2 {
     @apply border-b border-border/50 pb-2 mb-4;
   }
@@ -197,23 +197,66 @@
     @apply my-3;
   }
 
+  /* Improved image container with flex display */
   .search-results .search-image-container {
     @apply flex flex-wrap gap-2 my-4 justify-center md:justify-start;
   }
 
+  /* Enhanced image styling with hover effects */
   .search-results .search-image-container img {
-    @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md;
+    @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md max-h-24 object-cover;
   }
 
+  /* Enhanced styling for individual search result images */
+  .search-result-image {
+    @apply transition-all duration-300 hover:scale-110 cursor-zoom-in max-h-24 object-cover;
+  }
+
+  /* Better article preview layout and styling */
   .article-preview {
-    @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-md bg-background/50 backdrop-blur-sm;
+    @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-md bg-background/50 backdrop-blur-sm my-4;
+  }
+
+  .article-preview .article-image {
+    @apply h-32 overflow-hidden relative;
   }
 
   .article-preview .article-image img {
     @apply object-cover w-full h-full transition-transform duration-500 hover:scale-105;
   }
 
+  .article-preview .article-content {
+    @apply p-4;
+  }
+
+  .article-preview .article-title {
+    @apply text-base font-medium mb-1 text-foreground hover:text-primary line-clamp-2;
+  }
+
+  .article-preview .article-meta {
+    @apply flex items-center gap-2 mb-2 text-xs text-muted-foreground;
+  }
+
+  .article-preview .article-description {
+    @apply text-sm text-muted-foreground line-clamp-2;
+  }
+
   .article-preview:hover {
     @apply border-primary/30;
+  }
+
+  /* Media layouts for article previews */
+  @media (min-width: 768px) {
+    .article-preview {
+      @apply flex;
+    }
+    
+    .article-preview .article-image {
+      @apply w-1/4 h-auto;
+    }
+    
+    .article-preview .article-content {
+      @apply w-3/4 flex-1;
+    }
   }
 }

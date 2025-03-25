@@ -275,6 +275,9 @@ async function handleOpenRouterSearch(message: string) {
   }
   
   try {
+    // Detect language of user query for proper response formatting
+    const userLanguage = 'auto'; // We'll let the model auto-detect language
+    
     // Enhanced search query for up-to-date information with sources
     const searchQuery = `
       I need the MOST CURRENT AND UP-TO-DATE information about: ${message}
@@ -296,11 +299,12 @@ async function handleOpenRouterSearch(message: string) {
       10. Include the date when each source was published/updated
       11. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic, including:
           - Full article title as a link to the source
-          - Author name (if available)
+          - Publication source/website name
           - Publication date in format: YYYY-MM-DD
           - Brief 1-2 sentence description of the article
           - For each article extract a featured image URL if available, labeled as "IMAGE_URL:"
       12. For any links you mention throughout your answer, try to include IMAGE_URL: [url] on a new line after the link if the page has a relevant image
+      13. RESPOND IN THE SAME LANGUAGE as the user's query. Detect the language of "${message}" and respond in that language.
     `;
     
     console.log('Sending real-time web search query to OpenRouter:', searchQuery);
@@ -322,7 +326,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, author names, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, publication sources, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -382,14 +386,18 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   let processedText = text;
   
   // Replace the IMAGE_URL references with special markdown that our frontend will interpret
+  const imageUrls: string[] = [];
   while ((match = imageRegex.exec(text)) !== null) {
     const [fullMatch, imageUrl] = match;
     
     // If URL is valid, replace the IMAGE_URL line with our custom image markdown
     if (imageUrl && imageUrl.startsWith('http')) {
+      // Add to our collection of image URLs
+      imageUrls.push(imageUrl);
+      
       processedText = processedText.replace(
         fullMatch, 
-        `![Image](${imageUrl}){.search-result-image}`
+        `![Search result image](${imageUrl}){.search-result-image}`
       );
     } else {
       // Remove invalid image references
@@ -403,5 +411,6 @@ async function processSearchResponseForImages(text: string): Promise<string> {
     '## Recent Articles {.search-result-articles}'
   );
   
+  console.log(`Processed ${imageUrls.length} image URLs for display`);
   return processedText;
 }

@@ -50,22 +50,22 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   imageUrl?: string;
   source: string;
 }) => (
-  <div className="article-preview mb-4 rounded-lg overflow-hidden border border-border bg-card/30 hover:bg-card/50 transition-all">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="flex flex-col md:flex-row gap-4">
+  <div className="article-preview">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="flex flex-col md:flex-row">
       {imageUrl && (
-        <div className="article-image w-full md:w-1/4 h-40 md:h-auto">
-          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        <div className="article-image">
+          <img src={imageUrl} alt={title} loading="lazy" />
         </div>
       )}
-      <div className="article-content p-4 flex-1">
-        <h3 className="text-base font-medium mb-1 text-foreground hover:text-primary">{title}</h3>
-        <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
+      <div className="article-content">
+        <h3 className="article-title">{title}</h3>
+        <div className="article-meta">
           <Globe size={12} />
           <span>{source}</span>
           <Calendar size={12} className="ml-2" />
           <span>{date}</span>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+        <p className="article-description">{description}</p>
       </div>
     </a>
   </div>
@@ -169,7 +169,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                               child.props.className?.includes('search-result-image')));
       
       if (hasSearchImage) {
-        return <div className="search-image-container my-2">{children}</div>;
+        return <div className="search-image-container">{children}</div>;
       }
       return <p className="mb-4 last:mb-0">{children}</p>;
     },
@@ -180,12 +180,34 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
             <img 
               src={src} 
               alt={alt || 'Search result image'} 
-              className="h-20 max-w-20 rounded-md object-cover inline-block align-middle shadow-sm border border-border"
+              className="search-result-image max-h-24 rounded-md object-cover border border-border/50 shadow-sm"
+              loading="lazy"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                console.error(`Failed to load image: ${target.src}`);
+                target.src = '/placeholder.svg';
+                target.alt = 'Image not available';
+                target.className = 'search-result-image max-h-24 rounded-md object-cover border border-border/50 bg-muted/20';
+              }}
             />
           </div>
         );
       }
-      return <img src={src} alt={alt} className="max-w-full h-auto rounded-md my-2" />;
+      return (
+        <img 
+          src={src} 
+          alt={alt || 'Image'} 
+          className="max-w-full h-auto rounded-md my-2"
+          loading="lazy"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            console.error(`Failed to load image: ${target.src}`);
+            target.src = '/placeholder.svg';
+            target.alt = 'Image not available';
+            target.className = 'max-w-full h-auto rounded-md my-2 bg-muted/20';
+          }}
+        />
+      );
     },
     h1: ({ children }: { children: React.ReactNode }) => (
       <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
@@ -313,6 +335,14 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
               src={fileData.data} 
               alt={fileData.name} 
               className="max-w-full rounded-md object-contain"
+              loading="lazy"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                console.error(`Failed to load image: ${target.src}`);
+                target.src = '/placeholder.svg';
+                target.alt = 'Image not available';
+                target.className = 'max-w-full rounded-md object-contain bg-muted/20';
+              }}
             />
           </div>
         )}
@@ -325,6 +355,14 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                 src={fileData.data} 
                 alt={fileData.name} 
                 className="max-w-full max-h-64 rounded-md object-contain"
+                loading="lazy"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  console.error(`Failed to load image: ${target.src}`);
+                  target.src = '/placeholder.svg';
+                  target.alt = 'Image not available';
+                  target.className = 'max-w-full max-h-64 rounded-md object-contain bg-muted/20';
+                }}
               />
             ) : (
               <div className="p-2 border rounded-md bg-muted/30">
