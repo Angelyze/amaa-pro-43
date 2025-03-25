@@ -155,7 +155,11 @@ export const getMessages = async (conversationId: string): Promise<ExtendedMessa
     throw error;
   }
 
-  return data as ExtendedMessage[] || [];
+  // Transform data to include fileData from file_data for compatibility
+  return (data || []).map(message => ({
+    ...message,
+    fileData: message.file_data
+  })) as ExtendedMessage[];
 };
 
 export const createMessage = async (conversationId: string, content: string, type: 'user' | 'assistant', fileData?: { type: string; name: string; data: string }): Promise<ExtendedMessage> => {
@@ -184,6 +188,7 @@ export const createMessage = async (conversationId: string, content: string, typ
     throw error;
   }
 
+  // Return with fileData from file_data for consistency
   return {
     ...data,
     fileData: data.file_data

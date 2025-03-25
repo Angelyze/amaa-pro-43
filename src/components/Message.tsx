@@ -226,7 +226,8 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
             {isShareMenuOpen && (
               <ShareMenu 
                 content={content} 
-                onClose={() => setIsShareMenuOpen(false)} 
+                onClose={() => setIsShareMenuOpen(false)}
+                fileData={fileData}
               />
             )}
           </div>

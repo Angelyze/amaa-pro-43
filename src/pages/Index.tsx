@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -181,7 +180,7 @@ const Index = () => {
           setConversations([newConversation, ...conversations]);
         }
         
-        // Create user message with file data if present
+        // Create user message with file data if present (but don't show file in message content)
         const userMessage = await createMessage(
           conversationId, 
           messageContent, 
@@ -226,7 +225,7 @@ const Index = () => {
           );
         }
         
-        // Create guest message with file data if present
+        // Create guest message with file data if present (but don't show file in message content)
         const userMessage = saveGuestMessage({ 
           content: messageContent, 
           type: 'user',
