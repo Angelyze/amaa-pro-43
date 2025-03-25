@@ -46,8 +46,12 @@ const About = () => {
 
                   {isPremium && (
                     <>
-                      <li>Enhanced processing power for premium users</li>
-                      <li>Priority response times and advanced model access</li>
+                    <li>Unlimited conversations and queries</li>
+                    <li>Profile and Theme customization options</li>
+                    <li>Advanced AI models and capabilities</li>
+                    <li>Save and manage conversations</li>
+                    <li>Text to Speech voice options</li>
+                    <li>Premium support</li>
                     </>
                   )}
                 </ul>
@@ -98,7 +102,7 @@ const About = () => {
                   Have questions or feedback? We'd love to hear from you!
                 </p>
                 <div className="mt-2">
-                  <p className="text-foreground/80">Email: <a href="mailto:angelyzeshop@gmail.com" className="text-primary hover:underline">angelyzeshop@gmail.com</a></p>
+                  <p className="text-foreground/80">Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                   <p className="text-foreground/80">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
                 </div>
               </section>
