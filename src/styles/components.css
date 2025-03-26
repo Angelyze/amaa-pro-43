@@ -172,7 +172,7 @@
   }
   
   .footer-link {
-    @apply text-foreground hover:text-[#0097b2] transition-colors;
+    @apply text-foreground hover:text-primary transition-colors;
   }
 
   /* Theme-specific footer links */

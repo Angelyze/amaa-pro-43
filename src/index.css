@@ -8,6 +8,7 @@
 @import './themes/darkGreen.css';
 @import './themes/darkRed.css';
 @import './themes/darkYellow.css';
+@import './themes/darkPurple.css';
 
 /* Modern styling for search results */
 .search-results .article-preview {
@@ -37,7 +38,7 @@
 }
 
 .search-results .theme-link {
-  color: var(--theme-accent);
+  color: var(--primary);
   text-decoration: none;
   transition: color 0.2s, text-decoration 0.2s;
 }
@@ -87,7 +88,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  color: var(--theme-accent);
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -190,13 +191,13 @@
 
 /* Timeline style for dates in lists */
 .search-results li strong:first-child {
-  color: var(--theme-accent);
+  color: var(--primary);
   font-weight: 600;
 }
 
 /* Quote styling */
 .search-results blockquote {
-  border-left: 3px solid var(--theme-accent);
+  border-left: 3px solid var(--primary);
   padding-left: 1rem;
   margin: 1rem 0;
   font-style: italic;

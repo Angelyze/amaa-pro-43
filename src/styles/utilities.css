@@ -84,12 +84,12 @@
   
   /* Modern styling for bullet points */
   .search-results ul li::before {
-    @apply content-['•'] text-theme-accent mr-2;
+    @apply content-['•'] text-primary mr-2;
   }
   
   /* Timeline-style list items */
   .timeline-item {
-    @apply relative pl-6 before:absolute before:left-0 before:top-1.5 before:h-2 before:w-2 before:rounded-full before:bg-theme-accent;
+    @apply relative pl-6 before:absolute before:left-0 before:top-1.5 before:h-2 before:w-2 before:rounded-full before:bg-primary;
   }
   
   /* Last updated badge */
