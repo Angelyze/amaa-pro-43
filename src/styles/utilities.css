@@ -66,4 +66,9 @@
   .search-image-container img:hover {
     @apply shadow-md;
   }
+  
+  /* Fix domain name display in source links to prevent wrapping */
+  .source-domain {
+    @apply whitespace-nowrap;
+  }
 }

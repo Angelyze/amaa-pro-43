@@ -19,28 +19,23 @@ interface MessageProps {
 
 // Function to strip all markdown for TTS
 const stripMarkdown = (text: string): string => {
-  // Replace headers
   let cleaned = text.replace(/^#{1,6}\s+/gm, '');
   
-  // Replace bold and italic
   cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, '$1');
   cleaned = cleaned.replace(/\*(.*?)\*/g, '$1');
   
-  // Replace code blocks
   cleaned = cleaned.replace(/```[\s\S]*?```/g, '');
   cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
   
-  // Replace links
   cleaned = cleaned.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
   
-  // Replace lists
   cleaned = cleaned.replace(/^[*-]\s+/gm, '');
   cleaned = cleaned.replace(/^\d+\.\s+/gm, '');
   
   return cleaned;
 };
 
-// Component to render article previews in search results
+// Component to render article previews in search results with improved layout
 const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   title: string;
   url: string;
@@ -49,7 +44,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   imageUrl?: string;
   source: string;
 }) => (
-  <div className="article-preview mb-4 border-b border-border/30 pb-4 last:border-0">
+  <div className="article-preview">
     <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
       {title}
     </a>
@@ -66,8 +61,8 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
       )}
       <div className="article-content flex-1">
         <p className="article-description text-sm mb-1">{description}</p>
-        <div className="article-meta text-xs text-muted-foreground mt-1">
-          <div className="flex items-center gap-1">
+        <div className="article-meta text-xs text-muted-foreground">
+          <div className="flex items-center gap-1 mt-1">
             <Calendar size={12} className="inline" />
             <span>Date: {date}</span>
           </div>
@@ -90,16 +85,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [processedContent, setProcessedContent] = useState<string>(content);
   
-  // Process content to extract article data and clean up any special formatting
   useEffect(() => {
     if (type === 'assistant') {
-      // Clean up any special class markers that might appear in the text
       let cleanedContent = content;
       
-      // Remove the {.search-result-articles} marker from the Recent Articles heading
       cleanedContent = cleanedContent.replace(/## Recent Articles \{\.search-result-articles\}/g, '## Recent Articles');
-      
-      // Remove any other special class markers
       cleanedContent = cleanedContent.replace(/\{\.[\w-]+\}/g, '');
       
       setProcessedContent(cleanedContent);
@@ -108,7 +98,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     }
   }, [content, type]);
   
-  // Auto-read assistant messages if enabled
   useEffect(() => {
     if (type === 'assistant' && getAutoReadSetting()) {
       handleTextToSpeech();
@@ -136,7 +125,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     setIsSpeaking(true);
     
     try {
-      // Clean the markdown content for TTS
       const cleanText = stripMarkdown(content);
       console.log('Starting TTS with cleaned content length:', cleanText.length);
       
@@ -169,10 +157,8 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     toast.success('Copied to clipboard');
   };
 
-  // Determine if the file is an image
   const isImage = fileData?.type?.startsWith('image/');
 
-  // Custom renderer components for ReactMarkdown
   const renderers = {
     a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
       <a 
@@ -186,7 +172,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       </a>
     ),
     p: ({ children, className }: { children: React.ReactNode, className?: string }) => {
-      // Check if this paragraph contains an image with search-result-image class
       const hasSearchImage = className?.includes('search-result-image') || 
                             (React.Children.toArray(children).some(child => 
                               React.isValidElement(child) && 
@@ -198,7 +183,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       return <p className="mb-4 last:mb-0">{children}</p>;
     },
     img: ({ src, alt, className }: { src?: string; alt?: string; className?: string }) => {
-      // Special handling for search result images
       if (className?.includes('search-result-image')) {
         return (
           <div className="inline-block mx-1 my-1">
@@ -219,7 +203,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         );
       }
       
-      // Default image handling
       return (
         <img 
           src={src} 
@@ -240,7 +223,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
     ),
     h2: ({ children, className }: { children: React.ReactNode, className?: string }) => {
-      // Special styling for the Recent Articles section - match without class marker
       if (String(children).includes('Recent Articles') || className?.includes('search-result-articles')) {
         return (
           <div className="search-results-header mt-8 mb-4">

@@ -82,3 +82,48 @@
 .markdown-content em {
   color: var(--foreground);
 }
+
+/* Enhanced article preview styling */
+.search-results .article-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Responsive layout for article preview content */
+@media (min-width: 640px) {
+  .search-results .article-preview > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .search-results .search-image-container {
+    flex: 0 0 auto;
+    width: 120px;
+  }
+  
+  .search-results .article-content {
+    flex: 1;
+  }
+}
+
+/* Fix source formatting to ensure no line breaks */
+.search-results .article-meta a,
+.search-results a.theme-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* Enhanced hover effects for search result images */
+.search-results .search-image-container img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}

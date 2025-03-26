@@ -297,16 +297,16 @@ async function handleOpenRouterSearch(message: string) {
       8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
       9. Add a timestamp of when this search was conducted
       10. Include the date when each source was published/updated
-      11. IMPORTANT SOURCE FORMATTING: Always format source links like "[text](URL)" or "(domain.com)" - NEVER split domain names across multiple lines
-      12. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic.
+      11. IMPORTANT: Format source links properly like "[text](URL)" or "(domain.com)" - with NO line breaks or spaces in the link format
+      12. CRITICALLY IMPORTANT: RESPOND IN THE SAME LANGUAGE AS THE USER'S QUERY. Analyze "${message}" and respond in that same language.
+      13. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic.
           Format EXACTLY as follows for each article:
           - Full article title as a link to the source: [Title](URL)
-          - Short description (1-2 sentences) on a new line
-          - Date and source on separate lines in simple format: "Date: YYYY-MM-DD" 
-          - Source line should be "Source: [SourceName](URL)" - the domain name should NEVER be split across multiple lines
-          - For each article extract a featured image URL if available, labeled as "IMAGE_URL:"
-      13. For any links you mention throughout your answer, try to include IMAGE_URL: [url] on a new line after the link if the page has a relevant image
-      14. RESPOND IN THE SAME LANGUAGE as the user's query. Detect the language of "${message}" and respond in that language.
+          - EACH ARTICLE must include an IMAGE_URL: [url] if available
+          - Short description: One paragraph (1-2 sentences) on a new line
+          - Date: YYYY-MM-DD
+          - Source: Plain text name with link to source
+      14. Format all links and domain names WITHOUT line breaks. Never split a URL or domain name across multiple lines.
       
       IMPORTANT: Do not include any special class markers like {.class-name} in your response. Just use plain markdown.
     `;
@@ -330,7 +330,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). IMPORTANT: Always format source links like "[text](URL)" or "(domain.com)" - NEVER split domain names across multiple lines. At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles. Format EXACTLY as specified with title as link, description on new line, date on new line as "Date: YYYY-MM-DD", and source on new line as "Source: [SourceName](URL)". For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query. DO NOT include any special class formatting like {.class-name} in your output.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). IMPORTANT: Always format source links properly without line breaks or extra spaces. At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles. IMPORTANT: ALWAYS detect and respond in the SAME LANGUAGE as the user query. If the user query is in Spanish, your entire response must be in Spanish. If the query is in French, respond in French, etc.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -418,6 +418,18 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   
   // Also replace any other remaining class markers
   processedText = processedText.replace(/\{\.[\w-]+\}/g, '');
+  
+  // Fix any domain names that are split across multiple lines
+  // Look for open parenthesis followed by domain name pattern possibly spread across lines
+  processedText = processedText.replace(
+    /\(\s*([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)?\s*\)/g,
+    (match, domain) => {
+      if (domain) {
+        return `(${domain.trim()})`;
+      }
+      return match;
+    }
+  );
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);
   return processedText;
