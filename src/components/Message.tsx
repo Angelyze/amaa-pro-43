@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
+import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText, Link } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -35,7 +35,7 @@ const stripMarkdown = (text: string): string => {
   return cleaned;
 };
 
-// Component to render article previews in search results with improved layout
+// Modern component to render article previews in search results
 const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   title: string;
   url: string;
@@ -45,32 +45,34 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   source: string;
 }) => (
   <div className="article-preview">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block text-base font-medium theme-link hover:underline transition-colors duration-200 mb-3">
       {title}
     </a>
-    <div className="flex flex-col sm:flex-row gap-3 mt-2">
+    <div className="flex flex-col sm:flex-row gap-4">
       {imageUrl && (
-        <div className="search-image-container sm:w-1/4 max-w-[120px]">
+        <div className="search-image-container flex-shrink-0">
           <img 
             src={imageUrl} 
             alt={title} 
             loading="lazy" 
-            className="rounded-md object-cover w-full aspect-video border border-border/30"
+            className="rounded-md object-cover border border-border/30 shadow-sm hover:shadow-md transition-all duration-300"
           />
         </div>
       )}
       <div className="article-content flex-1">
-        <p className="article-description text-sm mb-1">{description}</p>
-        <div className="article-meta text-xs text-muted-foreground">
-          <div className="flex items-center gap-1 mt-1">
-            <Calendar size={12} className="inline" />
-            <span>Date: {date}</span>
+        <p className="article-description text-sm mb-2">{description}</p>
+        <div className="article-meta text-xs space-y-1">
+          <div className="flex items-center gap-1.5">
+            <Calendar size={14} className="text-muted-foreground" />
+            <span className="text-muted-foreground">Date:</span>
+            <span>{date}</span>
           </div>
-          <div className="flex items-center gap-1 mt-1">
-            <Globe size={12} className="inline" />
-            <span>Source: </span>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="theme-link hover:underline">
+          <div className="flex items-center gap-1.5">
+            <Globe size={14} className="text-muted-foreground" />
+            <span className="text-muted-foreground">Source:</span>
+            <a href={url} target="_blank" rel="noopener noreferrer" className="source-link theme-link hover:underline inline-flex items-center gap-1">
               {source}
+              <ExternalLink size={12} className="inline-block" />
             </a>
           </div>
         </div>

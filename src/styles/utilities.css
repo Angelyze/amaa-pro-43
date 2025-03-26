@@ -35,7 +35,7 @@
   
   /* Enhanced image hover effects for search results */
   .search-result-image {
-    @apply transition-transform duration-300 hover:scale-110 cursor-zoom-in shadow-sm hover:shadow-md;
+    @apply transition-all duration-300 hover:scale-110 cursor-zoom-in shadow-sm hover:shadow-md rounded-lg;
   }
   
   /* Display image in a lightbox when clicked */
@@ -43,7 +43,7 @@
     @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90;
   }
   
-  /* Enhanced article styling */
+  /* Enhanced article styling for search results */
   .search-result-articles {
     @apply mt-8 border-t border-border pt-4;
   }
@@ -62,13 +62,38 @@
     @apply transition-all duration-300;
   }
   
-  /* Image zoom effect on hover */
-  .search-image-container img:hover {
-    @apply shadow-md;
+  /* Improved link styling */
+  a.external-link {
+    @apply inline-flex items-center gap-1;
   }
   
   /* Fix domain name display in source links to prevent wrapping */
   .source-domain {
-    @apply whitespace-nowrap;
+    @apply whitespace-nowrap text-nowrap;
+  }
+  
+  /* Add card-like styling to search results */
+  .search-card {
+    @apply rounded-lg border border-border/50 p-4 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+  
+  /* Modern date badge */
+  .date-badge {
+    @apply inline-flex items-center gap-1 text-xs bg-primary/10 px-2 py-1 rounded-full;
+  }
+  
+  /* Modern styling for bullet points */
+  .search-results ul li::before {
+    @apply content-['•'] text-theme-accent mr-2;
+  }
+  
+  /* Timeline-style list items */
+  .timeline-item {
+    @apply relative pl-6 before:absolute before:left-0 before:top-1.5 before:h-2 before:w-2 before:rounded-full before:bg-theme-accent;
+  }
+  
+  /* Last updated badge */
+  .last-updated {
+    @apply inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/30 px-2.5 py-1 rounded-full;
   }
 }
