@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -56,7 +55,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
     </a>
     <div className="flex flex-col sm:flex-row gap-3 mt-2">
       {imageUrl && (
-        <div className="article-image-container sm:w-1/4 max-w-[120px]">
+        <div className="search-image-container sm:w-1/4 max-w-[120px]">
           <img 
             src={imageUrl} 
             alt={title} 
@@ -296,7 +295,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     td: ({ children }: { children: React.ReactNode }) => (
       <td className="border border-border p-2">{children}</td>
     ),
-    // Make sure strong and em elements do not have any special coloring
     strong: ({ children }: { children: React.ReactNode }) => (
       <strong className="font-semibold">{children}</strong>
     ),
@@ -363,7 +361,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           </div>
         )}
         
-        {/* For assistant messages, show file at the top if present */}
         {fileData && type === 'assistant' && isImage && (
           <div className="mb-4 w-full flex justify-center">
             <img 
@@ -382,7 +379,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           </div>
         )}
         
-        {/* For user messages, show file inline */}
         {fileData && type === 'user' && (
           <div className="mb-3">
             {isImage ? (
