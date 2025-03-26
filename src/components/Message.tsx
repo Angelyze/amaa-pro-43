@@ -50,24 +50,38 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   imageUrl?: string;
   source: string;
 }) => (
-  <div className="article-preview">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="flex flex-col md:flex-row">
+  <div className="article-preview mb-4 border-b border-border/30 pb-4 last:border-0">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
+      {title}
+    </a>
+    <div className="flex flex-col sm:flex-row gap-3 mt-2">
       {imageUrl && (
-        <div className="article-image">
-          <img src={imageUrl} alt={title} loading="lazy" />
+        <div className="article-image-container sm:w-1/4 max-w-[120px]">
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            loading="lazy" 
+            className="rounded-md object-cover w-full aspect-video border border-border/30"
+          />
         </div>
       )}
-      <div className="article-content">
-        <h3 className="article-title">{title}</h3>
-        <div className="article-meta">
-          <Globe size={12} />
-          <span>{source}</span>
-          <Calendar size={12} className="ml-2" />
-          <span>{date}</span>
+      <div className="article-content flex-1">
+        <p className="article-description text-sm mb-1">{description}</p>
+        <div className="article-meta text-xs text-muted-foreground mt-1">
+          <div className="flex items-center gap-1">
+            <Calendar size={12} className="inline" />
+            <span>Date: {date}</span>
+          </div>
+          <div className="flex items-center gap-1 mt-1">
+            <Globe size={12} className="inline" />
+            <span>Source: </span>
+            <a href={url} target="_blank" rel="noopener noreferrer" className="theme-link hover:underline">
+              {source}
+            </a>
+          </div>
         </div>
-        <p className="article-description">{description}</p>
       </div>
-    </a>
+    </div>
   </div>
 );
 
@@ -284,10 +298,10 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     ),
     // Make sure strong and em elements do not have any special coloring
     strong: ({ children }: { children: React.ReactNode }) => (
-      <strong className="font-semibold text-foreground">{children}</strong>
+      <strong className="font-semibold">{children}</strong>
     ),
     em: ({ children }: { children: React.ReactNode }) => (
-      <em className="italic text-foreground">{children}</em>
+      <em className="italic">{children}</em>
     )
   };
 

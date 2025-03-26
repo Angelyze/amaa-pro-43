@@ -297,11 +297,12 @@ async function handleOpenRouterSearch(message: string) {
       8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
       9. Add a timestamp of when this search was conducted
       10. Include the date when each source was published/updated
-      11. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic, including:
+      11. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic.
+          Format EXACTLY as follows for each article:
           - Full article title as a link to the source
-          - Publication source/website name
-          - Publication date in format: YYYY-MM-DD
-          - Brief 1-2 sentence description of the article
+          - Short description (1-2 sentences) on a new line
+          - Date and source on separate lines in format: "Date: YYYY-MM-DD"
+          - Source line should be "Source: [SourceName](URL)"
           - For each article extract a featured image URL if available, labeled as "IMAGE_URL:"
       12. For any links you mention throughout your answer, try to include IMAGE_URL: [url] on a new line after the link if the page has a relevant image
       13. RESPOND IN THE SAME LANGUAGE as the user's query. Detect the language of "${message}" and respond in that language.
@@ -328,7 +329,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles with full links, publication sources, and publication dates. For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query. DO NOT include any special class formatting like {.class-name} in your output.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles. Format EXACTLY as follows for each article: Full article title as a link to the source, followed by description on a new line, date on a new line in format "Date: YYYY-MM-DD", and source on a new line in format "Source: [SourceName](URL)". For each article, include a featured image URL if available, labeled as "IMAGE_URL:" on a new line. Also, for any other links in your response, add "IMAGE_URL:" with the featured image where possible. Detect and respond in the same language as the user query. DO NOT include any special class formatting like {.class-name} in your output.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -420,3 +421,4 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   console.log(`Processed ${imageUrls.length} image URLs for display`);
   return processedText;
 }
+
