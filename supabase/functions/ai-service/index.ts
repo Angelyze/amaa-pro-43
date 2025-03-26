@@ -297,17 +297,16 @@ async function handleOpenRouterSearch(message: string) {
       8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
       9. Add a timestamp of when this search was conducted
       10. Include the date when each source was published/updated
-      11. IMPORTANT: Format source links properly like "[text](URL)" or "(domain.com)" - NEVER split domain names across multiple lines!
+      11. IMPORTANT: Format source links properly like "[text](URL)" or "(domain.com)" - with NO line breaks or spaces in the link format
       12. CRITICALLY IMPORTANT: RESPOND IN THE SAME LANGUAGE AS THE USER'S QUERY. Analyze "${message}" and respond in that same language.
       13. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic.
           Format EXACTLY as follows for each article:
-          - Title as a link: [Full Article Title](URL)
-          - Add image URL if available: IMAGE_URL: https://example.com/image.jpg
-          - Short description: One paragraph (1-2 sentences) summarizing the article
+          - Full article title as a link to the source: [Title](URL)
+          - EACH ARTICLE must include an IMAGE_URL: [url] if available
+          - Short description: One paragraph (1-2 sentences) on a new line
           - Date: YYYY-MM-DD
-          - Source: Domain name as plain text
+          - Source: Plain text name with link to source
       14. Format all links and domain names WITHOUT line breaks. Never split a URL or domain name across multiple lines.
-      15. Don't include any custom class markers in your markdown.
       
       IMPORTANT: Do not include any special class markers like {.class-name} in your response. Just use plain markdown.
     `;
@@ -331,7 +330,7 @@ async function handleOpenRouterSearch(message: string) {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. You MUST respond in the SAME LANGUAGE as the user query. If the query is in Spanish, your entire response must be in Spanish. If in French, respond in French, etc. Always include full publication dates with any information. Format source links properly without line breaks or spaces. Never split domain names across lines. At the end, include a "## Recent Articles" section with 5 recent articles formatted with title links, images, descriptions, dates and sources.' 
+            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). IMPORTANT: Always format source links properly without line breaks or extra spaces. At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles. IMPORTANT: ALWAYS detect and respond in the SAME LANGUAGE as the user query. If the user query is in Spanish, your entire response must be in Spanish. If the query is in French, respond in French, etc.' 
           },
           { role: 'user', content: searchQuery }
         ],
@@ -421,27 +420,15 @@ async function processSearchResponseForImages(text: string): Promise<string> {
   processedText = processedText.replace(/\{\.[\w-]+\}/g, '');
   
   // Fix any domain names that are split across multiple lines
-  // This regex matches any opening parenthesis followed by potential domain name
+  // Look for open parenthesis followed by domain name pattern possibly spread across lines
   processedText = processedText.replace(
-    /\(\s*([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)\s*\)/g,
+    /\(\s*([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)?\s*\)/g,
     (match, domain) => {
       if (domain) {
         return `(${domain.trim()})`;
       }
       return match;
     }
-  );
-  
-  // Fix formatting of source links that might get split across lines
-  processedText = processedText.replace(
-    /Source:\s*([^\n\r]+)(?:\r?\n)+\s*\(([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)\)/g,
-    'Source: [$1]($2)'
-  );
-  
-  // Fix other possible formatting issues with markdown links
-  processedText = processedText.replace(
-    /\[([^\]]+)\]\s*\(([^)]+)\)/g,
-    '[$1]($2)'
   );
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);
