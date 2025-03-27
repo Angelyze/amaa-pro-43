@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -397,7 +398,7 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
       // Add to our collection of image URLs
       imageUrls.push(imageUrl);
       
-      // Replace with markdown image syntax - adding search-result-image class for proper styling
+      // Replace with markdown image syntax
       processedText = processedText.replace(
         fullMatch, 
         `![Search result image](${imageUrl})`
