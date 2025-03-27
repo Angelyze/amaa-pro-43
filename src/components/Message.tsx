@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
+import { Share2, Volume2, VolumeX, Calendar, Globe, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -46,7 +46,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   source: string;
 }) => (
   <div className="article-preview mb-4 border-b border-border/30 pb-3 last:border-0">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 text-primary hover:underline font-medium">
       {title}
     </a>
     <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -70,7 +70,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
           <div className="flex items-center gap-1">
             <Globe size={12} className="inline" />
             <span>Source: </span>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="theme-link hover:underline">
+            <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
               {source}
             </a>
           </div>
@@ -156,16 +156,16 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
 
   const isImage = fileData?.type?.startsWith('image/');
 
+  // Simplified renderers with cleaner link and image handling
   const renderers = {
     a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
       <a 
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link underline flex items-center gap-1 hover:text-primary transition-colors"
+        className="text-primary hover:underline"
       >
         {children}
-        <ExternalLink size={12} className="inline-block" />
       </a>
     ),
     
@@ -175,7 +175,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       );
       
       if (containsImage) {
-        return <div className="search-image-container my-2">{children}</div>;
+        return <div className="my-2">{children}</div>;
       }
       
       return <p className="mb-4 last:mb-0">{children}</p>;
@@ -207,7 +207,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     h2: ({ children }: { children: React.ReactNode }) => {
       if (String(children).includes('Recent Articles')) {
         return (
-          <div className="search-results-header mt-8 mb-4">
+          <div className="mt-8 mb-4">
             <h2 className="text-lg font-bold pb-2 border-b border-border flex items-center gap-2">
               <FileText size={18} />
               Recent Articles
@@ -387,7 +387,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           ) : (
             <ReactMarkdown 
               components={renderers}
-              className="markdown-content search-results"
+              className="markdown-content"
             >
               {processedContent}
             </ReactMarkdown>

@@ -443,6 +443,12 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
     /## Recent Articles/g,
     '## Recent Articles'
   );
+
+  // Make sure we have good line breaks after images
+  processedText = processedText.replace(
+    /!\[([^\]]+)\]\(([^)]+)\)/g, 
+    match => match + '\n\n'
+  );
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);
   return processedText;

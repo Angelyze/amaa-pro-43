@@ -33,22 +33,7 @@
     @apply bg-muted dark:bg-muted/60;
   }
   
-  /* Enhanced image hover effects for search results */
-  .search-result-image {
-    @apply transition-transform duration-300 hover:scale-110 cursor-zoom-in shadow-sm hover:shadow-md;
-  }
-  
-  /* Display image in a lightbox when clicked */
-  .search-result-image-lightbox {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90;
-  }
-  
-  /* Enhanced article styling */
-  .search-result-articles {
-    @apply mt-8 border-t border-border pt-4;
-  }
-  
-  /* Responsive images with better error handling */
+  /* Simplified image styles */
   img {
     @apply max-w-full h-auto;
   }
@@ -57,18 +42,13 @@
     @apply bg-muted/20 flex items-center justify-center min-h-10 min-w-10;
   }
   
-  /* Better image loading for search results */
-  .search-image-container img {
-    @apply transition-all duration-300;
+  /* Simple fade in animation for images */
+  img {
+    @apply transition-opacity duration-300;
+    opacity: 0;
   }
   
-  /* Image zoom effect on hover */
-  .search-image-container img:hover {
-    @apply shadow-md;
-  }
-  
-  /* Fix domain name display in source links to prevent wrapping */
-  .source-domain {
-    @apply whitespace-nowrap;
+  img.loaded {
+    opacity: 1;
   }
 }

@@ -19,80 +19,21 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Markdown content styling */
+/* Markdown content styling - simplified to avoid conflicting styles */
 .markdown-content {
   width: 100%;
   overflow-wrap: break-word;
 }
 
-/* Theme-specific link colors */
-.markdown-content a,
-.theme-link {
-  color: #0097b2;
+/* Base link styles - simplified */
+.markdown-content a {
+  color: hsl(var(--primary));
   text-decoration: underline;
   transition: all 0.2s ease;
 }
 
-.markdown-content a:hover,
-.theme-link:hover {
-  color: #0cc0df;
-}
-
-/* Apply theme-specific link colors */
-.dark-red .markdown-content a,
-.dark-red .theme-link {
-  color: #ff5757;
-}
-
-.dark-red .markdown-content a:hover,
-.dark-red .theme-link:hover {
-  color: #ff3131;
-}
-
-.dark-green .markdown-content a,
-.dark-green .theme-link {
-  color: #00bf63;
-}
-
-.dark-green .markdown-content a:hover,
-.dark-green .theme-link:hover {
-  color: #7ed957;
-}
-
-.dark-yellow .markdown-content a,
-.dark-yellow .theme-link {
-  color: #ffde59;
-}
-
-.dark-yellow .markdown-content a:hover,
-.dark-yellow .theme-link:hover {
-  color: #ffe371;
-}
-
-.dark-purple .markdown-content a,
-.dark-purple .theme-link {
-  color: #5e17eb;
-}
-
-.dark-purple .markdown-content a:hover,
-.dark-purple .theme-link:hover {
-  color: #8c52ff;
-}
-
-.markdown-content pre {
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-
-.markdown-content img {
-  max-width: 100%;
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-
-.prose-container {
-  max-width: 65ch;
-  line-height: 1.6;
+.markdown-content a:hover {
+  opacity: 0.8;
 }
 
 /* Footer styles */
@@ -118,24 +59,7 @@
 }
 
 .footer-link:hover {
-  color: #0097b2;
-}
-
-/* Theme-specific footer links */
-.dark-red .footer-link:hover {
-  color: #ff3131;
-}
-
-.dark-green .footer-link:hover {
-  color: #7ed957;
-}
-
-.dark-yellow .footer-link:hover {
-  color: #ffe371;
-}
-
-.dark-purple .footer-link:hover {
-  color: #8c52ff;
+  color: hsl(var(--primary));
 }
 
 .copyright {
@@ -144,4 +68,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Markdown code blocks and images */
+.markdown-content pre {
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.prose-container {
+  max-width: 65ch;
+  line-height: 1.6;
 }
