@@ -43,7 +43,6 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
       <h3 className="text-lg font-medium mb-4">Profile Information</h3>
       <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
         <Avatar className="w-24 h-24 border border-border">
-          <AvatarImage src="/ppp.png" alt="Profile" />
           <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
         </Avatar>
         

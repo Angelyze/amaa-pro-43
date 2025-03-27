@@ -1,6 +1,6 @@
 
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -72,7 +72,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
-            <AvatarImage src="/ppp.png" alt="Profile" />
             <AvatarFallback className="bg-muted text-muted-foreground">
               {userInitials}
             </AvatarFallback>

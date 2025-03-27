@@ -16,8 +16,11 @@
     height: 100%;
     top: 0;
     left: 0;
+    opacity: 1;
+    transition: opacity 0.5s ease;
   }
   
+  /* Modified animation logic for smoother transitions */
   .background-pattern::before,
   .background-pattern::after {
     content: "";
@@ -28,8 +31,13 @@
     bottom: 0;
     z-index: -1;
     opacity: 0.75;
-    will-change: transform;
-    animation: patternFloat 30s ease-in-out infinite alternate;
+    transform: translate(0, 0) rotate(0deg);
+    animation-name: patternFloat;
+    animation-duration: 60s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    will-change: transform, opacity;
   }
   
   .background-pattern::before {
@@ -38,7 +46,7 @@
       radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 45%),
       radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.3) 0%, transparent 60%),
       radial-gradient(ellipse at 45% 60%, rgba(var(--pattern-accent-rgb), 0.15) 0%, transparent 50%);
-    animation-delay: -10s;
+    animation-delay: -15s;
     filter: blur(40px);
   }
   
@@ -48,26 +56,51 @@
       radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.25) 0%, transparent 55%),
       radial-gradient(ellipse at 20% 20%, rgba(var(--pattern-accent-rgb), 0.15) 0%, transparent 45%),
       radial-gradient(circle at 50% 80%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 40%);
-    animation-delay: -20s;
+    animation-delay: -30s;
     filter: blur(40px);
   }
   
+  /* Significantly smoother animation with minimal movement */
   @keyframes patternFloat {
     0% {
       transform: translate(0%, 0%) rotate(0deg);
+      opacity: 0.7;
     }
-    25% {
-      transform: translate(1%, -1%) rotate(0.5deg);
+    20% {
+      transform: translate(0.5%, -0.5%) rotate(0.2deg);
+      opacity: 0.75;
     }
-    50% {
-      transform: translate(-1%, 1%) rotate(-0.5deg);
+    40% {
+      transform: translate(-0.5%, 0.5%) rotate(-0.2deg);
+      opacity: 0.8;
     }
-    75% {
-      transform: translate(1.5%, 1%) rotate(0.25deg);
+    60% {
+      transform: translate(0.3%, 0.7%) rotate(0.1deg);
+      opacity: 0.85;
+    }
+    80% {
+      transform: translate(-0.7%, -0.3%) rotate(-0.1deg);
+      opacity: 0.8;
     }
     100% {
-      transform: translate(-1%, -1.5%) rotate(-0.25deg);
+      transform: translate(0.4%, -0.4%) rotate(0.2deg);
+      opacity: 0.7;
     }
+  }
+  
+  /* Add animation trigger for when the page loads */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Apply fade-in animation to background pattern */
+  .background-pattern {
+    animation: fadeIn 1.5s ease-out forwards;
   }
 }
 
