@@ -33,61 +33,43 @@
     @apply bg-muted dark:bg-muted/60;
   }
   
-  /* Enhanced image hover effects for search results */
-  .search-result-image {
-    @apply transition-transform duration-300 hover:scale-105 cursor-zoom-in shadow-sm hover:shadow-md;
-  }
-  
-  /* Display image in a lightbox when clicked */
-  .search-result-image-lightbox {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90;
-  }
-  
-  /* Enhanced article styling */
-  .search-result-articles {
-    @apply mt-8 border-t border-border pt-4;
-  }
-  
-  /* Responsive images with better error handling */
+  /* Fix image display in search results */
   img {
     @apply max-w-full h-auto;
+    /* Don't hide images by default */
+    display: block;
   }
   
-  img.error {
-    @apply bg-muted/20 flex items-center justify-center min-h-10 min-w-10;
-  }
-  
-  /* Better image loading for search results */
-  .search-image-container img {
-    @apply transition-all duration-300;
-  }
-  
-  /* Image zoom effect on hover */
-  .search-image-container img:hover {
-    @apply shadow-md;
-  }
-  
-  /* Fix domain name display in source links to prevent wrapping */
-  .source-domain {
-    @apply whitespace-nowrap;
-  }
-  
-  /* Make links stand out better */
+  /* Link styling with better visibility */
   a {
     @apply transition-colors duration-200;
   }
   
-  /* Better link styling */
+  /* Remove unnecessary styling that might cause issues */
   a[target="_blank"] {
     @apply inline-flex items-center;
   }
   
   /* Related topics styling */
-  .related-topics-container {
-    @apply mt-6 pt-4 border-t border-border/30;
-  }
-  
   .related-topic-tag {
     @apply px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted/90 cursor-pointer transition-all inline-block mr-2 mb-2;
+  }
+  
+  /* Prevent background pattern flicker when scrolling */
+  .background-pattern {
+    @apply will-change-transform;
+    background-attachment: fixed;
+    z-index: -10;
+  }
+  
+  .background-pattern::before,
+  .background-pattern::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
   }
 }

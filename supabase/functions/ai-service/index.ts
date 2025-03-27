@@ -276,8 +276,7 @@ async function handlePerplexitySearch(message: string) {
   try {
     console.log('Sending search query to Perplexity API:', message);
     
-    // Enhanced system prompt for Perplexity to maximize SONAR model capabilities
-    // and ensure proper image and link formatting
+    // Enhanced system prompt for better image and link handling
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
     ALWAYS respond in the SAME LANGUAGE as the user's query.
     
@@ -292,17 +291,19 @@ async function handlePerplexitySearch(message: string) {
        - Use **bold** for emphasis
        - Use > for quotations
     4. For factual information, cite sources inline with [Source Name](URL)
-    5. IMPORTANT: Include images by adding plain markdown image syntax: ![Description](IMAGE_URL) (no special formatting)
+    5. IMPORTANT: For images, use DIRECT image markdown syntax: ![Description](IMAGE_URL) - ensure the URL is directly accessible
     6. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
        - Title as clickable link [Title](URL)
        - One sentence description
        - Publication date (YYYY-MM-DD)
        - Source name
-       - Include an image for each article with ![Article image](IMAGE_URL)
-    7. After Recent Articles, add a "## Related Topics" section with 3 related search topics that are different from the main articles
+       - Include an image for each article with ![Article image](IMAGE_URL) if available
+    7. After Recent Articles, add a "## Related Topics" section with 3-5 related search topics that are different from the main query
     8. All URLs must be fully functional, properly formatted markdown links
     9. Prioritize content from the last 30 days
-    10. If information is time-sensitive, note when the search was conducted`;
+    10. If information is time-sensitive, note when the search was conducted
+    11. DO NOT include any extra formatting around links or images, just use standard markdown
+    12. DO NOT use SOURCE: prefixes before links`;
     
     // Use SONAR model with optimal parameters for web search with images
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -385,20 +386,20 @@ function cleanUpSearchResponse(text: string): string {
     text = sections[0] + sections[sections.length - 1];
   }
   
-  // Ensure proper image markdown syntax
-  // Convert any special formats to standard markdown
-  text = text.replace(/IMAGE_URL:\s*(\S+)/g, '![Image]($1)');
+  // Fix broken image markdown
+  text = text.replace(/!\[([^\]]*)\]\s*\(([^)]+)\)/g, '![$1]($2)\n\n');
   
-  // Fix image markdown that might be broken
-  text = text.replace(/!\[([^\]]*)\]\s*\(([^)]+)\)/g, '![$1]($2)');
+  // Remove any SOURCE: prefixes that might be in the response
+  text = text.replace(/SOURCE:\s+/g, '');
   
-  // Fix broken links by ensuring URLs are properly formatted
+  // Fix any links that have extra brackets or parentheses
+  text = text.replace(/\[\[([^\]]+)\]\]\(([^)]+)\)/g, '[$1]($2)');
+  
+  // Fix broken links that don't start with http
   text = text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     (match, linkText, url) => {
-      // Check if URL is properly formatted
       if (!url.startsWith('http')) {
-        // Try to fix the URL
         if (url.startsWith('www.')) {
           return `[${linkText}](https://${url})`;
         }
@@ -407,19 +408,13 @@ function cleanUpSearchResponse(text: string): string {
     }
   );
   
-  // Add line breaks after images to ensure proper rendering
-  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '![$1]($2)\n\n');
-  
-  // Ensure the "Recent Articles" section has proper formatting
-  text = text.replace(
-    /## Recent Articles/g,
-    '\n\n## Recent Articles'
-  );
-  
   // Add the "Related Topics" section if it doesn't exist
   if (!text.includes('## Related Topics')) {
-    text += '\n\n## Related Topics\nNo related topics available.';
+    text += '\n\n## Related Topics\n* Related topic 1\n* Related topic 2\n* Related topic 3';
   }
+  
+  // Remove any excessive newlines
+  text = text.replace(/\n{3,}/g, '\n\n');
   
   return text;
 }

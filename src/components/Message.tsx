@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -46,7 +45,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   source: string;
 }) => (
   <div className="article-preview mb-4 border-b border-border/30 pb-3 last:border-0">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 text-theme-accent hover:underline font-medium">
       {title}
     </a>
     <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -59,8 +58,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
             className="rounded-md object-cover w-full aspect-video border border-border/30"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = '/placeholder.svg';
-              target.alt = 'Image not available';
+              target.style.display = 'none'; // Hide broken images instead of showing placeholder
             }}
           />
         </div>
@@ -75,7 +73,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
           <div className="flex items-center gap-1">
             <Globe size={12} className="inline" />
             <span>Source: </span>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="theme-link hover:underline">
+            <a href={url} target="_blank" rel="noopener noreferrer" className="text-theme-accent hover:underline">
               {source}
             </a>
           </div>
@@ -90,7 +88,7 @@ const RelatedTopics = ({ topics }: { topics: string[] }) => (
   <div className="related-topics mt-4 border-t border-border/30 pt-4">
     <div className="flex flex-wrap gap-2">
       {topics.map((topic, index) => (
-        <span key={index} className="px-3 py-1 bg-muted rounded-full text-sm">
+        <span key={index} className="px-3 py-1 bg-muted rounded-full text-sm hover:bg-muted/70 cursor-pointer transition-all">
           {topic}
         </span>
       ))}
@@ -198,7 +196,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link underline hover:text-primary transition-colors"
+        className="text-theme-accent underline hover:opacity-80 transition-colors"
       >
         {children}
       </a>
@@ -210,7 +208,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       );
       
       if (containsImage) {
-        return <div className="search-image-container my-4">{children}</div>;
+        return <div className="my-4">{children}</div>;
       }
       
       return <p className="mb-4 last:mb-0">{children}</p>;
@@ -228,8 +226,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             console.error(`Failed to load image: ${target.src}`);
-            target.src = '/placeholder.svg';
-            target.alt = 'Image not available';
+            target.style.display = 'none'; // Hide broken images completely
           }}
         />
       );
@@ -381,8 +378,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 console.error(`Failed to load image: ${target.src}`);
-                target.src = '/placeholder.svg';
-                target.alt = 'Image not available';
+                target.style.display = 'none'; // Hide broken images completely
               }}
             />
           </div>
@@ -399,8 +395,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   console.error(`Failed to load image: ${target.src}`);
-                  target.src = '/placeholder.svg';
-                  target.alt = 'Image not available';
+                  target.style.display = 'none'; // Hide broken images completely
                 }}
               />
             ) : (
