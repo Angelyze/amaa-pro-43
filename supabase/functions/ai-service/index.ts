@@ -8,7 +8,7 @@ const GEMINI_API_KEYS = [
   Deno.env.get('GEMINI_API_KEY_2') || '',
   Deno.env.get('GEMINI_API_KEY_3') || '',
 ];
-const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY') || '';
+const PERPLEXITY_API_KEY = Deno.env.get('PERPLEXITY_API_KEY') || '';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -37,7 +37,7 @@ serve(async (req) => {
     
     // Choose appropriate API based on the type
     if (type === 'web-search') {
-      return await handleOpenRouterSearch(message);
+      return await handlePerplexitySearch(message);
     } else if (type === 'upload' && file) {
       // Only process the file if we have context from the user
       if (photoContext) {
@@ -260,10 +260,10 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
   }
 }
 
-async function handleOpenRouterSearch(message: string) {
-  if (!OPENROUTER_API_KEY) {
+async function handlePerplexitySearch(message: string) {
+  if (!PERPLEXITY_API_KEY) {
     return new Response(
-      JSON.stringify({ error: 'OpenRouter API key not configured' }),
+      JSON.stringify({ error: 'Perplexity API key not configured' }),
       { 
         status: 500,
         headers: { 
@@ -275,76 +275,68 @@ async function handleOpenRouterSearch(message: string) {
   }
   
   try {
-    // Detect language of user query for proper response formatting
-    const userLanguage = 'auto'; // We'll let the model auto-detect language
+    console.log('Sending search query to Perplexity API:', message);
     
-    // Enhanced search query for up-to-date information with sources
-    const searchQuery = `
-      I need the MOST CURRENT AND UP-TO-DATE information about: ${message}
-      
-      CRITICAL INSTRUCTIONS:
-      1. ONLY use information from 2025 (or the most recent available if we're in an earlier year)
-      2. Start with a clear summary stating when the information was last updated
-      3. Include SPECIFIC DATES for every piece of information
-      4. If searching for API documentation or technical information, fetch the ABSOLUTE LATEST version 
-      5. Explicitly note if any information seems outdated
-      6. Format your response with clear Markdown formatting:
-         - Use proper headings (## and ###)
-         - Use bullet points or numbered lists where appropriate
-         - Include FULL, clickable URLs using [text](URL) syntax
-         - Format code with code blocks using backticks
-      7. PRIORITIZE information from the last 30 days, especially for technical documentation
-      8. For API documentation like "https://openrouter.ai/api/v1", ensure you're showing the latest endpoints and parameters
-      9. Add a timestamp of when this search was conducted
-      10. Include the date when each source was published/updated
-      11. IMPORTANT: Format source links properly like "[text](URL)" or "(domain.com)" - with NO line breaks or spaces in the link format
-      12. CRITICALLY IMPORTANT: RESPOND IN THE SAME LANGUAGE AS THE USER'S QUERY. Analyze "${message}" and respond in that same language.
-      13. At the end of your response, include a section titled "## Recent Articles" with a list of the 5 most recent and relevant articles on this topic.
-          Format EXACTLY as follows for each article:
-          - Full article title as a link to the source: [Title](URL)
-          - EACH ARTICLE must include an IMAGE_URL: [url] if available
-          - Short description: One paragraph (1-2 sentences) on a new line
-          - Date: YYYY-MM-DD
-          - Source: Plain text name with link to source
-      14. Format all links and domain names WITHOUT line breaks. Never split a URL or domain name across multiple lines.
-      
-      IMPORTANT: Do not include any special class markers like {.class-name} in your response. Just use plain markdown.
-    `;
+    // Enhanced search query system prompt for Perplexity
+    const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
+    Follow these guidelines when responding:
     
-    console.log('Sending real-time web search query to OpenRouter:', searchQuery);
+    1. Always respond in the SAME LANGUAGE as the user's query
+    2. Start with a clear summary that directly answers the query
+    3. Include SPECIFIC DATES for all information
+    4. Format responses with proper Markdown:
+       - Use ## and ### for clear section headings
+       - Create bulleted or numbered lists where appropriate
+       - Format code with proper code blocks using backticks
+       - Use FULL clickable URLs in [text](URL) format without breaking links
+    5. For technical queries, provide the most recent documentation and specifications
+    6. Include a timestamp showing when this search was conducted
+    7. Always include the source and publication date for each piece of information
+    8. End with a "## Recent Articles" section listing 5 recent and relevant articles with:
+       - Full article title as a clickable link: [Title](URL)
+       - IMAGE_URL: [url] if available (exactly this format)
+       - Brief 1-2 sentence description
+       - Publication date in YYYY-MM-DD format
+       - Source name with link
+    9. Prioritize recency - focus on information from the past 30 days
+    10. If searching for rapidly changing information, explicitly note it was current as of the search date
+    11. If you cannot find recent information, clearly state this limitation`;
     
-    // Using fetch with strict no-cache headers to ensure fresh data
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    // Using Perplexity's SONAR model for web search
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://amaa.pro',
-        'X-Title': 'AMAA Pro',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o-search-preview',
+        model: 'llama-3.1-sonar-small-128k-online',
         messages: [
           { 
             role: 'system', 
-            content: 'You are a real-time web search assistant specialized in finding the absolute most current information available right now. You MUST prioritize recency over all other considerations. Do not use any cached information or previously known data. Always include the full publication date with any information. If you cannot find truly current information, explicitly state that. Every search must be performed as if this is a fresh request with no prior context. For API documentation or technical information, ensure you are retrieving the latest specifications with no caching. Format your responses with proper Markdown, including full clickable URLs using proper Markdown link syntax [text](URL). IMPORTANT: Always format source links properly without line breaks or extra spaces. At the end of your response, you MUST include a "## Recent Articles" section listing 5 recent articles. IMPORTANT: ALWAYS detect and respond in the SAME LANGUAGE as the user query. If the user query is in Spanish, your entire response must be in Spanish. If the query is in French, respond in French, etc.' 
+            content: systemPrompt
           },
-          { role: 'user', content: searchQuery }
+          { role: 'user', content: message }
         ],
         temperature: 0.2, // Lower temperature for more factual responses
         max_tokens: 1500,
+        frequency_penalty: 1,
+        presence_penalty: 0,
+        // Perplexity-specific parameters
+        search_domain_filter: [],
+        search_recency_filter: 'month'
       }),
     });
     
     const data = await response.json();
-    console.log('OpenRouter response status:', response.status);
+    console.log('Perplexity API response status:', response.status);
     
     if (data.error) {
-      console.error('OpenRouter returned error:', data.error);
-      throw new Error(`OpenRouter API error: ${data.error.message || JSON.stringify(data.error)}`);
+      console.error('Perplexity returned error:', data.error);
+      throw new Error(`Perplexity API error: ${data.error.message || JSON.stringify(data.error)}`);
     }
     
     let searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
@@ -355,7 +347,7 @@ async function handleOpenRouterSearch(message: string) {
     return new Response(
       JSON.stringify({ 
         response: processedResponse,
-        model: "gpt-4o-search-preview"
+        model: "llama-3.1-sonar-small-128k"
       }),
       { 
         headers: { 
@@ -368,7 +360,7 @@ async function handleOpenRouterSearch(message: string) {
       }
     );
   } catch (error) {
-    console.error(`Error in OpenRouter search: ${error.message}`);
+    console.error(`Error in Perplexity search: ${error.message}`);
     return new Response(
       JSON.stringify({ error: `Search failed: ${error.message}` }),
       { 
