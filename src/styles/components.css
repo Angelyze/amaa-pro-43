@@ -1,10 +1,10 @@
 
 @layer components {
-  /* Input styling with theme variants */
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
   }
 
+  /* Dark theme variants - using darker backgrounds for consistency with default dark theme */
   .dark-red .amaa-input {
     @apply bg-background/50 focus:border-[#ff3131] focus:ring-[#ff3131];
   }
@@ -21,11 +21,11 @@
     @apply bg-background/50 focus:border-[#8c52ff] focus:ring-[#8c52ff];
   }
 
-  /* Button styling with theme variants */
   .amaa-button {
     @apply px-6 py-3 rounded-full bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-300 shadow-glass-sm hover:shadow-glass active:scale-[0.98];
   }
 
+  /* Theme-specific buttons */
   .dark-red .amaa-button {
     @apply bg-[#ff3131] hover:bg-[#ff3131]/90;
   }
@@ -42,11 +42,11 @@
     @apply bg-[#8c52ff] hover:bg-[#8c52ff]/90;
   }
 
-  /* Icon button styling with theme variants */
   .amaa-icon-button {
     @apply p-3 rounded-full text-foreground/80 hover:text-primary transition-all duration-300;
   }
 
+  /* Theme-specific icon buttons */
   .dark-red .amaa-icon-button {
     @apply hover:text-[#ff5757];
   }
@@ -63,7 +63,7 @@
     @apply hover:text-[#5e17eb];
   }
 
-  /* Chatbox icon styling with theme variants */
+  /* Update AMAAChatBox icons for theme colors */
   .dark-red .amaa-chatbox-icon {
     @apply text-[#ff5757] hover:text-[#ff3131];
   }
@@ -80,7 +80,7 @@
     @apply text-[#5e17eb] hover:text-[#8c52ff];
   }
 
-  /* Ask icon styling with theme variants */
+  /* Theme-specific Ask icon filters - improved to better match theme colors */
   .ask-icon {
     @apply cursor-pointer;
   }
@@ -101,7 +101,6 @@
     filter: hue-rotate(100deg) saturate(1.1) brightness(1);
   }
 
-  /* Message styling */
   .message-bubble {
     @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300 backdrop-blur-md;
   }
@@ -110,6 +109,7 @@
     @apply message-bubble bg-primary/10 text-foreground border border-primary/10 w-[90%] md:w-[50%];
   }
 
+  /* Theme-specific user messages */
   .dark-red .user-message {
     @apply bg-[#ff5757]/10 border-[#ff5757]/10;
   }
@@ -130,7 +130,7 @@
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Markdown content link styling with theme variants */
+  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
   .markdown-content a {
     @apply text-[#0097b2] hover:text-[#0cc0df] underline transition-all duration-200;
   }
@@ -151,7 +151,7 @@
     @apply text-[#8c52ff] hover:text-[#5e17eb];
   }
 
-  /* Markdown text elements */
+  /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
   .markdown-content strong, 
   .markdown-content em,
   .markdown-content b,
@@ -159,7 +159,6 @@
     @apply text-foreground;
   }
 
-  /* Header and footer styling */
   .header-container {
     @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border shadow-glass-sm;
   }
@@ -176,6 +175,7 @@
     @apply text-foreground hover:text-[#0097b2] transition-colors;
   }
 
+  /* Theme-specific footer links */
   .dark-red .footer-link {
     @apply hover:text-[#ff3131];
   }
@@ -196,7 +196,7 @@
     @apply text-xs text-muted-foreground flex justify-center items-center;
   }
 
-  /* Search results styling */
+  /* Enhanced search results styling */
   .search-results h2 {
     @apply border-b border-border/50 pb-2 mb-4;
   }
@@ -205,19 +205,22 @@
     @apply my-3;
   }
 
+  /* Improved image container with flex display */
   .search-results .search-image-container {
     @apply flex flex-wrap gap-3 my-4 justify-center md:justify-start;
   }
 
+  /* Enhanced image styling with hover effects */
   .search-results .search-image-container img {
     @apply rounded-md border border-border/50 shadow-sm transition-all duration-300 hover:shadow-md max-h-28 object-cover;
   }
 
+  /* Enhanced styling for individual search result images */
   .search-result-image {
     @apply transition-all duration-300 hover:scale-110 cursor-zoom-in max-h-28 object-cover shadow-sm hover:shadow-md;
   }
 
-  /* Article preview styling */
+  /* Better article preview layout and styling */
   .article-preview {
     @apply border border-border/50 rounded-lg overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-md bg-background/50 backdrop-blur-sm my-4;
   }
@@ -234,6 +237,7 @@
     @apply p-4;
   }
 
+  /* Article title should use theme link colors */
   .article-preview .article-title {
     @apply text-base font-medium mb-1.5 hover:text-primary line-clamp-2;
   }
@@ -250,6 +254,7 @@
     @apply border-primary/30;
   }
 
+  /* Media layouts for article previews */
   @media (min-width: 768px) {
     .article-preview {
       @apply flex;
@@ -264,12 +269,12 @@
     }
   }
   
-  /* Search results header */
+  /* New - Search results header styling */
   .search-results-header {
     @apply border-t border-border/40 pt-4 mt-8;
   }
   
-  /* Image container styling */
+  /* New - Make image previews more visually appealing */
   .search-image-container {
     @apply flex flex-wrap gap-3 my-4;
   }
@@ -280,16 +285,18 @@
     object-fit: cover;
   }
   
+  /* New - Image hover effects */
   .search-image-container img:hover {
     transform: scale(1.05);
     border-color: rgba(var(--primary), 0.5);
   }
   
-  /* Search result text styling */
+  /* New - Search result emphasis */
   .search-results strong {
     @apply font-medium;
   }
   
+  /* New - Search result links */
   .search-results a:not(.article-preview a) {
     @apply text-primary hover:underline transition-colors;
   }
