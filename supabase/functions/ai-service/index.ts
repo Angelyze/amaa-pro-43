@@ -276,7 +276,7 @@ async function handlePerplexitySearch(message: string) {
   try {
     console.log('Sending search query to Perplexity API:', message);
     
-    // Enhanced system prompt for better image and link handling
+    // Enhanced system prompt with better link and topic handling
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
     ALWAYS respond in the SAME LANGUAGE as the user's query.
     
@@ -294,16 +294,20 @@ async function handlePerplexitySearch(message: string) {
     5. IMPORTANT: For images, use DIRECT image markdown syntax: ![Description](IMAGE_URL) - ensure the URL is directly accessible
     6. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
        - Title as clickable link [Title](URL)
-       - One sentence description
+       - One sentence description 
        - Publication date (YYYY-MM-DD)
        - Source name
        - Include an image for each article with ![Article image](IMAGE_URL) if available
-    7. After Recent Articles, add a "## Related Topics" section with 3-5 related search topics that are different from the main query
+    7. After Recent Articles, add a "## Related Topics" section with 3-5 related search topics. REMOVE ANY ASTERISKS OR MARKUP from these topics, just list them as plain bullet points like:
+       * First related topic
+       * Second related topic
+       * Third related topic
     8. All URLs must be fully functional, properly formatted markdown links
     9. Prioritize content from the last 30 days
     10. If information is time-sensitive, note when the search was conducted
     11. DO NOT include any extra formatting around links or images, just use standard markdown
-    12. DO NOT use SOURCE: prefixes before links`;
+    12. DO NOT use SOURCE: prefixes before links
+    13. ENSURE ALL LINKS can be clicked - test every link you provide to make sure it's properly formatted with [text](url) syntax`;
     
     // Use SONAR model with optimal parameters for web search with images
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -408,8 +412,27 @@ function cleanUpSearchResponse(text: string): string {
     }
   );
   
-  // Add the "Related Topics" section if it doesn't exist
-  if (!text.includes('## Related Topics')) {
+  // Clean up the Related Topics section to remove any asterisks or markup
+  const relatedTopicsMatch = text.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
+  if (relatedTopicsMatch && relatedTopicsMatch[1]) {
+    const topicsText = relatedTopicsMatch[1];
+    const cleanedTopics = topicsText
+      .split(/\r?\n/)
+      .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
+      .map(line => {
+        // Clean up any markdown formatting in topics
+        let topic = line.replace(/^[*-]\s+|\d+\.\s+/, '').trim();
+        topic = topic.replace(/\*\*/g, ''); // Remove bold markers
+        topic = topic.replace(/\*/g, '');   // Remove italic markers
+        topic = topic.replace(/`/g, '');    // Remove code markers
+        return `* ${topic}`;
+      })
+      .join('\n');
+    
+    // Replace the Related Topics section with cleaned version
+    text = text.replace(/## Related Topics[\s\S]*?(?=##|$)/, `## Related Topics\n${cleanedTopics}\n\n`);
+  } else {
+    // Add the "Related Topics" section if it doesn't exist
     text += '\n\n## Related Topics\n* Related topic 1\n* Related topic 2\n* Related topic 3';
   }
   

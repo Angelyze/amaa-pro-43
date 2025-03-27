@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -16,6 +15,7 @@ interface MessageProps {
     name: string;
     data: string;
   };
+  onTopicClick?: (topic: string) => void;
 }
 
 // Function to strip all markdown for TTS
@@ -84,20 +84,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   </div>
 );
 
-// Component to render related topics section
-const RelatedTopics = ({ topics }: { topics: string[] }) => (
-  <div className="related-topics mt-4 border-t border-border/30 pt-4">
-    <div className="flex flex-wrap gap-2">
-      {topics.map((topic, index) => (
-        <span key={index} className="px-3 py-1 bg-muted rounded-full text-sm hover:bg-muted/70 cursor-pointer transition-all">
-          {topic}
-        </span>
-      ))}
-    </div>
-  </div>
-);
-
-const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData }) => {
+const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, onTopicClick }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
@@ -116,11 +103,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
           .split(/\r?\n/)
           .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
           .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
-          .filter(topic => topic.length > 0);
+          .filter(topic => topic.length > 0)
+          .map(topic => topic.replace(/\*\*/g, ''));
         
         setRelatedTopics(topics);
         
-        // You can optionally remove this section from the displayed content
         cleanedContent = cleanedContent.replace(/## Related Topics[\s\S]*?(?=##|$)/, '');
       }
       
@@ -166,6 +153,12 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       toast.error('Failed to read text. Falling back to browser voices.');
     } finally {
       setIsSpeaking(false);
+    }
+  };
+  
+  const handleTopicClick = (topic: string) => {
+    if (onTopicClick) {
+      onTopicClick(topic);
     }
   };
   
@@ -430,12 +423,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
             </h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {relatedTopics.map((topic, index) => (
-                <span 
+                <button 
                   key={index} 
                   className="px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted cursor-pointer transition-all"
+                  onClick={() => handleTopicClick(topic)}
                 >
                   {topic}
-                </span>
+                </button>
               ))}
             </div>
           </div>

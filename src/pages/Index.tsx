@@ -480,6 +480,10 @@ const Index = () => {
     }
   };
 
+  const handleTopicClick = (topic: string) => {
+    handleSendMessage(topic, 'web-search');
+  };
+
   const displayMessages = messages.map(msg => ({
     id: msg.id,
     content: msg.content,
@@ -623,6 +627,7 @@ const Index = () => {
                       type={message.type}
                       timestamp={message.timestamp}
                       fileData={message.fileData}
+                      onTopicClick={handleTopicClick}
                     />
                   </div>
                 ))}

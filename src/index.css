@@ -29,12 +29,15 @@
   margin-top: 0.5rem;
 }
 
-/* Link styling for better visibility */
+/* Enhanced link styling for better visibility */
 .search-results a, 
 .theme-link,
 .text-theme-accent {
   color: var(--theme-accent);
   text-decoration: underline;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 .search-results a:hover, 
@@ -113,11 +116,12 @@
   border-radius: 0.375rem;
 }
 
-/* Simplified link display in markdown content */
+/* Improved link display in markdown content */
 .markdown-content a {
   color: var(--theme-accent);
   text-decoration: underline;
   font-weight: 500;
+  transition: opacity 0.2s ease;
 }
 
 .markdown-content a:hover {
@@ -130,16 +134,19 @@
   padding-top: 1rem;
 }
 
-.search-results .related-topics span {
+/* Clickable related topics style */
+.search-results .related-topics button {
   background-color: var(--muted);
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   font-size: 0.875rem;
   transition: all 0.2s ease;
   cursor: pointer;
+  border: none;
+  color: var(--foreground);
 }
 
-.search-results .related-topics span:hover {
+.search-results .related-topics button:hover {
   background-color: var(--theme-accent);
   color: white;
 }
