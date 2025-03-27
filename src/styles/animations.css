@@ -22,10 +22,10 @@
     right: 0;
     bottom: 0;
     z-index: -1;
-    opacity: 0.85;
-    transition: all 15s ease-in-out;
+    opacity: 0.80;
+    transition: all 10s ease-in-out;
     will-change: transform; /* Add will-change for performance */
-    animation: patternFloat 25s ease-in-out infinite alternate;
+    animation: patternFloat 15s ease-in-out infinite alternate;
   }
   
   .background-pattern::before {
@@ -34,7 +34,7 @@
       radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.3) 0%, transparent 40%),
       radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.5) 0%, transparent 50%),
       radial-gradient(ellipse at 45% 60%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 45%);
-    animation-delay: -8s;
+    animation-delay: -5s;
     filter: blur(30px);
   }
   
@@ -44,8 +44,8 @@
       radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.4) 0%, transparent 50%),
       radial-gradient(ellipse at 20% 20%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 40%),
       radial-gradient(circle at 50% 80%, rgba(var(--pattern-accent-rgb), 0.25) 0%, transparent 30%);
-    animation-delay: -15s;
-    filter: blur(20px);
+    animation-delay: -10s;
+    filter: blur(30px);
   }
   
   @keyframes patternFloat {
