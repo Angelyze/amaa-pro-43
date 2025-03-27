@@ -9,14 +9,14 @@
       radial-gradient(circle at 10% 90%, hsl(var(--pattern-color) / 0.8) 0%, transparent 30%),
       linear-gradient(135deg, hsl(var(--pattern-color) / 0.6) 0%, hsl(var(--pattern-color) / 0) 70%),
       radial-gradient(circle at 50% 50%, hsl(var(--background)) 0%, transparent 100%);
-    position: fixed; /* Changed from relative to fixed to prevent flickering */
+    position: relative; /* Changed from relative to fixed to prevent flickering */
     overflow: hidden;
   }
   
   .background-pattern::before,
   .background-pattern::after {
     content: "";
-    position: fixed; /* Changed from absolute to fixed */
+    position: relative; /* Changed from absolute to fixed */
     top: 0;
     left: 0;
     right: 0;
