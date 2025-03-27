@@ -400,16 +400,13 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
       // Replace with markdown image syntax - adding search-result-image class for proper styling
       processedText = processedText.replace(
         fullMatch, 
-        `![Search result image](${imageUrl}){: .search-result-image}`
+        `![Search result image](${imageUrl})`
       );
     } else {
       // Remove invalid image references
       processedText = processedText.replace(fullMatch, '');
     }
   }
-  
-  // Remove any class markers from the output
-  processedText = processedText.replace(/\{\.[\w-]+\}/g, '');
   
   // Fix broken links by ensuring URLs are properly formatted
   processedText = processedText.replace(
@@ -440,7 +437,7 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
     }
   );
   
-  // Add clear section for Recent Articles if it isn't styled properly
+  // Ensure the "Recent Articles" section has proper formatting
   processedText = processedText.replace(
     /## Recent Articles/g,
     '## Recent Articles'

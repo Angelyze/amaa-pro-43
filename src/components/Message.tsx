@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -169,13 +170,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     ),
     
     p: ({ children }: { children: React.ReactNode }) => {
-      const hasSearchImage = React.Children.toArray(children).some(
-        child => React.isValidElement(child) && 
-        child.props?.src && 
-        child.props?.alt?.includes('Search result image')
+      const containsImage = React.Children.toArray(children).some(
+        child => React.isValidElement(child) && child.props?.src
       );
       
-      if (hasSearchImage) {
+      if (containsImage) {
         return <div className="search-image-container my-2">{children}</div>;
       }
       
@@ -183,23 +182,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
     },
     
     img: ({ src, alt }: { src?: string; alt?: string }) => {
-      const isSearchResultImage = alt?.includes('Search result image');
-      
-      if (isSearchResultImage) {
-        return (
-          <img 
-            src={src} 
-            alt={alt || 'Search result image'} 
-            className="inline-block max-h-32 rounded-md object-cover border border-border/50 shadow-sm m-1"
-            loading="lazy"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              console.error(`Failed to load image: ${target.src}`);
-              target.style.display = 'none';
-            }}
-          />
-        );
-      }
+      if (!src) return null;
       
       return (
         <img 
