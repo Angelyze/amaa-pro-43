@@ -57,6 +57,8 @@ const Index = () => {
   
   useEffect(() => {
     if (user) {
+      document.body.setAttribute('data-user-logged-in', 'true');
+      
       loadConversations();
       
       if (isPremium) {
@@ -89,6 +91,10 @@ const Index = () => {
         );
       }
     }
+    
+    return () => {
+      document.body.removeAttribute('data-user-logged-in');
+    };
   }, [user, currentConversationId, isPremium]);
 
   useEffect(() => {
@@ -165,11 +171,9 @@ const Index = () => {
         return;
       }
       
-      // Prepare the message content and file data
       let messageContent = content;
       let finalFileData = uploadedFileData;
       
-      // Process user message
       if (user) {
         let conversationId = currentConversationId;
         if (!conversationId) {
@@ -180,7 +184,6 @@ const Index = () => {
           setConversations([newConversation, ...conversations]);
         }
         
-        // Create user message with file data if present (but don't show file in message content)
         const userMessage = await createMessage(
           conversationId, 
           messageContent, 
@@ -225,7 +228,6 @@ const Index = () => {
           );
         }
         
-        // Create guest message with file data if present (but don't show file in message content)
         const userMessage = saveGuestMessage({ 
           content: messageContent, 
           type: 'user',
@@ -334,7 +336,6 @@ const Index = () => {
         
         if (user && currentConversationId) {
           try {
-            // Pass the file data to be displayed with the assistant message
             const assistantMessage = await createMessage(
               currentConversationId, 
               assistantContent, 
@@ -510,7 +511,21 @@ const Index = () => {
         <div className="relative">
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             {user ? (
-              <UserMenu onLogout={signOut} isPremium={isPremium} />
+              <>
+                <UserMenu onLogout={signOut} isPremium={isPremium} />
+                {!isPremium && (
+                  <Link to="/subscribe">
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="bg-teal text-white hover:bg-teal-light flex items-center gap-2"
+                    >
+                      <CreditCard size={16} />
+                      <span>Premium</span>
+                    </Button>
+                  </Link>
+                )}
+              </>
             ) : (
               <>
                 <Link to="/auth">

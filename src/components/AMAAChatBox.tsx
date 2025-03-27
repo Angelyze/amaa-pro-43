@@ -237,7 +237,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
   };
 
   const getPlaceholder = () => {
-    if (disabled) return "Sign in to continue...";
+    if (disabled) {
+      const isLoggedIn = document.body.hasAttribute('data-user-logged-in');
+      return isLoggedIn ? "Upgrade to Premium..." : "Sign in to continue...";
+    }
     if (activeOption === 'web-search') return "Search the web...";
     if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the file...";
     return "Ask me anything...";
@@ -397,7 +400,10 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       {!isMinimized && (
         <div className="flex justify-center mt-2 text-xs text-muted-foreground">
           <span className="px-2 py-1 rounded-full">
-            {disabled ? 'Sign in to continue chatting' :
+            {disabled ? 
+              (document.body.hasAttribute('data-user-logged-in') ? 
+                'Upgrade to Premium for unlimited access!' : 
+                'Sign in to continue chatting') :
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
              uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
