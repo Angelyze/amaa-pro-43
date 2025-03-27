@@ -16,11 +16,11 @@
     height: 100%;
     top: 0;
     left: 0;
-    opacity: 1;
-    transition: opacity 0.5s ease;
+    opacity: 0;
+    animation: gradualFadeIn 2s ease-out forwards;
   }
   
-  /* Modified animation logic for smoother transitions */
+  /* Create subtle movement with multiple layers */
   .background-pattern::before,
   .background-pattern::after {
     content: "";
@@ -30,77 +30,76 @@
     right: 0;
     bottom: 0;
     z-index: -1;
-    opacity: 0.75;
-    transform: translate(0, 0) rotate(0deg);
-    animation-name: patternFloat;
-    animation-duration: 60s;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    will-change: transform, opacity;
+    opacity: 0;
+    animation: layerFadeIn 2.5s ease-out forwards;
   }
   
   .background-pattern::before {
-    /* More abstract shapes with subtle accent */
     background-image: 
-      radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 45%),
-      radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.3) 0%, transparent 60%),
-      radial-gradient(ellipse at 45% 60%, rgba(var(--pattern-accent-rgb), 0.15) 0%, transparent 50%);
-    animation-delay: -15s;
-    filter: blur(40px);
+      radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.15) 0%, transparent 45%),
+      radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.2) 0%, transparent 60%);
+    filter: blur(50px);
+    animation: 
+      layerFadeIn 2.5s ease-out forwards,
+      gentleFloat 90s ease-in-out infinite alternate;
   }
   
   .background-pattern::after {
-    /* Additional layer with different shapes */
     background-image: 
-      radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.25) 0%, transparent 55%),
-      radial-gradient(ellipse at 20% 20%, rgba(var(--pattern-accent-rgb), 0.15) 0%, transparent 45%),
-      radial-gradient(circle at 50% 80%, rgba(var(--pattern-accent-rgb), 0.2) 0%, transparent 40%);
-    animation-delay: -30s;
-    filter: blur(40px);
+      radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.2) 0%, transparent 55%),
+      radial-gradient(circle at 20% 30%, rgba(var(--pattern-accent-rgb), 0.1) 0%, transparent 45%);
+    filter: blur(50px);
+    animation: 
+      layerFadeIn 2.5s ease-out forwards 0.5s,
+      gentleFloatReverse 100s ease-in-out infinite alternate;
   }
   
-  /* Significantly smoother animation with minimal movement */
-  @keyframes patternFloat {
+  /* Initial fade in animation */
+  @keyframes gradualFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes layerFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 0.7; }
+  }
+  
+  /* Ultra smooth and slow movement animations */
+  @keyframes gentleFloat {
     0% {
-      transform: translate(0%, 0%) rotate(0deg);
-      opacity: 0.7;
+      transform: translate(0%, 0%) scale(1);
     }
-    20% {
-      transform: translate(0.5%, -0.5%) rotate(0.2deg);
-      opacity: 0.75;
+    25% {
+      transform: translate(0.2%, -0.2%) scale(1.01);
     }
-    40% {
-      transform: translate(-0.5%, 0.5%) rotate(-0.2deg);
-      opacity: 0.8;
+    50% {
+      transform: translate(0.1%, 0.2%) scale(1.005);
     }
-    60% {
-      transform: translate(0.3%, 0.7%) rotate(0.1deg);
-      opacity: 0.85;
-    }
-    80% {
-      transform: translate(-0.7%, -0.3%) rotate(-0.1deg);
-      opacity: 0.8;
+    75% {
+      transform: translate(-0.2%, 0.1%) scale(1.01);
     }
     100% {
-      transform: translate(0.4%, -0.4%) rotate(0.2deg);
-      opacity: 0.7;
+      transform: translate(-0.1%, -0.1%) scale(1);
     }
   }
   
-  /* Add animation trigger for when the page loads */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
+  @keyframes gentleFloatReverse {
+    0% {
+      transform: translate(0%, 0%) scale(1);
     }
-    to {
-      opacity: 1;
+    25% {
+      transform: translate(-0.2%, 0.2%) scale(1.01);
     }
-  }
-  
-  /* Apply fade-in animation to background pattern */
-  .background-pattern {
-    animation: fadeIn 1.5s ease-out forwards;
+    50% {
+      transform: translate(-0.1%, -0.2%) scale(1.005);
+    }
+    75% {
+      transform: translate(0.2%, -0.1%) scale(1.01);
+    }
+    100% {
+      transform: translate(0.1%, 0.1%) scale(1);
+    }
   }
 }
 
