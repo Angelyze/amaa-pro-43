@@ -44,7 +44,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   imageUrl?: string;
   source: string;
 }) => (
-  <div className="article-preview">
+  <div className="article-preview mb-4 border-b border-border/30 pb-3 last:border-0">
     <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 theme-link hover:underline font-medium">
       {title}
     </a>
@@ -61,12 +61,12 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
       )}
       <div className="article-content flex-1">
         <p className="article-description text-sm mb-1">{description}</p>
-        <div className="article-meta text-xs text-muted-foreground">
-          <div className="flex items-center gap-1 mt-1">
+        <div className="article-meta text-xs text-muted-foreground flex flex-wrap gap-3">
+          <div className="flex items-center gap-1">
             <Calendar size={12} className="inline" />
-            <span>Date: {date}</span>
+            <span>{date}</span>
           </div>
-          <div className="flex items-center gap-1 mt-1">
+          <div className="flex items-center gap-1">
             <Globe size={12} className="inline" />
             <span>Source: </span>
             <a href={url} target="_blank" rel="noopener noreferrer" className="theme-link hover:underline">
@@ -88,10 +88,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
   useEffect(() => {
     if (type === 'assistant') {
       let cleanedContent = content;
-      
-      cleanedContent = cleanedContent.replace(/## Recent Articles \{\.search-result-articles\}/g, '## Recent Articles');
-      cleanedContent = cleanedContent.replace(/\{\.[\w-]+\}/g, '');
-      
       setProcessedContent(cleanedContent);
     } else {
       setProcessedContent(content);
@@ -165,41 +161,43 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link underline flex items-center gap-1"
+        className="theme-link underline flex items-center gap-1 hover:text-primary transition-colors"
       >
         {children}
         <ExternalLink size={12} className="inline-block" />
       </a>
     ),
-    p: ({ children, className }: { children: React.ReactNode, className?: string }) => {
-      const hasSearchImage = className?.includes('search-result-image') || 
-                            (React.Children.toArray(children).some(child => 
-                              React.isValidElement(child) && 
-                              child.props.className?.includes('search-result-image')));
+    
+    p: ({ children }: { children: React.ReactNode }) => {
+      const hasSearchImage = React.Children.toArray(children).some(
+        child => React.isValidElement(child) && 
+        child.props?.src && 
+        child.props?.alt?.includes('Search result image')
+      );
       
       if (hasSearchImage) {
-        return <div className="search-image-container">{children}</div>;
+        return <div className="search-image-container my-2">{children}</div>;
       }
+      
       return <p className="mb-4 last:mb-0">{children}</p>;
     },
-    img: ({ src, alt, className }: { src?: string; alt?: string; className?: string }) => {
-      if (className?.includes('search-result-image')) {
+    
+    img: ({ src, alt }: { src?: string; alt?: string }) => {
+      const isSearchResultImage = alt?.includes('Search result image');
+      
+      if (isSearchResultImage) {
         return (
-          <div className="inline-block mx-1 my-1">
-            <img 
-              src={src} 
-              alt={alt || 'Search result image'} 
-              className="search-result-image max-h-24 rounded-md object-cover border border-border/50 shadow-sm"
-              loading="lazy"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                console.error(`Failed to load image: ${target.src}`);
-                target.src = '/placeholder.svg';
-                target.alt = 'Image not available';
-                target.className = 'search-result-image max-h-24 rounded-md object-cover border border-border/50 bg-muted/20';
-              }}
-            />
-          </div>
+          <img 
+            src={src} 
+            alt={alt || 'Search result image'} 
+            className="inline-block max-h-32 rounded-md object-cover border border-border/50 shadow-sm m-1"
+            loading="lazy"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              console.error(`Failed to load image: ${target.src}`);
+              target.style.display = 'none';
+            }}
+          />
         );
       }
       
@@ -207,23 +205,24 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         <img 
           src={src} 
           alt={alt || 'Image'} 
-          className="max-w-full h-auto rounded-md my-2"
+          className="max-w-full h-auto rounded-md my-2 border border-border/20"
           loading="lazy"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             console.error(`Failed to load image: ${target.src}`);
             target.src = '/placeholder.svg';
             target.alt = 'Image not available';
-            target.className = 'max-w-full h-auto rounded-md my-2 bg-muted/20';
           }}
         />
       );
     },
+    
     h1: ({ children }: { children: React.ReactNode }) => (
       <h1 className="text-xl font-bold mb-4 mt-6 first:mt-0">{children}</h1>
     ),
-    h2: ({ children, className }: { children: React.ReactNode, className?: string }) => {
-      if (String(children).includes('Recent Articles') || className?.includes('search-result-articles')) {
+    
+    h2: ({ children }: { children: React.ReactNode }) => {
+      if (String(children).includes('Recent Articles')) {
         return (
           <div className="search-results-header mt-8 mb-4">
             <h2 className="text-lg font-bold pb-2 border-b border-border flex items-center gap-2">
@@ -235,21 +234,27 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       }
       return <h2 className="text-lg font-bold mb-3 mt-5 first:mt-0">{children}</h2>;
     },
+    
     h3: ({ children }: { children: React.ReactNode }) => (
       <h3 className="text-md font-bold mb-2 mt-4 first:mt-0">{children}</h3>
     ),
+    
     ul: ({ children }: { children: React.ReactNode }) => (
       <ul className="list-disc pl-5 mb-4 space-y-1">{children}</ul>
     ),
+    
     ol: ({ children }: { children: React.ReactNode }) => (
       <ol className="list-decimal pl-5 mb-4 space-y-1">{children}</ol>
     ),
+    
     li: ({ children }: { children: React.ReactNode }) => (
       <li className="mb-1">{children}</li>
     ),
+    
     blockquote: ({ children }: { children: React.ReactNode }) => (
-      <blockquote className="border-l-4 border-primary pl-4 italic my-4">{children}</blockquote>
+      <blockquote className="border-l-4 border-primary/70 pl-4 italic my-4 py-1 text-muted-foreground">{children}</blockquote>
     ),
+    
     code: ({ node, inline, className, children, ...props }: any) => {
       if (inline) {
         return (
@@ -266,20 +271,25 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         </pre>
       );
     },
+    
     table: ({ children }: { children: React.ReactNode }) => (
       <div className="overflow-x-auto mb-4">
         <table className="min-w-full border-collapse border border-border">{children}</table>
       </div>
     ),
+    
     th: ({ children }: { children: React.ReactNode }) => (
       <th className="border border-border bg-muted p-2 text-left font-semibold">{children}</th>
     ),
+    
     td: ({ children }: { children: React.ReactNode }) => (
       <td className="border border-border p-2">{children}</td>
     ),
+    
     strong: ({ children }: { children: React.ReactNode }) => (
       <strong className="font-semibold">{children}</strong>
     ),
+    
     em: ({ children }: { children: React.ReactNode }) => (
       <em className="italic">{children}</em>
     )

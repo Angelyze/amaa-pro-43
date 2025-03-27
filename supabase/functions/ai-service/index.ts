@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -277,39 +276,39 @@ async function handlePerplexitySearch(message: string) {
   try {
     console.log('Sending search query to Perplexity API:', message);
     
-    // Enhanced search query system prompt for Perplexity
+    // Enhanced system prompt for Perplexity to maximize SONAR model capabilities
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
     Follow these guidelines when responding:
     
-    1. Always respond in the SAME LANGUAGE as the user's query
-    2. Start with a clear summary that directly answers the query
-    3. Include SPECIFIC DATES for all information
-    4. Format responses with proper Markdown:
-       - Use ## and ### for clear section headings
-       - Create bulleted or numbered lists where appropriate
-       - Format code with proper code blocks using backticks
-       - Use FULL clickable URLs in [text](URL) format without breaking links
-    5. For technical queries, provide the most recent documentation and specifications
-    6. Include a timestamp showing when this search was conducted
-    7. Always include the source and publication date for each piece of information
-    8. End with a "## Recent Articles" section listing 5 recent and relevant articles with:
-       - Full article title as a clickable link: [Title](URL)
-       - IMAGE_URL: [url] if available (exactly this format)
-       - Brief 1-2 sentence description
-       - Publication date in YYYY-MM-DD format
-       - Source name with link
-    9. Prioritize recency - focus on information from the past 30 days
-    10. If searching for rapidly changing information, explicitly note it was current as of the search date
-    11. If you cannot find recent information, clearly state this limitation`;
+    1. ALWAYS respond in the SAME LANGUAGE as the user's query
+    2. Start with a direct summary answering the query in 2-3 sentences
+    3. Include SPECIFIC DATES for all information mentioned
+    4. Format with proper Markdown:
+       - Use ## for main sections and ### for subsections
+       - Use bullet points (*) for lists
+       - Format code with proper \`\`\` code blocks
+       - Use **bold** for emphasis
+       - Use > for quotations
+    5. For factual information, cite sources inline with [Source Name](URL)
+    6. IMPORTANT: Include images by adding IMAGE_URL: [url] lines (exactly this format)
+    7. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
+       - Title as clickable link [Title](URL)
+       - One sentence description
+       - Publication date (YYYY-MM-DD)
+       - Source name
+       - Include IMAGE_URL: [url] line for each article's image if available
+    8. All URLs must be fully functional, properly escaped markdown links
+    9. Prioritize content from the last 30 days
+    10. If information is time-sensitive, note when the search was conducted`;
     
-    // Using Perplexity's SONAR model for web search
+    // Use SONAR model with optimal parameters
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
+        'Pragma': 'no-cache', 
         'Expires': '0'
       },
       body: JSON.stringify({
@@ -321,11 +320,11 @@ async function handlePerplexitySearch(message: string) {
           },
           { role: 'user', content: message }
         ],
-        temperature: 0.2, // Lower temperature for more factual responses
+        temperature: 0.2,
         max_tokens: 1500,
+        top_p: 0.95,
         frequency_penalty: 1,
         presence_penalty: 0,
-        // Perplexity-specific parameters
         search_domain_filter: [],
         search_recency_filter: 'month'
       }),
@@ -342,11 +341,11 @@ async function handlePerplexitySearch(message: string) {
     let searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
     
     // Process the searchResponse to extract image URLs and prepare them for display
-    const processedResponse = await processSearchResponseForImages(searchResponse);
+    searchResponse = await processSearchResponseForDisplay(searchResponse);
     
     return new Response(
       JSON.stringify({ 
-        response: processedResponse,
+        response: searchResponse,
         model: "llama-3.1-sonar-small-128k"
       }),
       { 
@@ -374,24 +373,31 @@ async function handlePerplexitySearch(message: string) {
   }
 }
 
-// Helper function to process the search response and prepare image data
-async function processSearchResponseForImages(text: string): Promise<string> {
-  // Extract image URLs from the format "IMAGE_URL: [url]"
+// Helper function to process the search response for display
+async function processSearchResponseForDisplay(text: string): Promise<string> {
+  // Remove any duplicate "Recent Articles" sections
+  const sections = text.split(/(?=## Recent Articles)/);
+  if (sections.length > 1) {
+    // Keep only the last "Recent Articles" section
+    text = sections[0] + sections[sections.length - 1];
+  }
+  
+  // Extract and process all image URLs
   const imageRegex = /IMAGE_URL:\s*(\S+)/g;
   let match;
   let processedText = text;
   
-  // Replace the IMAGE_URL references with markdown images that our frontend will interpret
+  // Replace the IMAGE_URL references with markdown images
   const imageUrls: string[] = [];
   while ((match = imageRegex.exec(text)) !== null) {
     const [fullMatch, imageUrl] = match;
     
-    // If URL is valid, replace the IMAGE_URL line with our custom image markdown
+    // If URL is valid, replace the IMAGE_URL line with markdown image syntax
     if (imageUrl && imageUrl.startsWith('http')) {
       // Add to our collection of image URLs
       imageUrls.push(imageUrl);
       
-      // Replace with markdown image syntax - adding search-result-image class
+      // Replace with markdown image syntax - adding search-result-image class for proper styling
       processedText = processedText.replace(
         fullMatch, 
         `![Search result image](${imageUrl}){: .search-result-image}`
@@ -402,17 +408,28 @@ async function processSearchResponseForImages(text: string): Promise<string> {
     }
   }
   
-  // Replace the Recent Articles section marker without class information
-  processedText = processedText.replace(
-    /## Recent Articles\s*\{\.\w+\}/g, 
-    '## Recent Articles'
-  );
-  
-  // Also replace any other remaining class markers
+  // Remove any class markers from the output
   processedText = processedText.replace(/\{\.[\w-]+\}/g, '');
   
-  // Fix any domain names that are split across multiple lines
-  // Look for open parenthesis followed by domain name pattern possibly spread across lines
+  // Fix broken links by ensuring URLs are properly formatted
+  processedText = processedText.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    (match, linkText, url) => {
+      // Check if URL is properly formatted
+      if (!url.startsWith('http')) {
+        // Try to fix the URL
+        if (url.startsWith('www.')) {
+          return `[${linkText}](https://${url})`;
+        } else {
+          // If we can't fix it, keep as is
+          return match;
+        }
+      }
+      return match;
+    }
+  );
+  
+  // Fix domain names that are split across multiple lines
   processedText = processedText.replace(
     /\(\s*([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)?\s*\)/g,
     (match, domain) => {
@@ -421,6 +438,12 @@ async function processSearchResponseForImages(text: string): Promise<string> {
       }
       return match;
     }
+  );
+  
+  // Add clear section for Recent Articles if it isn't styled properly
+  processedText = processedText.replace(
+    /## Recent Articles/g,
+    '## Recent Articles'
   );
   
   console.log(`Processed ${imageUrls.length} image URLs for display`);
