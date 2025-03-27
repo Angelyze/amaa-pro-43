@@ -12,7 +12,15 @@ let isPlaying = false;
 let playQueue: string[] = [];
 let currentChunkIndex = 0;
 
-// Helper to identify the UK male voice
+// Available Gemini voice options
+const GEMINI_VOICES = [
+  { id: 'gemini-en-male-1', name: 'Mark', lang: 'en-US', description: 'Gemini - Male (US)' },
+  { id: 'gemini-en-female-1', name: 'Olivia', lang: 'en-US', description: 'Gemini - Female (US)' },
+  { id: 'gemini-en-male-2', name: 'James', lang: 'en-GB', description: 'Gemini - Male (UK)' },
+  { id: 'gemini-en-female-2', name: 'Emma', lang: 'en-GB', description: 'Gemini - Female (UK)' },
+];
+
+// Helper to identify the UK male voice for fallback
 const findGoogleUKMaleVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined => {
   return voices.find(voice => 
     voice.name.toLowerCase().includes('uk english male') || 
@@ -20,9 +28,9 @@ const findGoogleUKMaleVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisV
   );
 };
 
-// Get all available browser voices
+// Get all available voices (Gemini + browser)
 export const getAllVoices = (): VoiceOption[] => {
-  const voices: VoiceOption[] = [];
+  let voices: VoiceOption[] = [...GEMINI_VOICES]; // Start with Gemini voices
   
   // Add browser voices if available
   if ('speechSynthesis' in window) {
@@ -38,12 +46,12 @@ export const getAllVoices = (): VoiceOption[] => {
         });
       });
     } else {
-      // Add some default voices if no browser voices are available
+      // Add some default browser voices as fallback
       voices.push(
-        { id: 'browser-default-uk-male', name: 'Google UK English Male', lang: 'en-GB', description: 'Default' },
-        { id: 'browser-default-uk-female', name: 'Google UK English Female', lang: 'en-GB', description: 'Default' },
-        { id: 'browser-default-us-male', name: 'Google US English Male', lang: 'en-US', description: 'Default' },
-        { id: 'browser-default-us-female', name: 'Google US English Female', lang: 'en-US', description: 'Default' }
+        { id: 'browser-default-uk-male', name: 'Google UK English Male', lang: 'en-GB', description: 'Browser Fallback' },
+        { id: 'browser-default-uk-female', name: 'Google UK English Female', lang: 'en-GB', description: 'Browser Fallback' },
+        { id: 'browser-default-us-male', name: 'Google US English Male', lang: 'en-US', description: 'Browser Fallback' },
+        { id: 'browser-default-us-female', name: 'Google US English Female', lang: 'en-US', description: 'Browser Fallback' }
       );
     }
   }
@@ -63,6 +71,10 @@ export const getCurrentVoice = (): VoiceOption => {
     if (foundVoice) return foundVoice;
   }
   
+  // Default to first Gemini voice as preferred
+  const geminiVoice = voices.find(v => v.id.startsWith('gemini-'));
+  if (geminiVoice) return geminiVoice;
+  
   // Otherwise, try to find the UK male voice
   const ukMaleVoice = voices.find(v => 
     v.name.toLowerCase().includes('uk english male') || 
@@ -72,7 +84,7 @@ export const getCurrentVoice = (): VoiceOption => {
   if (ukMaleVoice) return ukMaleVoice;
   
   // Return the first available voice as fallback
-  return voices.length > 0 ? voices[0] : { id: 'browser-default-uk-male', name: 'Google UK English Male', lang: 'en-GB', description: 'Default' };
+  return voices.length > 0 ? voices[0] : { id: 'gemini-en-male-1', name: 'Mark', lang: 'en-US', description: 'Gemini - Male (US)' };
 };
 
 // Save voice setting to localStorage
@@ -122,16 +134,17 @@ const getSpeechSynthesisVoiceFromId = (voiceId: string): SpeechSynthesisVoice | 
 export const stopSpeech = (): void => {
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
-    isPlaying = false;
-    playQueue = [];
-    currentChunkIndex = 0;
-    
-    if (currentUtterance) {
-      // Remove event listeners
-      currentUtterance.onend = null;
-      currentUtterance.onerror = null;
-      currentUtterance = null;
-    }
+  }
+  
+  isPlaying = false;
+  playQueue = [];
+  currentChunkIndex = 0;
+  
+  if (currentUtterance) {
+    // Remove event listeners
+    currentUtterance.onend = null;
+    currentUtterance.onerror = null;
+    currentUtterance = null;
   }
 };
 
@@ -175,17 +188,72 @@ const splitTextIntoChunks = (text: string, maxLength = 250): string[] => {
   return chunks;
 };
 
-// Text to speech function with browser voices
+// Function to use the Gemini TTS API via our edge function
+const useGeminiTTS = async (text: string, voiceId: string): Promise<string> => {
+  try {
+    // Extract voice parameters from the ID
+    const [_, lang, gender, variant] = voiceId.split('-');
+    
+    // For now we use a simple mapping - in a real implementation, we'd have a proper API
+    // This is a placeholder - in a real implementation, we would call the actual Gemini TTS API
+    const response = await fetch('/api/tts-gemini', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        voice: {
+          language: lang,
+          gender: gender,
+          variant: variant
+        }
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to generate speech with Gemini TTS');
+    }
+    
+    // Assuming the response contains audio data as base64
+    const data = await response.json();
+    return data.audioUrl || '';
+  } catch (error) {
+    console.error('Error using Gemini TTS:', error);
+    throw error;
+  }
+};
+
+// Play audio from a URL (used for Gemini TTS)
+const playAudioFromUrl = async (audioUrl: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const audio = new Audio(audioUrl);
+      
+      audio.onended = () => {
+        resolve();
+      };
+      
+      audio.onerror = (error) => {
+        console.error('Audio playback error:', error);
+        reject(error);
+      };
+      
+      audio.play().catch((error) => {
+        console.error('Error playing audio:', error);
+        reject(error);
+      });
+    } catch (error) {
+      console.error('Error setting up audio playback:', error);
+      reject(error);
+    }
+  });
+};
+
+// Main text to speech function
 export const textToSpeech = async (text: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     try {
-      // Make sure we have speech synthesis available
-      if (!('speechSynthesis' in window)) {
-        toast.error('Text-to-speech is not supported in your browser');
-        reject(new Error('Speech synthesis not supported'));
-        return;
-      }
-      
       // Stop any current speech
       stopSpeech();
       isPlaying = true;
@@ -194,101 +262,154 @@ export const textToSpeech = async (text: string): Promise<void> => {
       const voiceSetting = getCurrentVoice();
       const voiceId = voiceSetting.id;
       
-      // Get actual SpeechSynthesisVoice
-      let voice = getSpeechSynthesisVoiceFromId(voiceId);
-      
-      // Fallback to first available voice if selected voice is not available
-      if (!voice && window.speechSynthesis.getVoices().length > 0) {
-        voice = window.speechSynthesis.getVoices()[0];
-        console.log('Using fallback voice:', voice.name);
-      }
-      
-      if (!voice) {
-        console.error('No voice available for TTS');
-        toast.error('No voice available for text-to-speech');
-        reject(new Error('No voice available'));
-        return;
-      }
-      
-      // Split text into manageable chunks
-      playQueue = splitTextIntoChunks(text, 250);
-      currentChunkIndex = 0;
-      
-      console.log('Speaking', playQueue.length, 'chunks of text');
-      
-      const speakNextChunk = () => {
-        if (currentChunkIndex >= playQueue.length || !isPlaying) {
-          isPlaying = false;
-          resolve();
-          return;
+      // Check if we should use Gemini TTS
+      if (voiceId.startsWith('gemini-')) {
+        try {
+          // Split text into manageable chunks for better processing
+          playQueue = splitTextIntoChunks(text, 250);
+          currentChunkIndex = 0;
+          
+          const processGeminiChunks = async () => {
+            if (currentChunkIndex >= playQueue.length || !isPlaying) {
+              isPlaying = false;
+              resolve();
+              return;
+            }
+            
+            try {
+              // Generate and play the audio for current chunk
+              const audioUrl = await useGeminiTTS(playQueue[currentChunkIndex], voiceId);
+              await playAudioFromUrl(audioUrl);
+              
+              // Move to the next chunk
+              currentChunkIndex++;
+              if (isPlaying) {
+                processGeminiChunks();
+              }
+            } catch (error) {
+              console.error('Error processing Gemini TTS chunk:', error);
+              currentChunkIndex++;
+              if (isPlaying) {
+                processGeminiChunks();
+              }
+            }
+          };
+          
+          // Start processing chunks
+          processGeminiChunks();
+        } catch (error) {
+          console.error('Error using Gemini TTS:', error);
+          toast.error('Failed with Gemini TTS. Falling back to browser voices.');
+          
+          // Fall back to browser TTS
+          fallbackToBrowserTTS(text, resolve, reject);
         }
-        
-        const utterance = new SpeechSynthesisUtterance(playQueue[currentChunkIndex]);
-        currentUtterance = utterance;
-        
-        // Set voice and other properties
-        utterance.voice = voice;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-        
-        // Handle events
-        utterance.onend = () => {
-          console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
-          currentChunkIndex++;
-          
-          // Reduce delay between chunks for more continuous speech
-          setTimeout(() => {
-            if (isPlaying) {
-              speakNextChunk();
-            }
-          }, 10);
-        };
-        
-        utterance.onerror = (event) => {
-          console.error('Speech error:', event);
-          // Don't stop completely on error, try to continue with next chunk
-          currentChunkIndex++;
-          setTimeout(() => {
-            if (isPlaying) {
-              speakNextChunk();
-            }
-          }, 10);
-        };
-        
-        // Safety mechanism: if a chunk doesn't complete in 10 seconds, move to the next one
-        const safetyTimeout = setTimeout(() => {
-          if (isPlaying && currentUtterance === utterance) {
-            console.log('Safety timeout triggered for chunk', currentChunkIndex);
-            // Instead of canceling all synthesis, just move to next chunk
-            currentChunkIndex++;
-            speakNextChunk();
-          }
-        }, 10000);
-        
-        // Clear the timeout when the utterance naturally ends
-        utterance.onend = (event) => {
-          clearTimeout(safetyTimeout);
-          console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
-          currentChunkIndex++;
-          
-          setTimeout(() => {
-            if (isPlaying) {
-              speakNextChunk();
-            }
-          }, 10);
-        };
-        
-        // Speak the current chunk
-        window.speechSynthesis.speak(utterance);
-      };
-      
-      // Start speaking
-      speakNextChunk();
+      } else {
+        // Use browser TTS
+        fallbackToBrowserTTS(text, resolve, reject);
+      }
     } catch (error) {
       isPlaying = false;
       console.error('TTS error:', error);
       reject(error);
     }
   });
+};
+
+// Function to fall back to browser TTS if Gemini TTS fails
+const fallbackToBrowserTTS = (text: string, resolve: () => void, reject: (error: any) => void) => {
+  try {
+    // Make sure we have speech synthesis available
+    if (!('speechSynthesis' in window)) {
+      toast.error('Text-to-speech is not supported in your browser');
+      reject(new Error('Speech synthesis not supported'));
+      return;
+    }
+    
+    // Get the selected voice
+    const voiceSetting = getCurrentVoice();
+    const voiceId = voiceSetting.id;
+    
+    // Get actual SpeechSynthesisVoice
+    let voice = getSpeechSynthesisVoiceFromId(voiceId);
+    
+    // Fallback to first available voice if selected voice is not available
+    if (!voice && window.speechSynthesis.getVoices().length > 0) {
+      voice = window.speechSynthesis.getVoices()[0];
+      console.log('Using fallback voice:', voice.name);
+    }
+    
+    if (!voice) {
+      console.error('No voice available for TTS');
+      toast.error('No voice available for text-to-speech');
+      reject(new Error('No voice available'));
+      return;
+    }
+    
+    // Split text into manageable chunks
+    playQueue = splitTextIntoChunks(text, 250);
+    currentChunkIndex = 0;
+    
+    console.log('Speaking', playQueue.length, 'chunks of text');
+    
+    const speakNextChunk = () => {
+      if (currentChunkIndex >= playQueue.length || !isPlaying) {
+        isPlaying = false;
+        resolve();
+        return;
+      }
+      
+      const utterance = new SpeechSynthesisUtterance(playQueue[currentChunkIndex]);
+      currentUtterance = utterance;
+      
+      // Set voice and other properties
+      utterance.voice = voice;
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      // Safety mechanism: if a chunk doesn't complete in 10 seconds, move to the next one
+      const safetyTimeout = setTimeout(() => {
+        if (isPlaying && currentUtterance === utterance) {
+          console.log('Safety timeout triggered for chunk', currentChunkIndex);
+          currentChunkIndex++;
+          speakNextChunk();
+        }
+      }, 10000);
+      
+      // Clear the timeout when the utterance naturally ends
+      utterance.onend = () => {
+        clearTimeout(safetyTimeout);
+        console.log(`Finished speaking chunk ${currentChunkIndex + 1} of ${playQueue.length}`);
+        currentChunkIndex++;
+        
+        setTimeout(() => {
+          if (isPlaying) {
+            speakNextChunk();
+          }
+        }, 10);
+      };
+      
+      utterance.onerror = (event) => {
+        clearTimeout(safetyTimeout);
+        console.error('Speech error:', event);
+        currentChunkIndex++;
+        setTimeout(() => {
+          if (isPlaying) {
+            speakNextChunk();
+          }
+        }, 10);
+      };
+      
+      // Speak the current chunk
+      window.speechSynthesis.speak(utterance);
+    };
+    
+    // Start speaking
+    speakNextChunk();
+  } catch (error) {
+    isPlaying = false;
+    console.error('Browser TTS error:', error);
+    reject(error);
+  }
 };

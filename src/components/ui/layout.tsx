@@ -15,7 +15,8 @@ export function Layout({ children, showBackButton, title }: LayoutProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col background-pattern">
+    <div className="min-h-screen flex flex-col">
+      <div className="background-pattern" aria-hidden="true"></div>
       {!showBackButton ? (
         <Header 
           mainSearchVisible={false}
@@ -25,7 +26,7 @@ export function Layout({ children, showBackButton, title }: LayoutProps) {
           onLogin={async () => {}}
         />
       ) : (
-        <div className="border-b border-border">
+        <div className="border-b border-border relative z-10">
           <div className="container py-4 flex items-center">
             <Button 
               variant="ghost" 
@@ -39,7 +40,7 @@ export function Layout({ children, showBackButton, title }: LayoutProps) {
           </div>
         </div>
       )}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         {children}
       </main>
     </div>

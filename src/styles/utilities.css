@@ -55,21 +55,13 @@
     @apply px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted/90 cursor-pointer transition-all inline-block mr-2 mb-2;
   }
   
-  /* Prevent background pattern flicker when scrolling */
-  .background-pattern {
-    @apply will-change-transform;
-    background-attachment: fixed;
-    z-index: -10;
+  /* Main content should scroll, not the background */
+  main {
+    @apply relative z-10;
   }
   
-  .background-pattern::before,
-  .background-pattern::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
+  /* Prevent page content from being covered by fixed background */
+  #root {
+    @apply min-h-screen relative;
   }
 }
