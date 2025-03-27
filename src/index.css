@@ -5,9 +5,10 @@
 @import './styles/animations.css';
 
 /* Theme specific styling */
-@import './themes/darkGreen.css';
-@import './themes/darkRed.css';
-@import './themes/darkYellow.css';
+@import './styles/darkGreen.css';
+@import './styles/darkRed.css';
+@import './styles/darkYellow.css';
+@import './styles/darkPurple.css';
 
 /* Custom styling for search results */
 .search-results .article-preview {
