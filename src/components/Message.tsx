@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -56,6 +57,11 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
             alt={title} 
             loading="lazy" 
             className="rounded-md object-cover w-full aspect-video border border-border/30"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/placeholder.svg';
+              target.alt = 'Image not available';
+            }}
           />
         </div>
       )}
@@ -79,15 +85,46 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   </div>
 );
 
+// Component to render related topics section
+const RelatedTopics = ({ topics }: { topics: string[] }) => (
+  <div className="related-topics mt-4 border-t border-border/30 pt-4">
+    <div className="flex flex-wrap gap-2">
+      {topics.map((topic, index) => (
+        <span key={index} className="px-3 py-1 bg-muted rounded-full text-sm">
+          {topic}
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
 const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textSize, setTextSize] = useState<'normal' | 'large' | 'small'>('normal');
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [processedContent, setProcessedContent] = useState<string>(content);
+  const [relatedTopics, setRelatedTopics] = useState<string[]>([]);
   
   useEffect(() => {
     if (type === 'assistant') {
       let cleanedContent = content;
+      
+      // Extract related topics if they exist
+      const relatedTopicsMatch = cleanedContent.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
+      if (relatedTopicsMatch && relatedTopicsMatch[1]) {
+        const topicsText = relatedTopicsMatch[1];
+        const topics = topicsText
+          .split(/\r?\n/)
+          .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
+          .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
+          .filter(topic => topic.length > 0);
+        
+        setRelatedTopics(topics);
+        
+        // You can optionally remove this section from the displayed content
+        cleanedContent = cleanedContent.replace(/## Related Topics[\s\S]*?(?=##|$)/, '');
+      }
+      
       setProcessedContent(cleanedContent);
     } else {
       setProcessedContent(content);
@@ -364,7 +401,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                   console.error(`Failed to load image: ${target.src}`);
                   target.src = '/placeholder.svg';
                   target.alt = 'Image not available';
-                  target.className = 'max-w-full max-h-64 rounded-md object-contain bg-muted/20';
                 }}
               />
             ) : (
@@ -390,6 +426,24 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
             </ReactMarkdown>
           )}
         </div>
+        
+        {relatedTopics.length > 0 && type === 'assistant' && (
+          <div className="mt-6 mb-2">
+            <h2 className="text-lg font-bold pb-2 border-b border-border flex items-center gap-2">
+              Related Topics
+            </h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {relatedTopics.map((topic, index) => (
+                <span 
+                  key={index} 
+                  className="px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted cursor-pointer transition-all"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         
         {timestamp && (
           <div className="mt-2 text-xs text-muted-foreground">

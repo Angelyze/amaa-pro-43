@@ -141,3 +141,23 @@
 .markdown-content a:hover {
   opacity: 0.8;
 }
+
+/* Related topics styling */
+.search-results .related-topics {
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.search-results .related-topics span {
+  background-color: var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.search-results .related-topics span:hover {
+  background-color: var(--theme-accent);
+  color: white;
+}

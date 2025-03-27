@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -278,31 +277,34 @@ async function handlePerplexitySearch(message: string) {
     console.log('Sending search query to Perplexity API:', message);
     
     // Enhanced system prompt for Perplexity to maximize SONAR model capabilities
+    // and ensure proper image and link formatting
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
+    ALWAYS respond in the SAME LANGUAGE as the user's query.
+    
     Follow these guidelines when responding:
     
-    1. ALWAYS respond in the SAME LANGUAGE as the user's query
-    2. Start with a direct summary answering the query in 2-3 sentences
-    3. Include SPECIFIC DATES for all information mentioned
-    4. Format with proper Markdown:
+    1. Start with a direct summary answering the query in 2-3 sentences
+    2. Include SPECIFIC DATES for all information mentioned
+    3. Format with proper Markdown:
        - Use ## for main sections and ### for subsections
        - Use bullet points (*) for lists
        - Format code with proper \`\`\` code blocks
        - Use **bold** for emphasis
        - Use > for quotations
-    5. For factual information, cite sources inline with [Source Name](URL)
-    6. IMPORTANT: Include images by adding IMAGE_URL: [url] lines (exactly this format)
-    7. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
+    4. For factual information, cite sources inline with [Source Name](URL)
+    5. IMPORTANT: Include images by adding plain markdown image syntax: ![Description](IMAGE_URL) (no special formatting)
+    6. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
        - Title as clickable link [Title](URL)
        - One sentence description
        - Publication date (YYYY-MM-DD)
        - Source name
-       - Include IMAGE_URL: [url] line for each article's image if available
-    8. All URLs must be fully functional, properly escaped markdown links
+       - Include an image for each article with ![Article image](IMAGE_URL)
+    7. After Recent Articles, add a "## Related Topics" section with 3 related search topics that are different from the main articles
+    8. All URLs must be fully functional, properly formatted markdown links
     9. Prioritize content from the last 30 days
     10. If information is time-sensitive, note when the search was conducted`;
     
-    // Use SONAR model with optimal parameters
+    // Use SONAR model with optimal parameters for web search with images
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -341,8 +343,8 @@ async function handlePerplexitySearch(message: string) {
     
     let searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
     
-    // Process the searchResponse to extract image URLs and prepare them for display
-    searchResponse = await processSearchResponseForDisplay(searchResponse);
+    // Clean up any formatting issues in the response
+    searchResponse = cleanUpSearchResponse(searchResponse);
     
     return new Response(
       JSON.stringify({ 
@@ -374,8 +376,8 @@ async function handlePerplexitySearch(message: string) {
   }
 }
 
-// Helper function to process the search response for display
-async function processSearchResponseForDisplay(text: string): Promise<string> {
+// Helper function to clean up the search response format
+function cleanUpSearchResponse(text: string): string {
   // Remove any duplicate "Recent Articles" sections
   const sections = text.split(/(?=## Recent Articles)/);
   if (sections.length > 1) {
@@ -383,34 +385,15 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
     text = sections[0] + sections[sections.length - 1];
   }
   
-  // Extract and process all image URLs
-  const imageRegex = /IMAGE_URL:\s*(\S+)/g;
-  let match;
-  let processedText = text;
+  // Ensure proper image markdown syntax
+  // Convert any special formats to standard markdown
+  text = text.replace(/IMAGE_URL:\s*(\S+)/g, '![Image]($1)');
   
-  // Replace the IMAGE_URL references with markdown images
-  const imageUrls: string[] = [];
-  while ((match = imageRegex.exec(text)) !== null) {
-    const [fullMatch, imageUrl] = match;
-    
-    // If URL is valid, replace the IMAGE_URL line with markdown image syntax
-    if (imageUrl && imageUrl.startsWith('http')) {
-      // Add to our collection of image URLs
-      imageUrls.push(imageUrl);
-      
-      // Replace with markdown image syntax
-      processedText = processedText.replace(
-        fullMatch, 
-        `![Search result image](${imageUrl})`
-      );
-    } else {
-      // Remove invalid image references
-      processedText = processedText.replace(fullMatch, '');
-    }
-  }
+  // Fix image markdown that might be broken
+  text = text.replace(/!\[([^\]]*)\]\s*\(([^)]+)\)/g, '![$1]($2)');
   
   // Fix broken links by ensuring URLs are properly formatted
-  processedText = processedText.replace(
+  text = text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     (match, linkText, url) => {
       // Check if URL is properly formatted
@@ -418,32 +401,25 @@ async function processSearchResponseForDisplay(text: string): Promise<string> {
         // Try to fix the URL
         if (url.startsWith('www.')) {
           return `[${linkText}](https://${url})`;
-        } else {
-          // If we can't fix it, keep as is
-          return match;
         }
       }
       return match;
     }
   );
   
-  // Fix domain names that are split across multiple lines
-  processedText = processedText.replace(
-    /\(\s*([a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]*(?:\.[a-zA-Z0-9][a-zA-Z0-9-]*)*)?\s*\)/g,
-    (match, domain) => {
-      if (domain) {
-        return `(${domain.trim()})`;
-      }
-      return match;
-    }
-  );
+  // Add line breaks after images to ensure proper rendering
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '![$1]($2)\n\n');
   
   // Ensure the "Recent Articles" section has proper formatting
-  processedText = processedText.replace(
+  text = text.replace(
     /## Recent Articles/g,
-    '## Recent Articles'
+    '\n\n## Recent Articles'
   );
   
-  console.log(`Processed ${imageUrls.length} image URLs for display`);
-  return processedText;
+  // Add the "Related Topics" section if it doesn't exist
+  if (!text.includes('## Related Topics')) {
+    text += '\n\n## Related Topics\nNo related topics available.';
+  }
+  
+  return text;
 }

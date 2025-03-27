@@ -72,8 +72,22 @@
     @apply whitespace-nowrap;
   }
   
-  /* Cleaner link styling without icon */
+  /* Make links stand out better */
+  a {
+    @apply transition-colors duration-200;
+  }
+  
+  /* Better link styling */
   a[target="_blank"] {
     @apply inline-flex items-center;
+  }
+  
+  /* Related topics styling */
+  .related-topics-container {
+    @apply mt-6 pt-4 border-t border-border/30;
+  }
+  
+  .related-topic-tag {
+    @apply px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted/90 cursor-pointer transition-all inline-block mr-2 mb-2;
   }
 }
