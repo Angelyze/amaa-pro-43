@@ -35,7 +35,7 @@
   
   /* Enhanced image hover effects for search results */
   .search-result-image {
-    @apply transition-transform duration-300 hover:scale-110 cursor-zoom-in shadow-sm hover:shadow-md;
+    @apply transition-transform duration-300 hover:scale-105 cursor-zoom-in shadow-sm hover:shadow-md;
   }
   
   /* Display image in a lightbox when clicked */
@@ -70,5 +70,10 @@
   /* Fix domain name display in source links to prevent wrapping */
   .source-domain {
     @apply whitespace-nowrap;
+  }
+  
+  /* Cleaner link styling without icon */
+  a[target="_blank"] {
+    @apply inline-flex items-center;
   }
 }

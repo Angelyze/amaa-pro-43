@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Share2, Volume2, VolumeX, ExternalLink, Globe, Calendar, FileText } from 'lucide-react';
+import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -162,10 +161,9 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="theme-link underline flex items-center gap-1 hover:text-primary transition-colors"
+        className="theme-link underline hover:text-primary transition-colors"
       >
         {children}
-        <ExternalLink size={12} className="inline-block" />
       </a>
     ),
     
@@ -175,7 +173,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
       );
       
       if (containsImage) {
-        return <div className="search-image-container my-2">{children}</div>;
+        return <div className="search-image-container my-4">{children}</div>;
       }
       
       return <p className="mb-4 last:mb-0">{children}</p>;
@@ -188,7 +186,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
         <img 
           src={src} 
           alt={alt || 'Image'} 
-          className="max-w-full h-auto rounded-md my-2 border border-border/20"
+          className="max-w-full h-auto rounded-md my-4 border border-border/20"
           loading="lazy"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -348,7 +346,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData })
                 console.error(`Failed to load image: ${target.src}`);
                 target.src = '/placeholder.svg';
                 target.alt = 'Image not available';
-                target.className = 'max-w-full rounded-md object-contain bg-muted/20';
               }}
             />
           </div>
