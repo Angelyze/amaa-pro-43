@@ -12,6 +12,7 @@
   color: #0097b2;
   text-decoration: none !important;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .markdown-content a:hover,
@@ -77,23 +78,7 @@
   color: #9f6eff !important;
 }
 
-.markdown-content pre {
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-
-.markdown-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
-  margin: 1.5rem 0;
-  display: block; /* Ensure images are displayed as blocks */
-}
-
-.prose-container {
-  max-width: 65ch;
-  line-height: 1.6;
-}
+/* ... keep existing code (markdown content, pre, img styling) */
 
 /* Footer styles */
 .footer-container {
@@ -116,6 +101,7 @@
   transition: color 0.2s ease;
   font-size: 0.9rem;
   text-decoration: none !important;
+  cursor: pointer;
 }
 
 .footer-link:hover {

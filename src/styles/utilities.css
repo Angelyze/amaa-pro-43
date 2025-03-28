@@ -78,4 +78,12 @@
   #root {
     @apply min-h-screen relative;
   }
+
+  /* Fix cursor pointer for dropdown items */
+  [role="menuitem"],
+  button,
+  .cursor-pointer,
+  [data-state="open"] > * {
+    cursor: pointer !important;
+  }
 }
