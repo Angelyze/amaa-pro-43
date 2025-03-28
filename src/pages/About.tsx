@@ -37,11 +37,12 @@ const About = () => {
                   AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:
                 </p>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
-                  <li>Instant and up-to-date answers to a wide range of questions</li>
+                  <li>Instant and coherent, context-aware text responses and conversations</li>
                   <li>Content generation and creative writing assistance</li>
                   <li>Research help and information summarization</li>
-                  <li>Web search integration</li>
-                  <li>File analysis and data extraction capabilities</li>
+                  <li>Writing or debugging code in various programming languages, solving math problems</li>
+                  <li>Real-time internet search and up-to-date information</li>
+                  <li>Upload images for analysis, such as identifying objects, extracting text, or interpreting visual content.</li>
                   <li>Various Themes</li>
 
                   {isPremium && (
@@ -49,8 +50,8 @@ const About = () => {
                     <li>Unlimited conversations and queries</li>
                     <li>Profile and Theme customization options</li>
                     <li>Advanced AI models and capabilities</li>
-                    <li>Save and manage conversations</li>
-                    <li>Text to Speech voice options</li>
+                    <li>Save, delete, and manage conversations</li>
+                    <li>Multiple text to speech voice options</li>
                     <li>Premium support</li>
                     </>
                   )}
@@ -67,8 +68,8 @@ const About = () => {
                     <li>Unlimited conversations and queries</li>
                     <li>Profile and Theme customization options</li>
                     <li>Advanced AI models and capabilities</li>
-                    <li>Save and manage conversations</li>
-                    <li>Text to Speech voice options</li>
+                    <li>Save, delete, and manage conversations</li>
+                    <li>Multiple Text to Speech voice options</li>
                     <li>Premium support</li>
                   </ul>
                   <div className="flex justify-center">
