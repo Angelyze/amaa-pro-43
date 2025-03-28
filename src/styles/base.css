@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -81,5 +82,13 @@
     --pattern-secondary-color: 200 70% 15%;
     --pattern-color-rgb: 12, 50, 60;
     --pattern-accent-rgb: 0, 170, 200;
+  }
+  
+  /* Ensure all links are visible and clickable */
+  a, .link {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    cursor: pointer;
+    pointer-events: auto !important;
   }
 }

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -104,6 +105,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
           .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
           .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
           .filter(topic => topic.length > 0)
+          // Remove the double asterisks from topics
           .map(topic => topic.replace(/\*\*/g, ''));
         
         setRelatedTopics(topics);

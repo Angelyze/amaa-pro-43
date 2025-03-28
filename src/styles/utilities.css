@@ -43,6 +43,17 @@
   /* Link styling with better visibility */
   a {
     @apply transition-colors duration-200;
+    pointer-events: auto !important;
+  }
+  
+  /* Critical fix for web search links - force them to be visible and clickable */
+  .search-results a, 
+  .markdown-content a {
+    display: inline-block !important;
+    color: var(--theme-accent) !important;
+    text-decoration: underline !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
   }
   
   /* Remove unnecessary styling that might cause issues */

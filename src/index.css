@@ -33,8 +33,8 @@
 .search-results a, 
 .theme-link,
 .text-theme-accent {
-  color: var(--theme-accent);
-  text-decoration: underline;
+  color: var(--theme-accent) !important;
+  text-decoration: underline !important;
   transition: opacity 0.2s ease;
   cursor: pointer;
   font-weight: 500;
@@ -44,6 +44,20 @@
 .theme-link:hover,
 .text-theme-accent:hover {
   opacity: 0.8;
+}
+
+/* Critical fix for web search links - ensure they're visible and clickable */
+.search-results p a,
+.search-results h1 a,
+.search-results h2 a,
+.search-results h3 a,
+.search-results h4 a,
+.search-results .article-preview a {
+  display: inline-block !important;
+  color: var(--theme-accent) !important;
+  text-decoration: underline !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 .search-results .article-description {
@@ -118,10 +132,11 @@
 
 /* Improved link display in markdown content */
 .markdown-content a {
-  color: var(--theme-accent);
-  text-decoration: underline;
+  color: var(--theme-accent) !important;
+  text-decoration: underline !important;
   font-weight: 500;
   transition: opacity 0.2s ease;
+  pointer-events: auto !important;
 }
 
 .markdown-content a:hover {
