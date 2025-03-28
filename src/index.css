@@ -34,7 +34,7 @@
 .theme-link,
 .text-theme-accent {
   color: var(--theme-accent) !important;
-  text-decoration: underline !important;
+  text-decoration: none !important;
   transition: opacity 0.2s ease;
   cursor: pointer;
   font-weight: 500;
@@ -55,7 +55,7 @@
 .search-results .article-preview a {
   display: inline-block !important;
   color: var(--theme-accent) !important;
-  text-decoration: underline !important;
+  text-decoration: none !important;
   pointer-events: auto !important;
   cursor: pointer !important;
 }
@@ -133,7 +133,7 @@
 /* Improved link display in markdown content */
 .markdown-content a {
   color: var(--theme-accent) !important;
-  text-decoration: underline !important;
+  text-decoration: none !important;
   font-weight: 500;
   transition: opacity 0.2s ease;
   pointer-events: auto !important;

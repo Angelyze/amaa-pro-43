@@ -10,7 +10,7 @@
 .theme-link,
 .text-theme-accent {
   color: #0097b2;
-  text-decoration: underline;
+  text-decoration: none !important;
   transition: all 0.2s ease;
 }
 
@@ -23,50 +23,58 @@
 /* Apply theme-specific link colors */
 .dark-red .markdown-content a,
 .dark-red .theme-link,
-.dark-red .text-theme-accent {
-  color: #ff5757;
+.dark-red .text-theme-accent,
+.dark-red .search-results a {
+  color: #ff5757 !important;
 }
 
 .dark-red .markdown-content a:hover,
 .dark-red .theme-link:hover,
-.dark-red .text-theme-accent:hover {
-  color: #ff3131;
+.dark-red .text-theme-accent:hover,
+.dark-red .search-results a:hover {
+  color: #ff3131 !important;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link,
-.dark-green .text-theme-accent {
-  color: #00bf63;
+.dark-green .text-theme-accent,
+.dark-green .search-results a {
+  color: #7ed957 !important;
 }
 
 .dark-green .markdown-content a:hover,
 .dark-green .theme-link:hover,
-.dark-green .text-theme-accent:hover {
-  color: #7ed957;
+.dark-green .text-theme-accent:hover,
+.dark-green .search-results a:hover {
+  color: #6bc746 !important;
 }
 
 .dark-yellow .markdown-content a,
 .dark-yellow .theme-link,
-.dark-yellow .text-theme-accent {
-  color: #ffde59;
+.dark-yellow .text-theme-accent,
+.dark-yellow .search-results a {
+  color: #ffde59 !important;
 }
 
 .dark-yellow .markdown-content a:hover,
 .dark-yellow .theme-link:hover,
-.dark-yellow .text-theme-accent:hover {
-  color: #ffe371;
+.dark-yellow .text-theme-accent:hover,
+.dark-yellow .search-results a:hover {
+  color: #ffe371 !important;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link,
-.dark-purple .text-theme-accent {
-  color: #5e17eb;
+.dark-purple .text-theme-accent,
+.dark-purple .search-results a {
+  color: #8c52ff !important;
 }
 
 .dark-purple .markdown-content a:hover,
 .dark-purple .theme-link:hover,
-.dark-purple .text-theme-accent:hover {
-  color: #8c52ff;
+.dark-purple .text-theme-accent:hover,
+.dark-purple .search-results a:hover {
+  color: #9f6eff !important;
 }
 
 .markdown-content pre {
@@ -107,6 +115,7 @@
   color: hsl(var(--foreground) / 0.7);
   transition: color 0.2s ease;
   font-size: 0.9rem;
+  text-decoration: none !important;
 }
 
 .footer-link:hover {

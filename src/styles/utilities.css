@@ -44,8 +44,9 @@
   a {
     @apply transition-colors duration-200;
     pointer-events: auto !important;
-    text-decoration: underline !important;
+    text-decoration: none !important;
     cursor: pointer !important;
+    color: var(--theme-accent) !important;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
@@ -53,7 +54,7 @@
   .markdown-content a {
     display: inline-block !important;
     color: var(--theme-accent) !important;
-    text-decoration: underline !important;
+    text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
   }

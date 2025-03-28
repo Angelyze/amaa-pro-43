@@ -1,6 +1,6 @@
 
 @layer base {
-  /* Modern, fluid background gradient animation */
+  /* Modern abstract background system */
   .background-pattern {
     position: fixed;
     width: 100%;
@@ -10,67 +10,61 @@
     z-index: -10;
     overflow: hidden;
     opacity: 0;
+    animation: backgroundFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
   
+  /* Primary background with multiple gradients */
   .background-pattern::before {
     content: "";
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: 
-      radial-gradient(circle at 10% 10%, rgba(var(--pattern-accent-rgb), 0.12) 0%, transparent 40%),
-      radial-gradient(circle at 90% 20%, rgba(var(--pattern-color-rgb), 0.15) 0%, transparent 45%),
-      radial-gradient(circle at 40% 80%, rgba(var(--pattern-accent-rgb), 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(var(--pattern-color-rgb), 0.12) 0%, transparent 45%);
-    animation: 
-      backgroundFadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
-      gradientShift 50s ease-in-out infinite alternate;
-    transform-origin: center center;
-    background-size: 100% 100%;
-    background-position: 0% 0%;
+    inset: -10%;
+    width: 120%;
+    height: 120%;
+    background-image: 
+      radial-gradient(circle at 20% 25%, rgba(var(--pattern-accent-rgb), 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(var(--pattern-color-rgb), 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 10% 80%, rgba(var(--pattern-accent-rgb), 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 70%, rgba(var(--pattern-color-rgb), 0.07) 0%, transparent 50%);
+    filter: blur(60px);
+    opacity: 0.8;
+    animation: gradientPulse 20s ease-in-out infinite alternate, 
+               gradientSpin 120s linear infinite;
+    transform-origin: center;
   }
   
+  /* Secondary animated layer */
   .background-pattern::after {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      linear-gradient(120deg, rgba(var(--pattern-accent-rgb), 0.08) 0%, transparent 70%),
-      linear-gradient(220deg, rgba(var(--pattern-color-rgb), 0.1) 0%, transparent 60%);
-    filter: blur(60px);
+    inset: 0;
+    background-image: 
+      linear-gradient(120deg, rgba(var(--pattern-accent-rgb), 0.03) 0%, transparent 70%),
+      linear-gradient(240deg, rgba(var(--pattern-color-rgb), 0.03) 0%, transparent 70%);
+    filter: blur(80px);
     opacity: 0;
-    animation: 
-      gradientFadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s,
-      gradientWave 80s ease-in-out infinite alternate;
+    animation: gradientFadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s,
+               gradientFloat 40s ease-in-out infinite alternate;
+    pointer-events: none;
   }
 
-  /* Modern, animated gradient overlay */
+  /* Additional ambient glow layer */
   body::after {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: -5;
     background: 
-      radial-gradient(circle at 30% 30%, rgba(var(--pattern-accent-rgb), 0.05) 0%, transparent 60%),
-      radial-gradient(circle at 70% 70%, rgba(var(--pattern-color-rgb), 0.08) 0%, transparent 60%);
+      radial-gradient(circle at 30% 30%, rgba(var(--pattern-accent-rgb), 0.03) 0%, transparent 60%),
+      radial-gradient(circle at 70% 70%, rgba(var(--pattern-color-rgb), 0.04) 0%, transparent 60%);
     opacity: 0;
     pointer-events: none;
     animation: 
       gradientFadeIn 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.5s,
-      gradientFloat 100s linear infinite alternate;
+      ambientPulse 30s ease-in-out infinite alternate;
     filter: blur(40px);
-    transform-origin: center center;
   }
   
-  /* Smooth entrance animation */
+  /* Smooth fade in animation */
   @keyframes backgroundFadeIn {
     0% { 
       opacity: 0;
@@ -82,81 +76,90 @@
     }
   }
   
-  /* Gradient layer animation */
+  /* Gradient reveal animation */
   @keyframes gradientFadeIn {
     0% { opacity: 0; }
     100% { opacity: 0.8; }
   }
   
-  /* Fluid gradient movement */
-  @keyframes gradientShift {
+  /* Continuous gradient movement and color pulsing */
+  @keyframes gradientPulse {
     0% {
       background-position: 0% 0%;
-      transform: rotate(0deg) scale(1);
+      opacity: 0.7;
+      filter: blur(60px) brightness(0.95);
     }
     25% {
-      background-position: 20% 10%;
-      transform: rotate(0.5deg) scale(1.03);
+      background-position: 5% 10%;
+      opacity: 0.8;
+      filter: blur(70px) brightness(1.05);
     }
     50% {
-      background-position: 10% 20%;
-      transform: rotate(-0.5deg) scale(1.02);
+      background-position: 10% 5%;
+      opacity: 0.9;
+      filter: blur(65px) brightness(1);
     }
     75% {
-      background-position: -10% 10%;
-      transform: rotate(0.25deg) scale(1.01);
+      background-position: 5% 15%;
+      opacity: 0.8;
+      filter: blur(75px) brightness(1.02);
     }
     100% {
-      background-position: 0% 0%;
-      transform: rotate(0deg) scale(1);
+      background-position: 0% 10%;
+      opacity: 0.7;
+      filter: blur(60px) brightness(0.98);
     }
   }
   
-  /* Subtle wave animation */
-  @keyframes gradientWave {
+  /* Slow rotation effect for base gradient */
+  @keyframes gradientSpin {
     0% {
-      background-position: 0% 0%;
-      transform: scale(1);
+      transform: rotate(0deg) scale(1);
     }
-    25% {
-      background-position: 10% -10%;
-      transform: scale(1.02);
+    33% {
+      transform: rotate(1deg) scale(1.02);
     }
-    50% {
-      background-position: 0% 10%;
-      transform: scale(1.01);
-    }
-    75% {
-      background-position: -10% 0%;
-      transform: scale(1.03);
+    66% {
+      transform: rotate(-1deg) scale(1.01);
     }
     100% {
-      background-position: 0% 0%;
-      transform: scale(1);
+      transform: rotate(0deg) scale(1);
     }
   }
   
   /* Floating animation for overlay */
   @keyframes gradientFloat {
     0% {
-      background-position: 0% 0%;
-      filter: blur(40px) brightness(1);
+      transform: translateY(0%) translateX(0%);
+      opacity: 0.6;
     }
-    25% {
-      background-position: 10% 5%;
-      filter: blur(50px) brightness(1.05);
+    33% {
+      transform: translateY(-1%) translateX(1%);
+      opacity: 0.7;
     }
-    50% {
-      background-position: 15% 10%;
-      filter: blur(45px) brightness(1.02);
-    }
-    75% {
-      background-position: 5% 15%;
-      filter: blur(55px) brightness(1.03);
+    66% {
+      transform: translateY(1%) translateX(-1%);
+      opacity: 0.8;
     }
     100% {
-      background-position: 0% 0%;
-      filter: blur(40px) brightness(1);
+      transform: translateY(0%) translateX(0%);
+      opacity: 0.6;
+    }
+  }
+  
+  /* Subtle ambient glow pulsing */
+  @keyframes ambientPulse {
+    0% {
+      opacity: 0.5;
+      filter: blur(40px) saturate(0.9);
+    }
+    50% {
+      opacity: 0.7;
+      filter: blur(50px) saturate(1.1);
+    }
+    100% {
+      opacity: 0.5;
+      filter: blur(40px) saturate(0.9);
     }
   }
 }
