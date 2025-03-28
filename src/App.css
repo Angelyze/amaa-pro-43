@@ -9,7 +9,7 @@
 .markdown-content a,
 .theme-link,
 .text-theme-accent {
-  color: #0097b2;
+  color: var(--primary);
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -18,7 +18,7 @@
 .markdown-content a:hover,
 .theme-link:hover,
 .text-theme-accent:hover {
-  color: #0cc0df;
+  opacity: 0.8;
 }
 
 /* Apply theme-specific link colors */
@@ -26,56 +26,56 @@
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
 .dark-red .search-results a {
-  color: #ff5757 !important;
+  color: var(--primary) !important;
 }
 
 .dark-red .markdown-content a:hover,
 .dark-red .theme-link:hover,
 .dark-red .text-theme-accent:hover,
 .dark-red .search-results a:hover {
-  color: #ff3131 !important;
+  opacity: 0.8;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link,
 .dark-green .text-theme-accent,
 .dark-green .search-results a {
-  color: #7ed957 !important;
+  color: var(--primary) !important;
 }
 
 .dark-green .markdown-content a:hover,
 .dark-green .theme-link:hover,
 .dark-green .text-theme-accent:hover,
 .dark-green .search-results a:hover {
-  color: #6bc746 !important;
+  opacity: 0.8;
 }
 
 .dark-yellow .markdown-content a,
 .dark-yellow .theme-link,
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a {
-  color: #ffde59 !important;
+  color: var(--primary) !important;
 }
 
 .dark-yellow .markdown-content a:hover,
 .dark-yellow .theme-link:hover,
 .dark-yellow .text-theme-accent:hover,
 .dark-yellow .search-results a:hover {
-  color: #ffe371 !important;
+  opacity: 0.8;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link,
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a {
-  color: #8c52ff !important;
+  color: var(--primary) !important;
 }
 
 .dark-purple .markdown-content a:hover,
 .dark-purple .theme-link:hover,
 .dark-purple .text-theme-accent:hover,
 .dark-purple .search-results a:hover {
-  color: #9f6eff !important;
+  opacity: 0.8;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */
@@ -105,24 +105,24 @@
 }
 
 .footer-link:hover {
-  color: #0097b2;
+  color: var(--primary);
 }
 
 /* Theme-specific footer links */
 .dark-red .footer-link:hover {
-  color: #ff3131;
+  color: var(--primary);
 }
 
 .dark-green .footer-link:hover {
-  color: #7ed957;
+  color: var(--primary);
 }
 
 .dark-yellow .footer-link:hover {
-  color: #ffe371;
+  color: var(--primary);
 }
 
 .dark-purple .footer-link:hover {
-  color: #8c52ff;
+  color: var(--primary);
 }
 
 .copyright {

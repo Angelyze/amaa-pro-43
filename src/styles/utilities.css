@@ -46,14 +46,14 @@
     pointer-events: auto !important;
     text-decoration: none !important;
     cursor: pointer !important;
-    color: var(--theme-accent) !important;
+    color: var(--primary) !important;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
   .search-results a, 
   .markdown-content a {
     display: inline-block !important;
-    color: var(--theme-accent) !important;
+    color: var(--primary) !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;

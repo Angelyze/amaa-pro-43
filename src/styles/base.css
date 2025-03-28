@@ -86,8 +86,8 @@
   
   /* Ensure all links are visible and clickable */
   a, .link {
-    color: var(--theme-accent);
-    text-decoration: underline;
+    color: hsl(var(--primary));
+    text-decoration: none;
     cursor: pointer;
     pointer-events: auto !important;
   }
