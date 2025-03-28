@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -276,7 +277,7 @@ async function handlePerplexitySearch(message: string) {
   try {
     console.log('Sending search query to Perplexity API:', message);
     
-    // Enhanced system prompt with better link and topic handling
+    // Modified system prompt with explicit instructions for proper link formatting
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
     ALWAYS respond in the SAME LANGUAGE as the user's query.
     
@@ -290,24 +291,23 @@ async function handlePerplexitySearch(message: string) {
        - Format code with proper \`\`\` code blocks
        - Use **bold** for emphasis
        - Use > for quotations
-    4. For factual information, cite sources inline with [Source Name](URL)
-    5. IMPORTANT: For images, use DIRECT image markdown syntax: ![Description](IMAGE_URL) - ensure the URL is directly accessible
-    6. End with a "## Recent Articles" section containing 5 recent, relevant sources with:
-       - Title as clickable link [Title](URL)
+    4. CRITICALLY IMPORTANT: ALL links MUST be properly formatted as [Title](https://example.com) and ALL articles must have clickable titles
+    5. For images, use the exact syntax: ![Description](IMAGE_URL)
+    6. End with a "## Recent Articles" section containing 5 recent, relevant sources formatted EXACTLY like this:
+       - [EXACT ARTICLE TITLE](https://example.com)
        - One sentence description 
-       - Publication date (YYYY-MM-DD)
+       - Date (YYYY-MM-DD)
        - Source name
-       - Include an image for each article with ![Article image](IMAGE_URL) if available
-    7. After Recent Articles, add a "## Related Topics" section with 3-5 related search topics. REMOVE ANY ASTERISKS OR MARKUP from these topics, just list them as plain bullet points like:
+       - Include an image for each article if available: ![Article image](IMAGE_URL)
+    7. After Recent Articles, add a "## Related Topics" section with 3-5 related search topics as plain text:
        * First related topic
-       * Second related topic
+       * Second related topic 
        * Third related topic
-    8. All URLs must be fully functional, properly formatted markdown links
+    8. ALL URLs must be fully functional, direct links with complete http:// or https:// prefixes
     9. Prioritize content from the last 30 days
-    10. If information is time-sensitive, note when the search was conducted
-    11. DO NOT include any extra formatting around links or images, just use standard markdown
-    12. DO NOT use SOURCE: prefixes before links
-    13. ENSURE ALL LINKS can be clicked - test every link you provide to make sure it's properly formatted with [text](url) syntax`;
+    10. DO NOT use SOURCE: prefixes before links
+    11. NEVER put asterisks around related topics
+    12. ENSURE EVERY ARTICLE HAS A DIRECT CLICKABLE LINK - this is critical`;
     
     // Use SONAR model with optimal parameters for web search with images
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -412,7 +412,7 @@ function cleanUpSearchResponse(text: string): string {
     }
   );
   
-  // Clean up the Related Topics section to remove any asterisks or markup
+  // Remove double asterisks from related topics
   const relatedTopicsMatch = text.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
   if (relatedTopicsMatch && relatedTopicsMatch[1]) {
     const topicsText = relatedTopicsMatch[1];

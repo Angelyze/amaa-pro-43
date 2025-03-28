@@ -1,25 +1,76 @@
 
 @layer base {
-  /* Modern, smooth background pattern with elegant gradient effects */
+  /* Modern, fluid background gradient animation */
   .background-pattern {
-    background-image: 
-      radial-gradient(circle at 25% 25%, hsl(var(--pattern-secondary-color) / 0.6) 0%, transparent 45%),
-      radial-gradient(circle at 75% 75%, hsl(var(--pattern-secondary-color) / 0.5) 0%, transparent 55%),
-      radial-gradient(circle at 85% 15%, hsl(var(--pattern-color) / 0.4) 0%, transparent 40%),
-      radial-gradient(circle at 15% 85%, hsl(var(--pattern-color) / 0.4) 0%, transparent 40%),
-      linear-gradient(135deg, hsl(var(--pattern-color) / 0.3) 0%, hsl(var(--pattern-color) / 0) 70%);
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     z-index: -10;
+    overflow: hidden;
     opacity: 0;
-    transform: scale(1.05);
-    background-size: 200% 200%;
   }
   
-  /* Smooth entrance animation with subtle scale */
+  .background-pattern::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(circle at 10% 10%, rgba(var(--pattern-accent-rgb), 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, rgba(var(--pattern-color-rgb), 0.15) 0%, transparent 45%),
+      radial-gradient(circle at 40% 80%, rgba(var(--pattern-accent-rgb), 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(var(--pattern-color-rgb), 0.12) 0%, transparent 45%);
+    animation: 
+      backgroundFadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+      gradientShift 50s ease-in-out infinite alternate;
+    transform-origin: center center;
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+  }
+  
+  .background-pattern::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(120deg, rgba(var(--pattern-accent-rgb), 0.08) 0%, transparent 70%),
+      linear-gradient(220deg, rgba(var(--pattern-color-rgb), 0.1) 0%, transparent 60%);
+    filter: blur(60px);
+    opacity: 0;
+    animation: 
+      gradientFadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s,
+      gradientWave 80s ease-in-out infinite alternate;
+  }
+
+  /* Modern, animated gradient overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -5;
+    background: 
+      radial-gradient(circle at 30% 30%, rgba(var(--pattern-accent-rgb), 0.05) 0%, transparent 60%),
+      radial-gradient(circle at 70% 70%, rgba(var(--pattern-color-rgb), 0.08) 0%, transparent 60%);
+    opacity: 0;
+    pointer-events: none;
+    animation: 
+      gradientFadeIn 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.5s,
+      gradientFloat 100s linear infinite alternate;
+    filter: blur(40px);
+    transform-origin: center center;
+  }
+  
+  /* Smooth entrance animation */
   @keyframes backgroundFadeIn {
     0% { 
       opacity: 0;
@@ -31,76 +82,81 @@
     }
   }
   
-  /* Apply smooth entrance animation */
-  .background-pattern {
-    animation: backgroundFadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  
-  /* Modern gradient layers for depth and dimension */
-  .background-pattern::before,
-  .background-pattern::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    background-size: 200% 200%;
-    opacity: 0;
-  }
-  
-  /* First gradient layer with subtle movement */
-  .background-pattern::before {
-    background-image: 
-      radial-gradient(circle at 30% 40%, rgba(var(--pattern-accent-rgb), 0.12) 0%, transparent 45%),
-      radial-gradient(ellipse at 70% 30%, rgba(var(--pattern-color-rgb), 0.15) 0%, transparent 60%);
-    filter: blur(60px);
-    animation: 
-      gradientFadeIn 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s,
-      gradientFloat 120s ease-in-out infinite alternate;
-  }
-  
-  /* Second gradient layer with different timing */
-  .background-pattern::after {
-    background-image: 
-      radial-gradient(circle at 70% 60%, rgba(var(--pattern-color-rgb), 0.14) 0%, transparent 55%),
-      radial-gradient(circle at 20% 30%, rgba(var(--pattern-accent-rgb), 0.08) 0%, transparent 45%);
-    filter: blur(70px);
-    animation: 
-      gradientFadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.6s,
-      gradientFloatReverse 150s ease-in-out infinite alternate;
-  }
-  
-  /* Smooth fade in for gradient layers */
+  /* Gradient layer animation */
   @keyframes gradientFadeIn {
     0% { opacity: 0; }
-    100% { opacity: 0.7; }
+    100% { opacity: 0.8; }
   }
   
-  /* Extremely subtle, smooth gradient movement */
+  /* Fluid gradient movement */
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 0%;
+      transform: rotate(0deg) scale(1);
+    }
+    25% {
+      background-position: 20% 10%;
+      transform: rotate(0.5deg) scale(1.03);
+    }
+    50% {
+      background-position: 10% 20%;
+      transform: rotate(-0.5deg) scale(1.02);
+    }
+    75% {
+      background-position: -10% 10%;
+      transform: rotate(0.25deg) scale(1.01);
+    }
+    100% {
+      background-position: 0% 0%;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+  
+  /* Subtle wave animation */
+  @keyframes gradientWave {
+    0% {
+      background-position: 0% 0%;
+      transform: scale(1);
+    }
+    25% {
+      background-position: 10% -10%;
+      transform: scale(1.02);
+    }
+    50% {
+      background-position: 0% 10%;
+      transform: scale(1.01);
+    }
+    75% {
+      background-position: -10% 0%;
+      transform: scale(1.03);
+    }
+    100% {
+      background-position: 0% 0%;
+      transform: scale(1);
+    }
+  }
+  
+  /* Floating animation for overlay */
   @keyframes gradientFloat {
     0% {
       background-position: 0% 0%;
+      filter: blur(40px) brightness(1);
+    }
+    25% {
+      background-position: 10% 5%;
+      filter: blur(50px) brightness(1.05);
     }
     50% {
-      background-position: 30% 20%;
+      background-position: 15% 10%;
+      filter: blur(45px) brightness(1.02);
+    }
+    75% {
+      background-position: 5% 15%;
+      filter: blur(55px) brightness(1.03);
     }
     100% {
-      background-position: 10% 30%;
-    }
-  }
-  
-  /* Reverse direction gradient movement */
-  @keyframes gradientFloatReverse {
-    0% {
       background-position: 0% 0%;
-    }
-    50% {
-      background-position: -20% -10%;
-    }
-    100% {
-      background-position: -10% -30%;
+      filter: blur(40px) brightness(1);
     }
   }
 }

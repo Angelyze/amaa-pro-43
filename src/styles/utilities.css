@@ -44,6 +44,8 @@
   a {
     @apply transition-colors duration-200;
     pointer-events: auto !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
