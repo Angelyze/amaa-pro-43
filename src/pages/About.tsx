@@ -86,7 +86,7 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Our Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA is powered by state-of-the-art language models and a robust backend infrastructure. We continuously improve our technology to provide more accurate, helpful, up-to-date, and safe responses. Our system is designed to learn from interactions while maintaining user privacy and data security.
+                  AMAA.PRO is powered by state-of-the-art AI language models designed to handle a wide range of tasks efficiently, with a robust backend infrastructure. We continuously improve our technology to provide more accurate, helpful, up-to-date, and safe responses. Our system is designed to learn from interactions while maintaining user privacy and data security.
                 </p>
               </section>
               
