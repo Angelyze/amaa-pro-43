@@ -62,7 +62,7 @@ const About = () => {
                 <section className="bg-primary/10 p-6 rounded-xl border border-primary/20">
                   <h2 className="text-xl font-semibold mb-3 text-primary">Go Premium</h2>
                   <p className="text-foreground/80 leading-relaxed mb-4">
-                    Upgrade to our premium plan to unlock the full potential of AMAA:
+                    Upgrade to our premium plan for only $6.99 to unlock the full potential of AMAA:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
                     <li>Unlimited conversations and queries</li>
@@ -86,14 +86,14 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Our Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA is powered by state-of-the-art language models and a robust backend infrastructure. We continuously improve our technology to provide more accurate, helpful, and safe responses. Our system is designed to learn from interactions while maintaining user privacy and data security.
+                  AMAA is powered by state-of-the-art language models and a robust backend infrastructure. We continuously improve our technology to provide more accurate, helpful, up-to-date, and safe responses. Our system is designed to learn from interactions while maintaining user privacy and data security.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Our Company</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  Angelyze is the company behind AMAA. Founded with the vision of making AI accessible to everyone, we're committed to developing tools that enhance productivity and creativity. Our team combines expertise in artificial intelligence, user experience design, and software development.
+                  Angelyze is the company behind AMAA. Founded in Croatia, EU, with the vision of making AI accessible to everyone, we're committed to developing tools that enhance productivity and creativity. Our team combines expertise in artificial intelligence, user experience design, and software development.
                 </p>
               </section>
               
