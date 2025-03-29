@@ -18,6 +18,15 @@ export const initializeBackground = () => {
   canvas.width = 60;  // Low resolution for performance
   canvas.height = 60;
   
+  // Add required styles to ensure the canvas doesn't interfere with interactions
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.zIndex = '-1'; // Behind all content
+  canvas.style.pointerEvents = 'none'; // Ignore all pointer events
+  
   // Insert canvas into the DOM
   document.body.appendChild(canvas);
 
@@ -91,8 +100,8 @@ export const initializeBackground = () => {
       }
     }
     
-    // Increment time - reduced for slower animation
-    time += 0.02; // Reduced from 0.05 to make animation slower
+    // Significantly reduced time increment for slower animation
+    time += 0.01; // Reduced to make animation much slower
     
     // Request next frame
     requestAnimationFrame(animate);

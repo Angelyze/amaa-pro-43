@@ -5,14 +5,15 @@
   overflow-wrap: break-word;
 }
 
-/* Theme-specific link colors */
+/* Base theme-specific link colors */
 .markdown-content a,
 .theme-link,
 .text-theme-accent {
-  color: var(--primary) !important;
+  color: hsl(var(--primary)) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
+  pointer-events: auto !important;
 }
 
 .markdown-content a:hover,
@@ -27,7 +28,7 @@
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
 .dark-red a {
-  color: var(--primary) !important;
+  color: hsl(var(--primary)) !important;
 }
 
 .dark-green .markdown-content a,
@@ -35,7 +36,7 @@
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
 .dark-green a {
-  color: var(--primary) !important;
+  color: hsl(var(--primary)) !important;
 }
 
 .dark-yellow .markdown-content a,
@@ -43,7 +44,7 @@
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
 .dark-yellow a {
-  color: var(--primary) !important;
+  color: hsl(var(--primary)) !important;
 }
 
 .dark-purple .markdown-content a,
@@ -51,7 +52,7 @@
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
 .dark-purple a {
-  color: var(--primary) !important;
+  color: hsl(var(--primary)) !important;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */
@@ -81,24 +82,24 @@
 }
 
 .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--primary));
 }
 
 /* Theme-specific footer links */
 .dark-red .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--primary));
 }
 
 .dark-green .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--primary));
 }
 
 .dark-yellow .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--primary));
 }
 
 .dark-purple .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--primary));
 }
 
 .copyright {

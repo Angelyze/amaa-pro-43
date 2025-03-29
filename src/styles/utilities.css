@@ -45,7 +45,7 @@
     @apply transition-colors duration-200 cursor-pointer;
     pointer-events: auto !important;
     text-decoration: none !important;
-    color: var(--primary) !important;
+    color: hsl(var(--primary)) !important;
   }
   
   a:hover {
@@ -56,7 +56,7 @@
   .search-results a, 
   .markdown-content a {
     display: inline-block !important;
-    color: var(--primary) !important;
+    color: hsl(var(--primary)) !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
@@ -88,5 +88,11 @@
   .cursor-pointer,
   [data-state="open"] > * {
     cursor: pointer !important;
+  }
+  
+  /* Ensure Radix UI dropdowns and popovers appear above other content */
+  [data-radix-popper-content-wrapper] {
+    z-index: 999 !important;
+    pointer-events: auto !important;
   }
 }
