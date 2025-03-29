@@ -91,8 +91,8 @@ export const initializeBackground = () => {
       }
     }
     
-    // Increment time
-    time += 0.05; // Slower animation for subtlety
+    // Increment time - reduced for slower animation
+    time += 0.02; // Reduced from 0.05 to make animation slower
     
     // Request next frame
     requestAnimationFrame(animate);
