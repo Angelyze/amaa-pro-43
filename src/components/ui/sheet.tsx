@@ -1,4 +1,3 @@
-
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
@@ -61,18 +60,6 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
-      onPointerDownOutside={(e) => {
-        // Only prevent default if needed to ensure proper closing behavior
-        if (props.onPointerDownOutside) {
-          return;
-        }
-      }}
-      onEscapeKeyDown={(e) => {
-        // Make sure escape key works properly
-        if (props.onEscapeKeyDown) {
-          return;
-        }
-      }}
       {...props}
     >
       {children}

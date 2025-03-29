@@ -21,20 +21,6 @@ const PopoverContent = React.forwardRef<
         "z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className
       )}
-      // Make sure popovers close properly when clicking outside
-      onPointerDownOutside={(e) => {
-        // Only preventDefault if we actually want to close on outside click
-        // This helps prevent issues with page scrolling
-        if (props.onPointerDownOutside) {
-          return;
-        }
-      }}
-      onEscapeKeyDown={(e) => {
-        // Make sure escape key works properly
-        if (props.onEscapeKeyDown) {
-          return;
-        }
-      }}
       {...props}
     />
   </PopoverPrimitive.Portal>

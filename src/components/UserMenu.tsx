@@ -69,7 +69,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
+      <DropdownMenuTrigger asChild className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
             <AvatarFallback className="bg-muted text-muted-foreground">
@@ -83,7 +83,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         </div>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 z-50">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
@@ -111,7 +111,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             )}
             <span>Theme</span>
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
+          <DropdownMenuSubContent className="z-50">
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>
