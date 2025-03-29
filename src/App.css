@@ -1,4 +1,3 @@
-
 /* Markdown content styling */
 .markdown-content {
   width: 100%;
@@ -9,10 +8,10 @@
 .markdown-content a,
 .theme-link,
 .text-theme-accent {
-  color: var(--primary);
+  color: var(--primary) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .markdown-content a:hover,
@@ -25,57 +24,33 @@
 .dark-red .markdown-content a,
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
-.dark-red .search-results a {
+.dark-red .search-results a,
+.dark-red a {
   color: var(--primary) !important;
-}
-
-.dark-red .markdown-content a:hover,
-.dark-red .theme-link:hover,
-.dark-red .text-theme-accent:hover,
-.dark-red .search-results a:hover {
-  opacity: 0.8;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link,
 .dark-green .text-theme-accent,
-.dark-green .search-results a {
+.dark-green .search-results a,
+.dark-green a {
   color: var(--primary) !important;
-}
-
-.dark-green .markdown-content a:hover,
-.dark-green .theme-link:hover,
-.dark-green .text-theme-accent:hover,
-.dark-green .search-results a:hover {
-  opacity: 0.8;
 }
 
 .dark-yellow .markdown-content a,
 .dark-yellow .theme-link,
 .dark-yellow .text-theme-accent,
-.dark-yellow .search-results a {
+.dark-yellow .search-results a,
+.dark-yellow a {
   color: var(--primary) !important;
-}
-
-.dark-yellow .markdown-content a:hover,
-.dark-yellow .theme-link:hover,
-.dark-yellow .text-theme-accent:hover,
-.dark-yellow .search-results a:hover {
-  opacity: 0.8;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link,
 .dark-purple .text-theme-accent,
-.dark-purple .search-results a {
+.dark-purple .search-results a,
+.dark-purple a {
   color: var(--primary) !important;
-}
-
-.dark-purple .markdown-content a:hover,
-.dark-purple .theme-link:hover,
-.dark-purple .text-theme-accent:hover,
-.dark-purple .search-results a:hover {
-  opacity: 0.8;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */

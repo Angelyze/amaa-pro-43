@@ -69,7 +69,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus:outline-none">
+      <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
             <AvatarFallback className="bg-muted text-muted-foreground">
@@ -88,14 +88,14 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <DropdownMenuSeparator />
         
         <Link to="/profile">
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             <span>Profile Settings</span>
           </DropdownMenuItem>
         </Link>
         
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger className="cursor-pointer">
             {theme === 'dark' ? (
               <Moon className="mr-2 h-4 w-4" />
             ) : theme === 'dark-red' ? (
@@ -113,12 +113,12 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
-              <DropdownMenuRadioItem value="light">Default</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">Default Dark</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark-red">Dark Red</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark-green">Dark Green</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark-yellow">Dark Yellow</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark-purple">Dark Purple</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-red" className="cursor-pointer">Dark Red</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-green" className="cursor-pointer">Dark Green</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-yellow" className="cursor-pointer">Dark Yellow</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark-purple" className="cursor-pointer">Dark Purple</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
@@ -127,13 +127,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         
         {!isPremium && (
           <Link to="/subscribe">
-            <DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
               <span>Upgrade to Premium</span>
             </DropdownMenuItem>
           </Link>
         )}
         
-        <DropdownMenuItem onClick={onLogout}>
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

@@ -1,4 +1,3 @@
-
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -132,23 +131,25 @@
 
   /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
   .markdown-content a {
-    @apply text-[#0097b2] hover:text-[#0cc0df] underline transition-all duration-200;
+    @apply transition-all duration-200 cursor-pointer;
+    text-decoration: none !important;
+    color: var(--primary) !important;
   }
 
   .dark-red .markdown-content a {
-    @apply text-[#ff5757] hover:text-[#ff3131];
+    color: var(--primary) !important;
   }
   
   .dark-green .markdown-content a {
-    @apply text-[#00bf63] hover:text-[#7ed957];
+    color: var(--primary) !important;
   }
   
   .dark-yellow .markdown-content a {
-    @apply text-[#ffde59] hover:text-[#ffe371];
+    color: var(--primary) !important;
   }
   
   .dark-purple .markdown-content a {
-    @apply text-[#8c52ff] hover:text-[#5e17eb];
+    color: var(--primary) !important;
   }
 
   /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
@@ -172,7 +173,7 @@
   }
   
   .footer-link {
-    @apply text-foreground hover:text-[#0097b2] transition-colors;
+    @apply text-foreground hover:text-primary transition-colors cursor-pointer;
   }
 
   /* Theme-specific footer links */
