@@ -1,3 +1,4 @@
+
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -129,27 +130,48 @@
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
+  /* Theme-specific links for markdown content - SWAPPED: now hover color is link color */
   .markdown-content a {
     @apply transition-all duration-200 cursor-pointer;
     text-decoration: none !important;
-    color: var(--primary) !important;
   }
 
+  /* SWAPPED colors - hover color is now link color */
   .dark-red .markdown-content a {
-    color: var(--primary) !important;
+    color: hsl(0 85% 40%) !important;
   }
   
   .dark-green .markdown-content a {
-    color: var(--primary) !important;
+    color: hsl(100 71% 50%) !important;
   }
   
   .dark-yellow .markdown-content a {
-    color: var(--primary) !important;
+    color: hsl(50 90% 50%) !important;
   }
   
   .dark-purple .markdown-content a {
-    color: var(--primary) !important;
+    color: hsl(265 90% 56%) !important;
+  }
+  
+  /* SWAPPED hover - link color is now hover color */
+  .dark-red .markdown-content a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-green .markdown-content a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-yellow .markdown-content a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-purple .markdown-content a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
   }
 
   /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
