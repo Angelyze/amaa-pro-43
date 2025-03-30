@@ -54,12 +54,67 @@
   
   /* Critical fix for web search links - force them to be visible and clickable */
   .search-results a, 
-  .markdown-content a {
+  .markdown-content a,
+  .message-bubble a {
     display: inline-block !important;
     color: hsl(var(--primary)) !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
+  }
+
+  /* Theme-specific link colors */
+  .dark-red .search-results a,
+  .dark-red .markdown-content a,
+  .dark-red .message-bubble a {
+    color: hsl(0 85% 40%) !important;
+  }
+  
+  .dark-green .search-results a,
+  .dark-green .markdown-content a,
+  .dark-green .message-bubble a {
+    color: hsl(100 71% 50%) !important;
+  }
+  
+  .dark-yellow .search-results a,
+  .dark-yellow .markdown-content a,
+  .dark-yellow .message-bubble a {
+    color: hsl(50 90% 50%) !important;
+  }
+  
+  .dark-purple .search-results a,
+  .dark-purple .markdown-content a,
+  .dark-purple .message-bubble a {
+    color: hsl(265 90% 56%) !important;
+  }
+  
+  /* Theme-specific link hover colors */
+  .dark-red .search-results a:hover,
+  .dark-red .markdown-content a:hover,
+  .dark-red .message-bubble a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-green .search-results a:hover,
+  .dark-green .markdown-content a:hover,
+  .dark-green .message-bubble a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-yellow .search-results a:hover,
+  .dark-yellow .markdown-content a:hover,
+  .dark-yellow .message-bubble a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
+  }
+  
+  .dark-purple .search-results a:hover,
+  .dark-purple .markdown-content a:hover,
+  .dark-purple .message-bubble a:hover {
+    color: hsl(var(--primary)) !important;
+    opacity: 0.8;
   }
   
   /* Remove unnecessary styling that might cause issues */

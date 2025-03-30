@@ -28,7 +28,16 @@
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
 .dark-red a {
-  color: hsl(var(--primary)) !important;
+  color: hsl(0 85% 40%) !important; /* hover color as link color */
+}
+
+.dark-red .markdown-content a:hover,
+.dark-red .theme-link:hover,
+.dark-red .text-theme-accent:hover,
+.dark-red .search-results a:hover,
+.dark-red a:hover {
+  color: hsl(var(--primary)) !important; /* link color as hover color */
+  opacity: 0.8;
 }
 
 .dark-green .markdown-content a,
@@ -36,7 +45,16 @@
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
 .dark-green a {
-  color: hsl(var(--primary)) !important;
+  color: hsl(100 71% 50%) !important; /* hover color as link color */
+}
+
+.dark-green .markdown-content a:hover,
+.dark-green .theme-link:hover,
+.dark-green .text-theme-accent:hover,
+.dark-green .search-results a:hover,
+.dark-green a:hover {
+  color: hsl(var(--primary)) !important; /* link color as hover color */
+  opacity: 0.8;
 }
 
 .dark-yellow .markdown-content a,
@@ -44,7 +62,16 @@
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
 .dark-yellow a {
-  color: hsl(var(--primary)) !important;
+  color: hsl(50 90% 50%) !important; /* hover color as link color */
+}
+
+.dark-yellow .markdown-content a:hover,
+.dark-yellow .theme-link:hover,
+.dark-yellow .text-theme-accent:hover,
+.dark-yellow .search-results a:hover,
+.dark-yellow a:hover {
+  color: hsl(var(--primary)) !important; /* link color as hover color */
+  opacity: 0.8;
 }
 
 .dark-purple .markdown-content a,
@@ -52,7 +79,16 @@
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
 .dark-purple a {
-  color: hsl(var(--primary)) !important;
+  color: hsl(265 90% 56%) !important; /* hover color as link color */
+}
+
+.dark-purple .markdown-content a:hover,
+.dark-purple .theme-link:hover,
+.dark-purple .text-theme-accent:hover,
+.dark-purple .search-results a:hover,
+.dark-purple a:hover {
+  color: hsl(var(--primary)) !important; /* link color as hover color */
+  opacity: 0.8;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */
@@ -87,19 +123,19 @@
 
 /* Theme-specific footer links */
 .dark-red .footer-link:hover {
-  color: hsl(var(--primary));
+  color: hsl(0 85% 40%); /* hover color */
 }
 
 .dark-green .footer-link:hover {
-  color: hsl(var(--primary));
+  color: hsl(100 71% 50%); /* hover color */
 }
 
 .dark-yellow .footer-link:hover {
-  color: hsl(var(--primary));
+  color: hsl(50 90% 50%); /* hover color */
 }
 
 .dark-purple .footer-link:hover {
-  color: hsl(var(--primary));
+  color: hsl(265 90% 56%); /* hover color */
 }
 
 .copyright {
