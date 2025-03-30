@@ -130,7 +130,7 @@
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Theme-specific links for markdown content - SWAPPED: now hover color is link color */
+  /* Theme-specific links for markdown content - SWAPPED: hover color is now link color */
   .markdown-content a {
     @apply transition-all duration-200 cursor-pointer;
     text-decoration: none !important;

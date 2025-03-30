@@ -71,41 +71,41 @@
     opacity: 0.8;
   }
 
-  /* Theme-specific link colors - SWAPPED: now hover color is link color and link color is hover color */
+  /* Theme-specific link colors - SWAPPED as requested */
   .dark-red .search-results a,
   .dark-red .markdown-content a,
   .dark-red .message-bubble a,
   .dark-red a {
-    color: hsl(0 85% 40%) !important;
+    color: hsl(0 85% 40%) !important; /* Using hover color as link color */
   }
   
   .dark-green .search-results a,
   .dark-green .markdown-content a,
   .dark-green .message-bubble a,
   .dark-green a {
-    color: hsl(100 71% 50%) !important;
+    color: hsl(100 71% 50%) !important; /* Using hover color as link color */
   }
   
   .dark-yellow .search-results a,
   .dark-yellow .markdown-content a,
   .dark-yellow .message-bubble a,
   .dark-yellow a {
-    color: hsl(50 90% 50%) !important;
+    color: hsl(50 90% 50%) !important; /* Using hover color as link color */
   }
   
   .dark-purple .search-results a,
   .dark-purple .markdown-content a,
   .dark-purple .message-bubble a,
   .dark-purple a {
-    color: hsl(265 90% 56%) !important;
+    color: hsl(265 90% 56%) !important; /* Using hover color as link color */
   }
   
-  /* Theme-specific link hover colors - SWAPPED */
+  /* Theme-specific link hover colors - SWAPPED as requested */
   .dark-red .search-results a:hover,
   .dark-red .markdown-content a:hover,
   .dark-red .message-bubble a:hover,
   .dark-red a:hover {
-    color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important; /* Using link color as hover color */
     opacity: 0.8;
   }
   
@@ -113,7 +113,7 @@
   .dark-green .markdown-content a:hover,
   .dark-green .message-bubble a:hover,
   .dark-green a:hover {
-    color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important; /* Using link color as hover color */
     opacity: 0.8;
   }
   
@@ -121,7 +121,7 @@
   .dark-yellow .markdown-content a:hover,
   .dark-yellow .message-bubble a:hover,
   .dark-yellow a:hover {
-    color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important; /* Using link color as hover color */
     opacity: 0.8;
   }
   
@@ -129,7 +129,7 @@
   .dark-purple .markdown-content a:hover,
   .dark-purple .message-bubble a:hover,
   .dark-purple a:hover {
-    color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important; /* Using link color as hover color */
     opacity: 0.8;
   }
   
