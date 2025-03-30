@@ -95,4 +95,14 @@
     z-index: 999 !important;
     pointer-events: auto !important;
   }
+
+  /* Critical fix for click handling */
+  body:has([data-state="open"]) {
+    overflow: auto !important; /* Prevent body from becoming unscrollable */
+  }
+  
+  /* Ensure proper stacking context for popover content */
+  [data-radix-popper-content-wrapper] {
+    isolation: isolate;
+  }
 }

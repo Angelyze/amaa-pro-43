@@ -193,6 +193,9 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
         target="_blank" 
         rel="noopener noreferrer" 
         className="text-theme-accent underline hover:opacity-80 transition-colors"
+        // Add tabIndex to ensure it's focusable and pointer-events to ensure it's clickable
+        tabIndex={0}
+        style={{ pointerEvents: 'auto' }}
       >
         {children}
       </a>
@@ -310,7 +313,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
     <div className="flex justify-center mb-4">
       <div className={`${type === 'user' ? 'user-message' : 'assistant-message'} relative`}>
         {type === 'assistant' && (
-          <div className="absolute top-2 right-2 flex items-center gap-1">
+          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
             <Button
               variant="ghost"
               size="icon"

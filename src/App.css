@@ -1,4 +1,3 @@
-
 /* Markdown content styling */
 .markdown-content {
   width: 100%;
@@ -22,13 +21,22 @@
   opacity: 0.8;
 }
 
-/* Apply theme-specific link colors */
+/* Apply theme-specific link colors with swapped hover states for dark themes */
+/* Default theme stays the same */
 .dark-red .markdown-content a,
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
 .dark-red a {
+  color: hsl(0 100% 75%) !important; /* Using lighter version of hover color */
+}
+.dark-red .markdown-content a:hover,
+.dark-red .theme-link:hover,
+.dark-red .text-theme-accent:hover,
+.dark-red .search-results a:hover,
+.dark-red a:hover {
   color: hsl(var(--primary)) !important;
+  opacity: 0.9;
 }
 
 .dark-green .markdown-content a,
@@ -36,7 +44,15 @@
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
 .dark-green a {
+  color: hsl(100 75% 70%) !important; /* Using lighter version of hover color */
+}
+.dark-green .markdown-content a:hover,
+.dark-green .theme-link:hover,
+.dark-green .text-theme-accent:hover,
+.dark-green .search-results a:hover,
+.dark-green a:hover {
   color: hsl(var(--primary)) !important;
+  opacity: 0.9;
 }
 
 .dark-yellow .markdown-content a,
@@ -44,7 +60,15 @@
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
 .dark-yellow a {
+  color: hsl(50 95% 75%) !important; /* Using lighter version of hover color */
+}
+.dark-yellow .markdown-content a:hover,
+.dark-yellow .theme-link:hover,
+.dark-yellow .text-theme-accent:hover,
+.dark-yellow .search-results a:hover,
+.dark-yellow a:hover {
   color: hsl(var(--primary)) !important;
+  opacity: 0.9;
 }
 
 .dark-purple .markdown-content a,
@@ -52,7 +76,15 @@
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
 .dark-purple a {
+  color: hsl(265 100% 80%) !important; /* Using lighter version of hover color */
+}
+.dark-purple .markdown-content a:hover,
+.dark-purple .theme-link:hover,
+.dark-purple .text-theme-accent:hover,
+.dark-purple .search-results a:hover,
+.dark-purple a:hover {
   color: hsl(var(--primary)) !important;
+  opacity: 0.9;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */
