@@ -10,7 +10,7 @@
 .theme-link,
 .text-theme-accent,
 .message-bubble a {
-  color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary)) !important; 
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
