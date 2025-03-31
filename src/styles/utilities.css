@@ -45,12 +45,6 @@
     @apply transition-colors duration-200 cursor-pointer;
     pointer-events: auto !important;
     text-decoration: none !important;
-    color: hsl(var(--primary)) !important;
-  }
-  
-  a:hover {
-    opacity: 0.8;
-    color: hsl(var(--accent)) !important;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
@@ -183,3 +177,4 @@
     z-index: -10 !important;
   }
 }
+
