@@ -8,7 +8,6 @@
     top: 0;
     left: 0;
     z-index: -10;
-    overflow: hidden;
     opacity: 0;
     animation: backgroundFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     pointer-events: none; /* Ensure the background doesn't capture mouse events */
