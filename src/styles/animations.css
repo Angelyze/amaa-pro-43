@@ -10,6 +10,7 @@
     z-index: -10;
     opacity: 0;
     animation: backgroundFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    pointer-events: none;
   }
   
   /* Canvas will be injected through JavaScript */
@@ -21,6 +22,7 @@
     height: 100%;
     z-index: -10;
     opacity: 0.6; /* Subtle effect to not overpower content */
+    pointer-events: none;
   }
   
   /* Smooth fade in animation */

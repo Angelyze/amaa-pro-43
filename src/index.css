@@ -9,12 +9,13 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Fix for tooltips and menus */
+/* Fix for tooltips and menus - increased z-index and fixed position */
 [data-radix-popper-content-wrapper],
 [data-state="open"][role="tooltip"],
 [data-state="open"][role="dialog"] {
-  z-index: 1000 !important;
+  z-index: 9999 !important;
   pointer-events: auto !important;
+  position: fixed !important;
 }
 
 /* Fix scrolling when dialogs and tooltips are open */
@@ -22,11 +23,13 @@ body:has([data-radix-popper-content-wrapper]),
 body:has([data-state="open"][role="tooltip"]),
 body:has([data-state="open"][role="dialog"]) {
   overflow: auto !important;
+  padding-right: 0 !important; /* Prevent layout shift when scroll appears */
 }
 
 /* Ensure background pattern doesn't interfere with interaction */
 .background-pattern {
   pointer-events: none !important;
+  z-index: -10 !important;
 }
 
 /* Custom styling for search results */

@@ -5,10 +5,11 @@
   overflow-wrap: break-word;
 }
 
-/* Base theme-specific link colors */
+/* Base theme-specific link colors - ensuring ALL links use the theme colors */
 .markdown-content a,
 .theme-link,
-.text-theme-accent {
+.text-theme-accent,
+.message-bubble a {
   color: hsl(var(--primary)) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
@@ -18,7 +19,8 @@
 
 .markdown-content a:hover,
 .theme-link:hover,
-.text-theme-accent:hover {
+.text-theme-accent:hover,
+.message-bubble a:hover {
   opacity: 0.8;
   color: hsl(var(--accent)) !important;
 }
@@ -94,11 +96,12 @@
 
 /* Critical fix for hover tooltips and menus */
 body:has([data-radix-popper-content-wrapper]) {
-  overflow: auto !important;
+  overflow-y: auto !important;
+  padding-right: 0 !important; /* Prevent layout shift */
 }
 
 [data-radix-popper-content-wrapper] {
-  z-index: 1000 !important;
+  z-index: 9999 !important;
   position: fixed !important;
 }
 

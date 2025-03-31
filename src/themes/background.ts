@@ -24,7 +24,7 @@ export const initializeBackground = () => {
   canvas.style.left = '0';
   canvas.style.width = '100%';
   canvas.style.height = '100%';
-  canvas.style.zIndex = '-1'; // Behind all content
+  canvas.style.zIndex = '-100'; // Much further behind all content
   canvas.style.pointerEvents = 'none'; // Ignore all pointer events
   
   // Insert canvas into the DOM

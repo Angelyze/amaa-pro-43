@@ -165,18 +165,21 @@
   [data-state="open"][role="tooltip"],
   [data-state="open"][role="dialog"],
   [data-radix-popper-content-wrapper] {
-    z-index: 1000 !important; 
+    z-index: 9999 !important; 
     position: fixed !important;
   }
   
   /* Critical fix for scrolling when menus are open */
   body:has([data-state="open"][role="tooltip"]),
-  body:has([data-state="open"][role="dialog"]) {
+  body:has([data-state="open"][role="dialog"]),
+  body:has([data-radix-popper-content-wrapper]) {
     overflow: auto !important;
+    padding-right: 0 !important; /* Prevent layout shift */
   }
   
   /* Ensure background doesn't interfere with clicks */
   .background-pattern {
     pointer-events: none !important;
+    z-index: -10 !important;
   }
 }
