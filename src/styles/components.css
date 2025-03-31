@@ -126,7 +126,7 @@
   }
 
   .assistant-message {
-    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
+    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%] backdrop-blur-2xl;
   }
 
   /* Theme-specific links for markdown content - SWAPPED: hover color is now link color */
