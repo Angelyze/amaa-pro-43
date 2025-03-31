@@ -1,4 +1,3 @@
-
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
@@ -9,6 +8,26 @@
 @import './styles/darkRed.css';
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
+
+/* Fix for tooltips and menus */
+[data-radix-popper-content-wrapper],
+[data-state="open"][role="tooltip"],
+[data-state="open"][role="dialog"] {
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+}
+
+/* Fix scrolling when dialogs and tooltips are open */
+body:has([data-radix-popper-content-wrapper]),
+body:has([data-state="open"][role="tooltip"]),
+body:has([data-state="open"][role="dialog"]) {
+  overflow: auto !important;
+}
+
+/* Ensure background pattern doesn't interfere with interaction */
+.background-pattern {
+  pointer-events: none !important;
+}
 
 /* Custom styling for search results */
 .search-results .article-preview {

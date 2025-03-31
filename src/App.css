@@ -92,6 +92,16 @@
   opacity: 0.8;
 }
 
+/* Critical fix for hover tooltips and menus */
+body:has([data-radix-popper-content-wrapper]) {
+  overflow: auto !important;
+}
+
+[data-radix-popper-content-wrapper] {
+  z-index: 1000 !important;
+  position: fixed !important;
+}
+
 /* ... keep existing code (markdown content, pre, img styling) */
 
 /* Footer styles */
@@ -103,46 +113,4 @@
   border-top: 1px solid hsl(var(--border));
 }
 
-.footer-nav {
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  margin-bottom: 0.75rem;
-}
-
-.footer-link {
-  color: hsl(var(--foreground) / 0.7);
-  transition: color 0.2s ease;
-  font-size: 0.9rem;
-  text-decoration: none !important;
-  cursor: pointer;
-}
-
-.footer-link:hover {
-  color: hsl(var(--primary));
-}
-
-/* Theme-specific footer links */
-.dark-red .footer-link:hover {
-  color: hsl(0 85% 40%); /* hover color */
-}
-
-.dark-green .footer-link:hover {
-  color: hsl(100 71% 50%); /* hover color */
-}
-
-.dark-yellow .footer-link:hover {
-  color: hsl(50 90% 50%); /* hover color */
-}
-
-.dark-purple .footer-link:hover {
-  color: hsl(265 90% 56%); /* hover color */
-}
-
-.copyright {
-  font-size: 0.8rem;
-  color: hsl(var(--foreground) / 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* ... keep existing code (footer styling) */

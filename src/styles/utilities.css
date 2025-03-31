@@ -161,5 +161,22 @@
     cursor: pointer !important;
   }
   
-
+  /* Fix for tooltip and menu issues - ensure they're above background and close properly */
+  [data-state="open"][role="tooltip"],
+  [data-state="open"][role="dialog"],
+  [data-radix-popper-content-wrapper] {
+    z-index: 1000 !important; 
+    position: fixed !important;
+  }
+  
+  /* Critical fix for scrolling when menus are open */
+  body:has([data-state="open"][role="tooltip"]),
+  body:has([data-state="open"][role="dialog"]) {
+    overflow: auto !important;
+  }
+  
+  /* Ensure background doesn't interfere with clicks */
+  .background-pattern {
+    pointer-events: none !important;
+  }
 }

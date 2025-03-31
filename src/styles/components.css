@@ -1,3 +1,4 @@
+
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -126,16 +127,29 @@
   }
 
   .assistant-message {
-    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%] backdrop-blur-2xl;
+    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%] backdrop-blur-3xl;
   }
 
-  /* Theme-specific links for markdown content - SWAPPED: hover color is now link color */
+  /* Fix link colors in default themes for markdown content */
   .markdown-content a {
-    @apply transition-all duration-200 cursor-pointer;
+    @apply transition-all duration-200 cursor-pointer text-primary hover:text-accent;
     text-decoration: none !important;
   }
+  
+  .search-results a,
+  .message-bubble a,
+  .markdown-content a {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  .search-results a:hover,
+  .message-bubble a:hover,
+  .markdown-content a:hover {
+    color: hsl(var(--accent)) !important;
+    opacity: 0.8;
+  }
 
-  /* SWAPPED colors - hover color is now link color */
+  /* SWAPPED colors - hover color is now link color for dark themes */
   .dark-red .markdown-content a {
     color: hsl(0 85% 40%) !important;
   }
@@ -152,7 +166,7 @@
     color: hsl(265 90% 56%) !important;
   }
   
-  /* SWAPPED hover - link color is now hover color */
+  /* SWAPPED hover - link color is now hover color for dark themes */
   .dark-red .markdown-content a:hover {
     color: hsl(var(--primary)) !important;
     opacity: 0.8;
