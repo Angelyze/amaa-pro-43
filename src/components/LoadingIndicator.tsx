@@ -5,7 +5,7 @@ interface LoadingIndicatorProps {
   text?: string;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ text = 'Thinking...' }) => {
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ text = 'Thinking, searching...' }) => {
   return (
     <div className="flex items-center justify-center w-full mb-4 transition-all duration-500 animate-fade-in">
       <div className="assistant-message flex items-center justify-center backdrop-blur-md">
