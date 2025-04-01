@@ -40,11 +40,12 @@
     display: block;
   }
   
-  /* Base link styling with better visibility */
+  /* Base link styling */
   a {
     @apply transition-colors duration-200 cursor-pointer;
     pointer-events: auto !important;
     text-decoration: none !important;
+    color: hsl(var(--primary)) !important;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
@@ -52,7 +53,6 @@
   .markdown-content a,
   .message-bubble a {
     display: inline-block !important;
-    color: hsl(var(--primary)) !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
@@ -61,45 +61,44 @@
   .search-results a:hover, 
   .markdown-content a:hover,
   .message-bubble a:hover {
-    color: hsl(var(--accent)) !important;
     opacity: 0.8;
   }
 
-  /* Theme-specific link colors - SWAPPED as requested */
+  /* Theme-specific link colors */
   .dark-red .search-results a,
   .dark-red .markdown-content a,
   .dark-red .message-bubble a,
   .dark-red a {
-    color: hsl(0 85% 40%) !important; /* Using hover color as link color */
+    color: hsl(0 85% 40%) !important; /* Using theme-specific color */
   }
   
   .dark-green .search-results a,
   .dark-green .markdown-content a,
   .dark-green .message-bubble a,
   .dark-green a {
-    color: hsl(100 71% 50%) !important; /* Using hover color as link color */
+    color: hsl(100 71% 50%) !important; /* Using theme-specific color */
   }
   
   .dark-yellow .search-results a,
   .dark-yellow .markdown-content a,
   .dark-yellow .message-bubble a,
   .dark-yellow a {
-    color: hsl(50 90% 50%) !important; /* Using hover color as link color */
+    color: hsl(50 90% 50%) !important; /* Using theme-specific color */
   }
   
   .dark-purple .search-results a,
   .dark-purple .markdown-content a,
   .dark-purple .message-bubble a,
   .dark-purple a {
-    color: hsl(265 90% 56%) !important; /* Using hover color as link color */
+    color: hsl(265 90% 56%) !important; /* Using theme-specific color */
   }
   
-  /* Theme-specific link hover colors - SWAPPED as requested */
+  /* Theme-specific link hover colors */
   .dark-red .search-results a:hover,
   .dark-red .markdown-content a:hover,
   .dark-red .message-bubble a:hover,
   .dark-red a:hover {
-    color: hsl(var(--primary)) !important; /* Using link color as hover color */
+    color: hsl(var(--primary)) !important;
     opacity: 0.8;
   }
   
@@ -107,7 +106,7 @@
   .dark-green .markdown-content a:hover,
   .dark-green .message-bubble a:hover,
   .dark-green a:hover {
-    color: hsl(var(--primary)) !important; /* Using link color as hover color */
+    color: hsl(var(--primary)) !important;
     opacity: 0.8;
   }
   
@@ -115,7 +114,7 @@
   .dark-yellow .markdown-content a:hover,
   .dark-yellow .message-bubble a:hover,
   .dark-yellow a:hover {
-    color: hsl(var(--primary)) !important; /* Using link color as hover color */
+    color: hsl(var(--primary)) !important;
     opacity: 0.8;
   }
   
@@ -123,7 +122,7 @@
   .dark-purple .markdown-content a:hover,
   .dark-purple .message-bubble a:hover,
   .dark-purple a:hover {
-    color: hsl(var(--primary)) !important; /* Using link color as hover color */
+    color: hsl(var(--primary)) !important;
     opacity: 0.8;
   }
   
@@ -177,4 +176,3 @@
     z-index: -10 !important;
   }
 }
-

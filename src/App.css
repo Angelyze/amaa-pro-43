@@ -5,7 +5,7 @@
   overflow-wrap: break-word;
 }
 
-/* Base theme-specific link colors - ensuring ALL links use the theme colors */
+/* Base theme-specific link colors */
 .markdown-content a,
 .theme-link,
 .text-theme-accent,
@@ -22,16 +22,15 @@
 .text-theme-accent:hover,
 .message-bubble a:hover {
   opacity: 0.8;
-  color: hsl(var(--accent)) !important;
 }
 
-/* Apply theme-specific link colors - SWAPPED: link uses hover color, hover uses link color */
+/* Apply theme-specific link colors */
 .dark-red .markdown-content a,
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
 .dark-red .message-bubble a {
-  color: hsl(0 85% 40%) !important; /* Using hover color as link color */
+  color: hsl(0 85% 40%) !important;
 }
 
 .dark-red .markdown-content a:hover,
@@ -39,7 +38,7 @@
 .dark-red .text-theme-accent:hover,
 .dark-red .search-results a:hover,
 .dark-red .message-bubble a:hover {
-  color: hsl(var(--primary)) !important; /* Using link color as hover color */
+  color: hsl(var(--primary)) !important;
   opacity: 0.8;
 }
 
@@ -48,7 +47,7 @@
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
 .dark-green .message-bubble a {
-  color: hsl(100 71% 50%) !important; /* Using hover color as link color */
+  color: hsl(100 71% 50%) !important;
 }
 
 .dark-green .markdown-content a:hover,
@@ -56,7 +55,7 @@
 .dark-green .text-theme-accent:hover,
 .dark-green .search-results a:hover,
 .dark-green .message-bubble a:hover {
-  color: hsl(var(--primary)) !important; /* Using link color as hover color */
+  color: hsl(var(--primary)) !important;
   opacity: 0.8;
 }
 
@@ -65,7 +64,7 @@
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
 .dark-yellow .message-bubble a {
-  color: hsl(50 90% 50%) !important; /* Using hover color as link color */
+  color: hsl(50 90% 50%) !important;
 }
 
 .dark-yellow .markdown-content a:hover,
@@ -73,7 +72,7 @@
 .dark-yellow .text-theme-accent:hover,
 .dark-yellow .search-results a:hover,
 .dark-yellow .message-bubble a:hover {
-  color: hsl(var(--primary)) !important; /* Using link color as hover color */
+  color: hsl(var(--primary)) !important;
   opacity: 0.8;
 }
 
@@ -82,7 +81,7 @@
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
 .dark-purple .message-bubble a {
-  color: hsl(265 90% 56%) !important; /* Using hover color as link color */
+  color: hsl(265 90% 56%) !important;
 }
 
 .dark-purple .markdown-content a:hover,
@@ -90,7 +89,7 @@
 .dark-purple .text-theme-accent:hover,
 .dark-purple .search-results a:hover,
 .dark-purple .message-bubble a:hover {
-  color: hsl(var(--primary)) !important; /* Using link color as hover color */
+  color: hsl(var(--primary)) !important;
   opacity: 0.8;
 }
 
