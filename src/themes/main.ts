@@ -28,8 +28,10 @@ export const initializeTheme = () => {
     console.log('[Theme] Initialized with: light (default - no saved preference)');
   }
   
-  // Initialize the background animation
-  initializeBackground();
+  // Defer background initialization to ensure it doesn't block UI
+  setTimeout(() => {
+    initializeBackground();
+  }, 100);
 };
 
 // Function to change theme programmatically
@@ -56,7 +58,7 @@ export const changeTheme = (theme: string) => {
   localStorage.setItem('theme', theme);
   
   // Dispatch a custom event for other components to detect the theme change
-  window.dispatchEvent(new Event('themechange'));
+  window.dispatchEvent(new CustomEvent('themechange'));
 };
 
 export default initializeTheme;

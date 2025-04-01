@@ -1,0 +1,41 @@
+
+@layer base {
+  /* Z-index management */
+  :root {
+    --z-background: -100;
+    --z-default: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 100;
+    --z-drawer: 500;
+    --z-modal: 1000;
+    --z-popover: 1000;
+    --z-tooltip: 1500;
+    --z-toast: 2000;
+  }
+  
+  /* Apply z-index to specific elements */
+  .background-pattern, 
+  #background-canvas {
+    z-index: var(--z-background) !important;
+    pointer-events: none !important;
+  }
+  
+  /* Critical fix for overlay elements */
+  [data-radix-popper-content-wrapper],
+  [data-state="open"][role="dialog"],
+  [data-state="open"][role="tooltip"] {
+    z-index: var(--z-popover) !important;
+    position: fixed !important;
+  }
+  
+  /* Tooltips should be above other popups */
+  [data-radix-tooltip-content-wrapper] {
+    z-index: var(--z-tooltip) !important;
+    position: fixed !important;
+  }
+  
+  /* Toast notifications should be above everything */
+  [role="status"][data-sonner-toast] {
+    z-index: var(--z-toast) !important;
+  }
+}

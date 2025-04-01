@@ -14,10 +14,10 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => (
-  <TooltipProvider>
+  <TooltipProvider delayDuration={300} skipDelayDuration={0}>
     <div className="app-container">
       <Toaster />
-      <Sonner />
+      <Sonner position="top-right" closeButton={true} richColors={true} expand={true} />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />

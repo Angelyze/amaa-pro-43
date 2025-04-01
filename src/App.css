@@ -5,11 +5,13 @@
   overflow-wrap: break-word;
 }
 
-/* Base theme-specific link colors */
+/* Base theme-specific link colors - unified system */
 .markdown-content a,
 .theme-link,
 .text-theme-accent,
-.message-bubble a {
+.message-bubble a,
+.search-results a,
+a {
   color: hsl(var(--primary)) !important; 
   text-decoration: none !important;
   transition: all 0.2s ease;
@@ -20,76 +22,55 @@
 .markdown-content a:hover,
 .theme-link:hover,
 .text-theme-accent:hover,
-.message-bubble a:hover {
+.message-bubble a:hover,
+.search-results a:hover,
+a:hover {
   opacity: 0.8;
 }
 
-/* Apply theme-specific link colors */
+/* Apply theme-specific link colors using CSS variables for consistency */
 .dark-red .markdown-content a,
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
-.dark-red .message-bubble a {
+.dark-red .message-bubble a,
+.dark-red a {
   color: hsl(0 85% 40%) !important;
-}
-
-.dark-red .markdown-content a:hover,
-.dark-red .theme-link:hover,
-.dark-red .text-theme-accent:hover,
-.dark-red .search-results a:hover,
-.dark-red .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link,
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
-.dark-green .message-bubble a {
+.dark-green .message-bubble a,
+.dark-green a {
   color: hsl(100 71% 50%) !important;
-}
-
-.dark-green .markdown-content a:hover,
-.dark-green .theme-link:hover,
-.dark-green .text-theme-accent:hover,
-.dark-green .search-results a:hover,
-.dark-green .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
 }
 
 .dark-yellow .markdown-content a,
 .dark-yellow .theme-link,
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
-.dark-yellow .message-bubble a {
+.dark-yellow .message-bubble a,
+.dark-yellow a {
   color: hsl(50 90% 50%) !important;
-}
-
-.dark-yellow .markdown-content a:hover,
-.dark-yellow .theme-link:hover,
-.dark-yellow .text-theme-accent:hover,
-.dark-yellow .search-results a:hover,
-.dark-yellow .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link,
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
-.dark-purple .message-bubble a {
+.dark-purple .message-bubble a,
+.dark-purple a {
   color: hsl(265 90% 56%) !important;
 }
 
-.dark-purple .markdown-content a:hover,
-.dark-purple .theme-link:hover,
-.dark-purple .text-theme-accent:hover,
-.dark-purple .search-results a:hover,
-.dark-purple .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
+/* Hover styling for all themes */
+.dark-red a:hover,
+.dark-green a:hover,
+.dark-yellow a:hover,
+.dark-purple a:hover,
+a:hover {
   opacity: 0.8;
 }
 
@@ -99,9 +80,16 @@ body:has([data-radix-popper-content-wrapper]) {
   padding-right: 0 !important; /* Prevent layout shift */
 }
 
+/* Critical positioning fixes */
 [data-radix-popper-content-wrapper] {
   z-index: 9999 !important;
   position: fixed !important;
+}
+
+/* Ensure background doesn't interfere with clicks */
+.background-pattern {
+  pointer-events: none !important;
+  z-index: -10 !important;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */

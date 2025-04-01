@@ -26,15 +26,18 @@ export const initializeBackground = () => {
   canvas.style.height = '100%';
   canvas.style.zIndex = '-100'; // Much further behind all content
   canvas.style.pointerEvents = 'none'; // Ignore all pointer events
+  canvas.style.userSelect = 'none'; // Prevent text selection
   
   // Insert canvas into the DOM
-  document.body.appendChild(canvas);
+  const firstChild = document.body.firstChild;
+  document.body.insertBefore(canvas, firstChild);
+  // This ensures the background is placed at the bottom of the stacking context
 
   // Get canvas context
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   
-  // Animation timing
+  // Animation timing - reduced for better performance
   let time = 0;
   
   // Get theme colors from CSS variables
@@ -60,7 +63,7 @@ export const initializeBackground = () => {
     ctx.fillRect(x, y, 1, 1);
   };
   
-  // Color functions based on position and time
+  // Color functions based on position and time - simplified for better performance
   const calculateR = (x: number, y: number, t: number, colors: any) => {
     const base = colors.primary.r;
     const range = 40; // Smaller range for subtlety
@@ -79,8 +82,18 @@ export const initializeBackground = () => {
     return Math.floor(base + range * Math.sin(5*Math.sin(t/9) + ((x-30)*(x-30)+(y-30)*(y-30))/1100));
   };
   
-  // Animation loop
-  const animate = () => {
+  // Animation loop - use requestAnimationFrame with throttling
+  let lastFrameTime = 0;
+  const frameInterval = 100; // Reduce update frequency for better performance
+  
+  const animate = (currentTime: number) => {
+    // Throttle animation updates
+    if (currentTime - lastFrameTime < frameInterval) {
+      requestAnimationFrame(animate);
+      return;
+    }
+    
+    lastFrameTime = currentTime;
     const colors = getThemeColors();
     
     // Draw every pixel
@@ -101,14 +114,14 @@ export const initializeBackground = () => {
     }
     
     // Significantly reduced time increment for slower animation
-    time += 0.01; // Reduced to make animation much slower
+    time += 0.005; // Further reduced to make animation much slower
     
     // Request next frame
     requestAnimationFrame(animate);
   };
   
   // Start animation
-  animate();
+  requestAnimationFrame(animate);
   
   // Listen for theme changes to update colors
   window.addEventListener('themechange', () => {
