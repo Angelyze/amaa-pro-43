@@ -1,3 +1,4 @@
+
 @layer base {
   * {
     @apply border-border;
@@ -158,19 +159,19 @@
     position: absolute !important;
     top: auto !important;
     left: auto !important;
-    z-index: 50 !important;
+    z-index: 9990 !important;
     pointer-events: auto !important;
   }
   
   .radix-tooltip {
-    z-index: 60 !important;
+    z-index: 9995 !important;
     pointer-events: auto !important;
   }
   
   .radix-popover,
   .radix-dropdown,
   .radix-dialog {
-    z-index: 50 !important;
+    z-index: 9990 !important;
     pointer-events: auto !important;
   }
   
@@ -192,7 +193,7 @@
   /* Fix for background canvas to ensure it doesn't block interaction */
   canvas#background-canvas {
     pointer-events: none !important;
-    z-index: -10 !important;
+    z-index: -100 !important;
     position: fixed !important;
   }
 }
