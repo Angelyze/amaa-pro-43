@@ -1,4 +1,3 @@
-
 @layer base {
   * {
     @apply border-border;
@@ -154,17 +153,31 @@
     cursor: pointer !important;
   }
   
-  /* Fix for tooltip and menu issues - ensure they're above background and close properly */
-  [data-state="open"][role="tooltip"],
-  [data-state="open"][role="dialog"],
+  /* Critical fixes for tooltips and popups */
   [data-radix-popper-content-wrapper] {
-    z-index: 9999 !important; 
-    position: fixed !important;
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 50 !important;
+    pointer-events: auto !important;
   }
   
-  /* Critical fix for scrolling when menus are open */
-  body:has([data-state="open"][role="tooltip"]),
+  .radix-tooltip {
+    z-index: 60 !important;
+    pointer-events: auto !important;
+  }
+  
+  .radix-popover,
+  .radix-dropdown,
+  .radix-dialog {
+    z-index: 50 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Fix for tooltip and menu issues - ensure they're above background and close properly */
+  body:has(dialog[open]),
   body:has([data-state="open"][role="dialog"]),
+  body:has([data-state="open"][role="tooltip"]),
   body:has([data-radix-popper-content-wrapper]) {
     overflow: auto !important;
     padding-right: 0 !important; /* Prevent layout shift */
@@ -174,5 +187,12 @@
   .background-pattern {
     pointer-events: none !important;
     z-index: -10 !important;
+  }
+
+  /* Fix for background canvas to ensure it doesn't block interaction */
+  canvas#background-canvas {
+    pointer-events: none !important;
+    z-index: -10 !important;
+    position: fixed !important;
   }
 }

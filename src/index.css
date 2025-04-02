@@ -1,4 +1,3 @@
-
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
@@ -10,21 +9,33 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Fix for tooltips and menus - increased z-index and fixed position */
-[data-radix-popper-content-wrapper],
-[data-state="open"][role="tooltip"],
-[data-state="open"][role="dialog"] {
-  z-index: 9999 !important;
-  pointer-events: auto !important;
-  position: fixed !important;
+/* Fix for tooltips and menus - using correct z-index layering */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important; 
+}
+
+/* Fix element specific z-indices */
+.radix-tooltip {
+  z-index: 60 !important;
+}
+
+.radix-popover {
+  z-index: 50 !important;
+}
+
+.radix-dropdown {
+  z-index: 50 !important;
+}
+
+.radix-dialog {
+  z-index: 70 !important;
 }
 
 /* Fix scrolling when dialogs and tooltips are open */
-body:has([data-radix-popper-content-wrapper]),
-body:has([data-state="open"][role="tooltip"]),
+body:has(dialog[open]),
 body:has([data-state="open"][role="dialog"]) {
   overflow: auto !important;
-  padding-right: 0 !important; /* Prevent layout shift when scroll appears */
+  padding-right: 0 !important; /* Prevent layout shift */
 }
 
 /* Ensure background pattern doesn't interfere with interaction */

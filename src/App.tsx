@@ -1,6 +1,5 @@
 
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
@@ -14,10 +13,9 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => (
-  <TooltipProvider>
+  <TooltipProvider delayDuration={300}>
     <div className="app-container">
       <Toaster />
-      <Sonner />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />

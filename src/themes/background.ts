@@ -1,4 +1,3 @@
-
 /**
  * Animated background controller that uses canvas to create fluid, colorful backgrounds
  * that adapt to the current theme colors
