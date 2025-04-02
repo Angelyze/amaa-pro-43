@@ -9,7 +9,7 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Fix for tooltips and menus - using correct z-index layering */
+/* Fix for tooltips and menus - using consistent z-index layering */
 [data-radix-popper-content-wrapper] {
   z-index: 50 !important; 
 }
@@ -28,7 +28,7 @@
 }
 
 .radix-dialog {
-  z-index: 70 !important;
+  z-index: 60 !important;
 }
 
 /* Fix scrolling when dialogs and tooltips are open */

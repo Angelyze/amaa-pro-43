@@ -159,19 +159,21 @@
     position: absolute !important;
     top: auto !important;
     left: auto !important;
-    z-index: 9990 !important;
+    z-index: 50 !important;
     pointer-events: auto !important;
   }
   
+  /* Fix for tooltip display */
   .radix-tooltip {
-    z-index: 9995 !important;
+    z-index: 60 !important;
     pointer-events: auto !important;
   }
   
+  /* Fix for popup displays */
   .radix-popover,
   .radix-dropdown,
   .radix-dialog {
-    z-index: 9990 !important;
+    z-index: 50 !important;
     pointer-events: auto !important;
   }
   
