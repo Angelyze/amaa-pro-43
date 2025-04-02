@@ -3,7 +3,6 @@
 @import './styles/components.css';
 @import './styles/utilities.css';
 @import './styles/animations.css';
-@import './styles/z-index.css';
 
 /* Theme specific styling */
 @import './styles/darkGreen.css';
@@ -11,68 +10,182 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Global fixes for menus and tooltips */
-html, body {
-  overflow-x: hidden;
-  overscroll-behavior: none;
-}
-
-body {
-  position: relative;
-  min-height: 100vh;
-  /* Allow scrolling by default, only lock when needed */
-  overflow-y: auto;
-}
-
-/* Reset overflow when modals are active */
-body:has(dialog[open]),
-body:has([role="dialog"][data-state="open"]),
-body:has([data-radix-portal]) {
-  /* Fixed positioned items don't cause scroll locks */
-  overflow-y: auto !important; 
-  /* Prevents layout shift when scrollbar disappears */
-  padding-right: 0 !important;
-}
-
-/* Critical z-index and event management for all popover content */
+/* Fix for tooltips and menus - increased z-index and fixed position */
 [data-radix-popper-content-wrapper],
-[role="tooltip"][data-state="delayed-open"],
-[role="dialog"][data-state="open"] {
+[data-state="open"][role="tooltip"],
+[data-state="open"][role="dialog"] {
   z-index: 9999 !important;
+  pointer-events: auto !important;
   position: fixed !important;
 }
 
-/* Fix click events on mobile devices */
-@media (max-width: 768px) {
-  [data-radix-popper-content-wrapper] {
-    touch-action: auto !important;
-  }
+/* Fix scrolling when dialogs and tooltips are open */
+body:has([data-radix-popper-content-wrapper]),
+body:has([data-state="open"][role="tooltip"]),
+body:has([data-state="open"][role="dialog"]) {
+  overflow: auto !important;
+  padding-right: 0 !important; /* Prevent layout shift when scroll appears */
 }
 
-/* Enhanced link styling */
-a, .link {
-  color: hsl(var(--primary)) !important;
+/* Ensure background pattern doesn't interfere with interaction */
+.background-pattern {
+  pointer-events: none !important;
+  z-index: -10 !important;
+}
+
+/* Custom styling for search results */
+.search-results .article-preview {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-results .article-preview:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.search-results .article-meta {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-top: 0.5rem;
+}
+
+/* Enhanced link styling for better visibility */
+.search-results a, 
+.theme-link,
+.text-theme-accent {
+  color: var(--primary) !important;
   text-decoration: none !important;
   transition: opacity 0.2s ease;
   cursor: pointer !important;
-  pointer-events: auto !important;
+  font-weight: 500;
 }
 
-a:hover, .link:hover {
+.search-results a:hover, 
+.theme-link:hover,
+.text-theme-accent:hover {
   opacity: 0.8;
 }
 
-/* Ensure background doesn't interfere with interactions */
-.background-pattern,
-#background-canvas {
-  pointer-events: none !important;
-  z-index: -100 !important;
-  user-select: none !important;
+/* Critical fix for web search links - ensure they're visible and clickable */
+.search-results p a,
+.search-results h1 a,
+.search-results h2 a,
+.search-results h3 a,
+.search-results h4 a,
+.search-results .article-preview a {
+  display: inline-block !important;
+  color: var(--primary) !important;
+  text-decoration: none !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
-/* Prevent event bubbling on modals and overlays */
-[role="dialog"],
-[role="tooltip"],
-.fixed-overlay {
-  isolation: isolate;
+.search-results .article-description {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Better image display */
+.search-results img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+  display: block;
+}
+
+/* Layout for article content beside image */
+.search-results .article-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Normal text should not use theme colors, only links */
+.markdown-content p,
+.markdown-content li,
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6,
+.markdown-content strong,
+.markdown-content em {
+  color: var(--foreground);
+}
+
+/* Enhanced article preview styling */
+.search-results .article-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Responsive layout for article preview content */
+@media (min-width: 640px) {
+  .search-results .article-preview > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .search-results .search-image-container {
+    flex: 0 0 auto;
+    width: 120px;
+  }
+  
+  .search-results .article-content {
+    flex: 1;
+  }
+}
+
+/* Improve markdown image display */
+.markdown-content img {
+  display: block;
+  max-width: 100%;
+  margin: 1.5rem 0;
+  border-radius: 0.375rem;
+}
+
+/* Improved link display in markdown content */
+.markdown-content a {
+  color: var(--primary) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+.markdown-content a:hover {
+  opacity: 0.8;
+}
+
+/* Related topics styling */
+.search-results .related-topics {
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+/* Clickable related topics style */
+.search-results .related-topics button {
+  background-color: var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  color: var(--foreground);
+}
+
+.search-results .related-topics button:hover {
+  background-color: var(--primary);
+  color: white;
 }

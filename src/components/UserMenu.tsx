@@ -17,7 +17,7 @@ import {
 import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { changeTheme } from '@/themes/main';
 import { toast } from 'sonner';
 
@@ -31,7 +31,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   const [theme, setTheme] = useState<string>(() => {
     return localStorage.getItem('theme') || 'light';
   });
-  const [open, setOpen] = useState(false);
   
   // Ensure theme is synchronized on component mount and when localStorage changes
   useEffect(() => {
@@ -61,20 +60,15 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
-  const handleThemeChange = useCallback((value: string) => {
+  const handleThemeChange = (value: string) => {
     console.log(`UserMenu changing theme to: ${value}`);
     setTheme(value);
     changeTheme(value);
     toast.success(`Theme changed to ${value}`);
-  }, []);
-
-  const handleLogout = async () => {
-    setOpen(false); // Close the menu first
-    await onLogout();
   };
   
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="focus:outline-none cursor-pointer flex items-center gap-2 bg-transparent border-none">
           <Avatar className="h-9 w-9 border border-border">
@@ -89,11 +83,11 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 z-[999]">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        <Link to="/profile" onClick={() => setOpen(false)}>
+        <Link to="/profile">
           <DropdownMenuItem className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             <span>Profile Settings</span>
@@ -117,7 +111,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             )}
             <span>Theme</span>
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
+          <DropdownMenuSubContent className="z-[999]">
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>
@@ -132,14 +126,14 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <DropdownMenuSeparator />
         
         {!isPremium && (
-          <Link to="/subscribe" onClick={() => setOpen(false)}>
+          <Link to="/subscribe">
             <DropdownMenuItem className="cursor-pointer">
               <span>Upgrade to Premium</span>
             </DropdownMenuItem>
           </Link>
         )}
         
-        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
