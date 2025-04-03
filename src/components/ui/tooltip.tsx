@@ -7,7 +7,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { cn } from "@/lib/utils"
 
 const TooltipProvider = ({ children, ...props }) => (
-  <TooltipPrimitive.Provider disableHoverableContent {...props}>
+  <TooltipPrimitive.Provider {...props}>
     {children}
   </TooltipPrimitive.Provider>
 )
