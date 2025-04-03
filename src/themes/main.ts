@@ -31,32 +31,11 @@ export const initializeTheme = () => {
   // Initialize the background animation
   initializeBackground();
   
-  // Enhanced global escape key handler to help dismiss any stuck tooltips or popups
+  // Add global escape key handler to help dismiss any stuck tooltips or popups
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
+      // This will help dismiss any stuck tooltips or popups
       console.log('[UI] Escape key pressed - attempting to clear UI state');
-      
-      // Force close any open tooltips by removing their open state
-      document.querySelectorAll('[data-state="open"][role="tooltip"]').forEach(tooltip => {
-        tooltip.setAttribute('data-state', 'closed');
-      });
-      
-      // Force close any open popups by removing their open state
-      document.querySelectorAll('[data-state="open"][role="dialog"]').forEach(dialog => {
-        dialog.setAttribute('data-state', 'closed');
-      });
-      
-      // Force close any open dropdown menus
-      document.querySelectorAll('[data-state="open"][role="menu"]').forEach(menu => {
-        menu.setAttribute('data-state', 'closed');
-      });
-      
-      // Force close any open Radix UI poppers
-      document.querySelectorAll('[data-radix-popper-content-wrapper]').forEach(popper => {
-        if (popper.parentNode) {
-          popper.parentNode.removeChild(popper);
-        }
-      });
       
       // Dispatch a click on the body to help dismiss any open tooltips or popups
       const clickEvent = new MouseEvent('click', {
@@ -65,6 +44,12 @@ export const initializeTheme = () => {
         view: window
       });
       document.body.dispatchEvent(clickEvent);
+      
+      // Force any open tooltips to close by targeting their close buttons
+      document.querySelectorAll('[data-state="open"][role="tooltip"] button[aria-label="Close"]')
+        .forEach(button => {
+          (button as HTMLElement).click();
+        });
     }
   });
 };

@@ -33,7 +33,7 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
         align={align} 
         className={className}
         avoidCollisions={true}
-        // Removed onPointerDownOutside that was preventing closing
+        onPointerDownOutside={(e) => e.preventDefault()}
       >
         {content}
       </TooltipContent>
