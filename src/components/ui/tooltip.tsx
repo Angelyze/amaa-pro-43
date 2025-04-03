@@ -6,10 +6,11 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
+// Ensure consistent tooltip provider configuration
 const TooltipProvider = ({ 
   children, 
-  delayDuration = 200, 
-  skipDelayDuration = 300, 
+  delayDuration = 300, 
+  skipDelayDuration = 0, 
   disableHoverableContent = true, 
   ...props 
 }) => (

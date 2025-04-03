@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Link2, MessageSquare, X, Share2, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
@@ -29,7 +28,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
       }
     };
     
-    // Add global escape key handler
     document.addEventListener('keydown', handleEscapeKey);
     
     return () => {
@@ -37,22 +35,20 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     };
   }, [onClose]);
 
-  // Handle clicking outside to close
+  // Handle clicking outside to close - fixed to not interfere with other UI elements
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Check if the click was outside the menu
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        event.preventDefault();
-        event.stopPropagation();
         onClose();
       }
     };
     
-    // Use capture phase to ensure our handler runs before others
-    document.addEventListener('mousedown', handleClickOutside, true);
+    // Use standard bubbling phase to not interfere with other UI elements
+    document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside, true);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
 
@@ -69,7 +65,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
 
   // Format image data for sharing if available
   const hasImage = fileData?.type?.startsWith('image/');
-  
+
   // Different share functions
   const shareToFacebook = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -150,7 +146,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     <div 
       ref={menuRef} 
       className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-50 py-[13px] w-60 rounded-md px-[13px]"
-      onClick={(e) => e.stopPropagation()}
     >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>
