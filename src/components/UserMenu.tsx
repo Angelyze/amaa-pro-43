@@ -43,7 +43,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     
     const handleThemeChange = () => {
       const newTheme = localStorage.getItem('theme') || 'light';
-      console.log(`UserMenu detected theme change: ${newTheme}`);
       setTheme(newTheme);
     };
     
@@ -61,7 +60,6 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
   const handleThemeChange = (value: string) => {
-    console.log(`UserMenu changing theme to: ${value}`);
     setTheme(value);
     changeTheme(value);
     toast.success(`Theme changed to ${value}`);
@@ -70,7 +68,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none cursor-pointer flex items-center gap-2 bg-transparent border-none">
+        <button className="focus:outline-none cursor-pointer flex items-center gap-2 bg-transparent border-none" aria-label="User menu">
           <Avatar className="h-9 w-9 border border-border">
             <AvatarFallback className="bg-muted text-muted-foreground">
               {userInitials}
@@ -83,7 +81,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-56 z-[999]">
+      <DropdownMenuContent align="end" className="w-56 pointer-events-auto" style={{ zIndex: 999 }}>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
@@ -111,7 +109,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             )}
             <span>Theme</span>
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="z-[999]">
+          <DropdownMenuSubContent className="pointer-events-auto" style={{ zIndex: 1000 }}>
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>

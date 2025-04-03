@@ -1,4 +1,3 @@
-
 @layer base {
   * {
     @apply border-border;
@@ -156,24 +155,33 @@
   
   /* Critical fixes for tooltips and popups */
   [data-radix-popper-content-wrapper] {
-    position: absolute !important;
-    top: auto !important;
-    left: auto !important;
-    z-index: 50 !important;
+    position: fixed !important;
+    z-index: 9999 !important;
     pointer-events: auto !important;
+    transform: none !important;
+    will-change: auto !important;
   }
   
   /* Fix for tooltip display */
   .radix-tooltip {
-    z-index: 60 !important;
+    z-index: 999 !important;
     pointer-events: auto !important;
   }
   
   /* Fix for popup displays */
-  .radix-popover,
+  .radix-popover {
+    z-index: 800 !important;
+    pointer-events: auto !important;
+  }
+  
   .radix-dropdown,
+  [role="menu"] {
+    z-index: 700 !important;
+    pointer-events: auto !important;
+  }
+  
   .radix-dialog {
-    z-index: 50 !important;
+    z-index: 900 !important;
     pointer-events: auto !important;
   }
   
@@ -183,7 +191,7 @@
   body:has([data-state="open"][role="tooltip"]),
   body:has([data-radix-popper-content-wrapper]) {
     overflow: auto !important;
-    padding-right: 0 !important; /* Prevent layout shift */
+    padding-right: 0 !important;
   }
   
   /* Ensure background doesn't interfere with clicks */

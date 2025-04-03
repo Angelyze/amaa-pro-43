@@ -1,3 +1,4 @@
+
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
@@ -9,42 +10,59 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Fix for tooltips and menus - using consistent z-index layering */
+/* Fix for Radix UI components - consistent z-index layering */
 [data-radix-popper-content-wrapper] {
-  z-index: 50 !important; 
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  will-change: auto !important;
 }
 
-/* Fix element specific z-indices */
+/* Component specific z-indices */
 .radix-tooltip {
-  z-index: 60 !important;
+  z-index: 999 !important;
+  pointer-events: auto !important;
 }
 
 .radix-popover {
-  z-index: 50 !important;
+  z-index: 800 !important;
+  pointer-events: auto !important;
 }
 
 .radix-dropdown {
-  z-index: 50 !important;
+  z-index: 700 !important;
+  pointer-events: auto !important;
 }
 
 .radix-dialog {
-  z-index: 60 !important;
+  z-index: 900 !important;
+  pointer-events: auto !important;
 }
 
-/* Fix scrolling when dialogs and tooltips are open */
-body:has(dialog[open]),
-body:has([data-state="open"][role="dialog"]) {
+/* Fix body styling when overlays are open */
+body:has([data-state="open"][role="dialog"]),
+body:has([data-state="open"][role="tooltip"]),
+body:has([data-radix-popper-content-wrapper]) {
   overflow: auto !important;
-  padding-right: 0 !important; /* Prevent layout shift */
+  padding-right: 0 !important;
 }
 
-/* Ensure background pattern doesn't interfere with interaction */
+/* Fix background patterns to not interfere with interactions */
 .background-pattern {
   pointer-events: none !important;
   z-index: -10 !important;
 }
 
-/* Custom styling for search results */
+canvas#background-canvas {
+  pointer-events: none !important;
+  z-index: -100 !important;
+  position: fixed !important;
+}
+
+/* Keep the rest of existing styling */
 .search-results .article-preview {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;

@@ -13,7 +13,7 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => (
-  <TooltipProvider delayDuration={300}>
+  <TooltipProvider delayDuration={300} skipDelayDuration={0}>
     <div className="app-container">
       <Toaster />
       <Routes>
