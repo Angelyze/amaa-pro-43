@@ -29,6 +29,11 @@ const Header: React.FC<HeaderProps> = ({
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
 
+  const handleScrollTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onScrollToTop();
+  };
+
   return (
     <header 
       className={`header-container fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
@@ -83,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  onClick={onScrollToTop}
+                  onClick={handleScrollTop}
                   className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
                 >
                   <ArrowUp size={18} />

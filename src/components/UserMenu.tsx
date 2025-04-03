@@ -64,6 +64,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     changeTheme(value);
     toast.success(`Theme changed to ${value}`);
   };
+
+  // Handler for logout event to prevent propagation
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await onLogout();
+  };
   
   return (
     <DropdownMenu>
@@ -131,7 +138,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           </Link>
         )}
         
-        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
+        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

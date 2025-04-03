@@ -1,3 +1,4 @@
+
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
@@ -34,6 +35,11 @@
 
 .radix-dialog {
   z-index: 45 !important;
+  pointer-events: auto !important;
+}
+
+/* Enable proper pointer events for portal content */
+[data-radix-portal] {
   pointer-events: auto !important;
 }
 
