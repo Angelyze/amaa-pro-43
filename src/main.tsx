@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <TooltipProvider delayDuration={200} disableHoverableContent={true}>
+          <TooltipProvider>
             <App />
           </TooltipProvider>
         </AuthProvider>

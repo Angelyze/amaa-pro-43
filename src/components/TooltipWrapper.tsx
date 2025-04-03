@@ -33,7 +33,6 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
         align={align} 
         className={className}
         avoidCollisions={true}
-        onPointerDownOutside={(e) => e.preventDefault()}
       >
         {content}
       </TooltipContent>
