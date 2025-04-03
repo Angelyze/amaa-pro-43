@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Link2, MessageSquare, X, Share2, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
@@ -20,10 +21,29 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Global escape key handler for dismissing menus
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    // Add global escape key handler
+    document.addEventListener('keydown', handleEscapeKey);
+    
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [onClose]);
+
   // Handle clicking outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Check if the click was outside the menu
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        event.preventDefault();
+        event.stopPropagation();
         onClose();
       }
     };
@@ -51,27 +71,31 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   const hasImage = fileData?.type?.startsWith('image/');
   
   // Different share functions
-  const shareToFacebook = () => {
+  const shareToFacebook = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // Facebook sharing - using actual website URL with proper OG tags would be better
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodedSourceUrl}&quote=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareToTwitter = () => {
+  const shareToTwitter = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // Twitter supports text only through the web intent API
     const url = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedSourceUrl}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareToReddit = () => {
+  const shareToReddit = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const url = `https://www.reddit.com/submit?url=${encodedSourceUrl}&title=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareToThreads = () => {
+  const shareToThreads = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // Copy content to clipboard for Threads
     const textToShare = hasImage 
       ? `${content}${sourceText}\n\n[Image attached]` 
@@ -82,20 +106,23 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     onClose();
   };
   
-  const shareToLinkedIn = () => {
+  const shareToLinkedIn = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedSourceUrl}&title=Shared from AMAA&summary=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareToWhatsApp = () => {
+  const shareToWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // WhatsApp can handle text content
     const url = `https://wa.me/?text=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
-  const shareViaEmail = () => {
+  const shareViaEmail = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // Email can handle text content
     const subject = "Shared from AMAA";
     const body = hasImage 
@@ -107,7 +134,8 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     onClose();
   };
   
-  const copyLinkToClipboard = () => {
+  const copyLinkToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // For clipboard, we can include both content and describe the image
     const textToCopy = hasImage 
       ? `${content}${sourceText}\n\n[Image from conversation]` 
@@ -118,13 +146,23 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     onClose();
   };
   
-  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-50 py-[13px] w-60 rounded-md px-[13px]">
+  return (
+    <div 
+      ref={menuRef} 
+      className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-50 py-[13px] w-60 rounded-md px-[13px]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>
-        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+        >
           <X size={14} />
         </Button>
       </div>
@@ -162,7 +200,8 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
           <Link2 className="h-5 w-5 text-foreground" />
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default ShareMenu;

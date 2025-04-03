@@ -3,7 +3,6 @@ import React from 'react';
 import { 
   Tooltip, 
   TooltipContent, 
-  TooltipProvider, 
   TooltipTrigger 
 } from '@/components/ui/tooltip';
 
@@ -25,21 +24,20 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
   className
 }) => {
   return (
-    <TooltipProvider>
-      <Tooltip delayDuration={delayDuration}>
-        <TooltipTrigger asChild>
-          {children}
-        </TooltipTrigger>
-        <TooltipContent 
-          side={side} 
-          align={align} 
-          className={className}
-          avoidCollisions={true}
-        >
-          {content}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip delayDuration={delayDuration}>
+      <TooltipTrigger asChild>
+        {children}
+      </TooltipTrigger>
+      <TooltipContent 
+        side={side} 
+        align={align} 
+        className={className}
+        avoidCollisions={true}
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
+        {content}
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
