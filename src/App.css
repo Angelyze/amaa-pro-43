@@ -95,10 +95,16 @@
 
 /* Critical fixes for Radix UI components */
 [data-radix-popper-content-wrapper] {
-  position: fixed !important;
   z-index: 9999 !important;
+  position: fixed !important;
   pointer-events: auto !important;
+  transform: none !important;
+  will-change: transform !important;
   inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
 }
 
 /* Updated fix for body style to prevent background scrolling issues */
@@ -116,6 +122,8 @@ body:has([data-radix-popper-content-wrapper]) {
   background-color: hsl(var(--muted) / 0.5);
   backdrop-filter: blur(8px);
   border-top: 1px solid hsl(var(--border));
+  position: relative;
+  z-index: 10;
 }
 
 /* ... keep existing code (footer styling) */

@@ -81,7 +81,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         </button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-56 pointer-events-auto" style={{ zIndex: 999 }}>
+      <DropdownMenuContent align="end" className="w-56 bg-popover">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
@@ -109,7 +109,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             )}
             <span>Theme</span>
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="pointer-events-auto" style={{ zIndex: 1000 }}>
+          <DropdownMenuSubContent className="bg-popover">
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>

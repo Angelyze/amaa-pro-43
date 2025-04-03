@@ -23,22 +23,22 @@
 
 /* Component specific z-indices */
 .radix-tooltip {
-  z-index: 999 !important;
+  z-index: 9999 !important;
   pointer-events: auto !important;
 }
 
 .radix-popover {
-  z-index: 800 !important;
+  z-index: 9000 !important;
   pointer-events: auto !important;
 }
 
 .radix-dropdown {
-  z-index: 700 !important;
+  z-index: 9500 !important;
   pointer-events: auto !important;
 }
 
 .radix-dialog {
-  z-index: 900 !important;
+  z-index: 9900 !important;
   pointer-events: auto !important;
 }
 
