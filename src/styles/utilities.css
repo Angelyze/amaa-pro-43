@@ -156,38 +156,31 @@
   
   /* Critical fixes for tooltips and popups */
   [data-radix-popper-content-wrapper] {
-    z-index: 9999 !important;
+    z-index: 50 !important;
     position: fixed !important;
     pointer-events: auto !important;
-    transform: none !important;
-    will-change: transform !important;
-    inset: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
   }
   
   /* Fix for tooltip display */
   .radix-tooltip {
-    z-index: 9999 !important;
+    z-index: 50 !important;
     pointer-events: auto !important;
   }
   
   /* Fix for popup displays */
   .radix-popover {
-    z-index: 9000 !important;
+    z-index: 40 !important;
     pointer-events: auto !important;
   }
   
   .radix-dropdown,
   [role="menu"] {
-    z-index: 9500 !important;
+    z-index: 40 !important;
     pointer-events: auto !important;
   }
   
   .radix-dialog {
-    z-index: 9900 !important;
+    z-index: 45 !important;
     pointer-events: auto !important;
   }
   

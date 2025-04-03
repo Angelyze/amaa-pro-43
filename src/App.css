@@ -95,16 +95,9 @@
 
 /* Critical fixes for Radix UI components */
 [data-radix-popper-content-wrapper] {
-  z-index: 9999 !important;
-  position: fixed !important;
+  z-index: 50 !important;
+  position: relative !important;
   pointer-events: auto !important;
-  transform: none !important;
-  will-change: transform !important;
-  inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
 }
 
 /* Updated fix for body style to prevent background scrolling issues */
