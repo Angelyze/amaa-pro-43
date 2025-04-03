@@ -9,44 +9,31 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Fix for Radix UI components - consistent z-index layering */
-[data-radix-popper-content-wrapper] {
-  z-index: 999 !important;
-  position: fixed !important;
-  pointer-events: auto !important;
-}
-
-/* Component specific z-indices */
+/* Component specific z-indices - removed forced z-index values */
 .radix-tooltip {
-  z-index: 999 !important;
   pointer-events: auto !important;
 }
 
 .radix-popover {
-  z-index: 999 !important;
   pointer-events: auto !important;
 }
 
 .radix-dropdown {
-  z-index: 999 !important;
   pointer-events: auto !important;
 }
 
 .radix-dialog {
-  z-index: 999 !important;
   pointer-events: auto !important;
 }
 
 /* Enable proper pointer events for portal content */
 [data-radix-portal] {
   pointer-events: auto !important;
-  z-index: 999 !important;
 }
 
 /* Fix body styling when overlays are open */
 body:has([data-state="open"][role="dialog"]),
-body:has([data-state="open"][role="tooltip"]),
-body:has([data-radix-popper-content-wrapper]) {
+body:has([data-state="open"][role="tooltip"]) {
   overflow: auto !important;
   padding-right: 0 !important;
 }

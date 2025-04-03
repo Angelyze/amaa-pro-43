@@ -29,7 +29,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
       }
     };
     
-    // Add global escape key handler
     document.addEventListener('keydown', handleEscapeKey);
     
     return () => {
@@ -40,7 +39,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   // Handle clicking outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Check if the click was outside the menu
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
@@ -67,16 +65,14 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   // Format image data for sharing if available
   const hasImage = fileData?.type?.startsWith('image/');
   
-  // Different share functions
+  // Different share functions - removed event.preventDefault() and stopPropagation
   const shareToFacebook = () => {
-    // Facebook sharing - using actual website URL with proper OG tags would be better
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodedSourceUrl}&quote=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
   const shareToTwitter = () => {
-    // Twitter supports text only through the web intent API
     const url = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedSourceUrl}`;
     window.open(url, '_blank');
     onClose();
@@ -89,7 +85,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   };
   
   const shareToThreads = () => {
-    // Copy content to clipboard for Threads
     const textToShare = hasImage 
       ? `${content}${sourceText}\n\n[Image attached]` 
       : `${content}${sourceText}`;
@@ -106,14 +101,12 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   };
   
   const shareToWhatsApp = () => {
-    // WhatsApp can handle text content
     const url = `https://wa.me/?text=${encodedText}`;
     window.open(url, '_blank');
     onClose();
   };
   
   const shareViaEmail = () => {
-    // Email can handle text content
     const subject = "Shared from AMAA";
     const body = hasImage 
       ? `${content}${sourceText}\n\n[Image from conversation]` 
@@ -125,7 +118,6 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
   };
   
   const copyLinkToClipboard = () => {
-    // For clipboard, we can include both content and describe the image
     const textToCopy = hasImage 
       ? `${content}${sourceText}\n\n[Image from conversation]` 
       : `${content}${sourceText}`;
@@ -146,7 +138,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
           variant="ghost" 
           size="icon" 
           className="h-6 w-6" 
-          onClick={onClose}
+          onClick={() => onClose()}
         >
           <X size={14} />
         </Button>

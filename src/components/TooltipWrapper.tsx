@@ -32,7 +32,6 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
         side={side} 
         align={align} 
         className={className}
-        avoidCollisions={true}
       >
         {content}
       </TooltipContent>

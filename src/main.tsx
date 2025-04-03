@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <TooltipProvider>
+          <TooltipProvider delayDuration={300} skipDelayDuration={0}>
             <App />
           </TooltipProvider>
         </AuthProvider>

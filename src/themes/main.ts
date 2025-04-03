@@ -30,28 +30,6 @@ export const initializeTheme = () => {
   
   // Initialize the background animation
   initializeBackground();
-  
-  // Add global escape key handler to help dismiss any stuck tooltips or popups
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      // This will help dismiss any stuck tooltips or popups
-      console.log('[UI] Escape key pressed - attempting to clear UI state');
-      
-      // Dispatch a click on the body to help dismiss any open tooltips or popups
-      const clickEvent = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      document.body.dispatchEvent(clickEvent);
-      
-      // Force any open tooltips to close by targeting their close buttons
-      document.querySelectorAll('[data-state="open"][role="tooltip"] button[aria-label="Close"]')
-        .forEach(button => {
-          (button as HTMLElement).click();
-        });
-    }
-  });
 };
 
 // Function to change theme programmatically

@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import AMAAChatBox from './AMAAChatBox';
 import UserMenu from './UserMenu';
 import { Link } from 'react-router-dom';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import TooltipWrapper from './TooltipWrapper';
 
 interface HeaderProps {
   mainSearchVisible: boolean;
@@ -29,8 +29,7 @@ const Header: React.FC<HeaderProps> = ({
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
 
-  const handleScrollTop = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleScrollTop = () => {
     onScrollToTop();
   };
 
@@ -83,19 +82,16 @@ const Header: React.FC<HeaderProps> = ({
               </>
             )}
             
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={handleScrollTop}
-                  className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
-                >
-                  <ArrowUp size={18} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Scroll to top</TooltipContent>
-            </Tooltip>
+            <TooltipWrapper content="Scroll to top">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleScrollTop}
+                className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
+              >
+                <ArrowUp size={18} />
+              </Button>
+            </TooltipWrapper>
           </div>
         </div>
       </div>
