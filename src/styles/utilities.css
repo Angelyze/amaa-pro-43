@@ -153,14 +153,8 @@
   [data-state="open"] > * {
     cursor: pointer !important;
   }
-  
+
   /* Critical fixes for tooltips and popups */
-  [data-radix-popper-content-wrapper] {
-    z-index: 50 !important;
-    position: fixed !important;
-    pointer-events: auto !important;
-  }
-  
   /* Fix for tooltip display */
   .radix-tooltip {
     z-index: 50 !important;

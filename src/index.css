@@ -14,7 +14,6 @@
   position: fixed !important;
   z-index: 50 !important;
   pointer-events: auto !important;
-  transform: none !important;
 }
 
 /* Component specific z-indices */
