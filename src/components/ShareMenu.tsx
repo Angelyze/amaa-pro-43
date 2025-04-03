@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { Facebook, Twitter, Linkedin, Mail, Link2, MessageSquare, X, Share2, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
@@ -28,9 +27,12 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
         onClose();
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Use capture phase to ensure our handler runs before others
+    document.addEventListener('mousedown', handleClickOutside, true);
+    
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside, true);
     };
   }, [onClose]);
 
@@ -97,7 +99,7 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     // Email can handle text content
     const subject = "Shared from AMAA";
     const body = hasImage 
-      ? `${content}${sourceText}\n\n[Image attached]` 
+      ? `${content}${sourceText}\n\n[Image from conversation]` 
       : `${content}${sourceText}`;
     
     const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -116,10 +118,13 @@ const ShareMenu: React.FC<ShareMenuProps> = ({
     onClose();
   };
   
-  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-5 py-[13px] w-60 rounded-md px-[13px]">
+  return <div ref={menuRef} className="absolute top-10 right-0 bg-background border border-border shadow-lg p-3 z-50 py-[13px] w-60 rounded-md px-[13px]">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-sm font-medium">Share</h3>
-        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
+        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}>
           <X size={14} />
         </Button>
       </div>
