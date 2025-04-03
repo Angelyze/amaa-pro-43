@@ -95,15 +95,22 @@
 
 /* Critical fixes for Radix UI components */
 [data-radix-popper-content-wrapper] {
-  z-index: 50 !important;
-  position: relative !important;
+  z-index: 100 !important;
+  position: fixed !important;
   pointer-events: auto !important;
+  transform-origin: var(--radix-popper-transform-origin);
 }
 
 /* Updated fix for body style to prevent background scrolling issues */
 body:has([data-radix-popper-content-wrapper]) {
-  overflow: auto !important;
+  overflow: initial !important;
   padding-right: 0 !important;
+}
+
+/* Make sure portal elements stay visible */
+[data-radix-portal] {
+  pointer-events: auto !important;
+  z-index: 100 !important;
 }
 
 /* ... keep existing code (markdown content, pre, img styling) */

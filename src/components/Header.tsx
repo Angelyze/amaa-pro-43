@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import AMAAChatBox from './AMAAChatBox';
 import UserMenu from './UserMenu';
 import { Link } from 'react-router-dom';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface HeaderProps {
   mainSearchVisible: boolean;
@@ -30,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header 
-      className={`header-container fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+      className={`header-container fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
     >
       <div className="flex items-center justify-center h-16 px-4 md:px-6 max-w-4xl mx-auto">
         {/* Centered container with max width to contain all three elements */}
@@ -77,14 +78,19 @@ const Header: React.FC<HeaderProps> = ({
               </>
             )}
             
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={onScrollToTop}
-              className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
-            >
-              <ArrowUp size={18} />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={onScrollToTop}
+                  className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
+                >
+                  <ArrowUp size={18} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Scroll to top</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
