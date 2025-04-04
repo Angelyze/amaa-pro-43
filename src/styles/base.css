@@ -1,14 +1,3 @@
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Direct inclusion of theme CSS to ensure proper loading */
-@import './darkRed.css';
-@import './darkGreen.css';
-@import './darkYellow.css';
-@import './darkPurple.css';
-
 @layer base {
   :root {
     --background: 0 0% 98%; /* #FAFAFA */
@@ -89,6 +78,6 @@
     color: hsl(var(--primary));
     text-decoration: none;
     cursor: pointer;
-    pointer-events: auto !important;
+    /* FIXED: Removed pointer-events: auto !important to fix UI elements staying open */
   }
 }
