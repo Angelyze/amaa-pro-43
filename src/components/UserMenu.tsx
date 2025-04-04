@@ -1,3 +1,4 @@
+
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
@@ -42,6 +43,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     
     const handleThemeChange = () => {
       const newTheme = localStorage.getItem('theme') || 'light';
+      console.log(`UserMenu detected theme change: ${newTheme}`);
       setTheme(newTheme);
     };
     
@@ -59,22 +61,16 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
   
   const handleThemeChange = (value: string) => {
+    console.log(`UserMenu changing theme to: ${value}`);
     setTheme(value);
     changeTheme(value);
     toast.success(`Theme changed to ${value}`);
   };
-
-  // Handler for logout event - REMOVED stopPropagation to fix menu closing issues
-  const handleLogout = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    // Removed e.stopPropagation() to allow event bubbling
-    await onLogout();
-  };
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none cursor-pointer flex items-center gap-2 bg-transparent border-none" aria-label="User menu">
+      <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
+        <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
             <AvatarFallback className="bg-muted text-muted-foreground">
               {userInitials}
@@ -84,10 +80,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           {isPremium && (
             <Badge className="bg-primary hover:bg-primary">Premium</Badge>
           )}
-        </button>
+        </div>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-56 bg-popover">
+      <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
@@ -115,7 +111,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             )}
             <span>Theme</span>
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="bg-popover">
+          <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={theme} onValueChange={handleThemeChange}>
               <DropdownMenuRadioItem value="light" className="cursor-pointer">Default</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="dark" className="cursor-pointer">Default Dark</DropdownMenuRadioItem>
@@ -137,7 +133,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
           </Link>
         )}
         
-        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

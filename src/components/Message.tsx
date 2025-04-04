@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -18,6 +19,7 @@ interface MessageProps {
   onTopicClick?: (topic: string) => void;
 }
 
+// Function to strip all markdown for TTS
 const stripMarkdown = (text: string): string => {
   let cleaned = text.replace(/^#{1,6}\s+/gm, '');
   
@@ -35,6 +37,7 @@ const stripMarkdown = (text: string): string => {
   return cleaned;
 };
 
+// Component to render article previews in search results with improved layout
 const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   title: string;
   url: string;
@@ -93,6 +96,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
     if (type === 'assistant') {
       let cleanedContent = content;
       
+      // Extract related topics if they exist
       const relatedTopicsMatch = cleanedContent.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
       if (relatedTopicsMatch && relatedTopicsMatch[1]) {
         const topicsText = relatedTopicsMatch[1];
@@ -101,6 +105,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
           .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
           .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
           .filter(topic => topic.length > 0)
+          // Remove the double asterisks from topics
           .map(topic => topic.replace(/\*\*/g, ''));
         
         setRelatedTopics(topics);

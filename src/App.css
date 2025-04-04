@@ -4,22 +4,19 @@
   overflow-wrap: break-word;
 }
 
-/* Base theme-specific link colors */
+/* Theme-specific link colors */
 .markdown-content a,
 .theme-link,
-.text-theme-accent,
-.message-bubble a {
-  color: hsl(var(--primary)) !important; 
+.text-theme-accent {
+  color: var(--primary) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
-  /* Removed pointer-events: auto !important to fix UI elements staying open */
 }
 
 .markdown-content a:hover,
 .theme-link:hover,
-.text-theme-accent:hover,
-.message-bubble a:hover {
+.text-theme-accent:hover {
   opacity: 0.8;
 }
 
@@ -28,122 +25,35 @@
 .dark-red .theme-link,
 .dark-red .text-theme-accent,
 .dark-red .search-results a,
-.dark-red .message-bubble a {
-  color: hsl(0 85% 40%) !important;
-}
-
-.dark-red .markdown-content a:hover,
-.dark-red .theme-link:hover,
-.dark-red .text-theme-accent:hover,
-.dark-red .search-results a:hover,
-.dark-red .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
+.dark-red a {
+  color: var(--primary) !important;
 }
 
 .dark-green .markdown-content a,
 .dark-green .theme-link,
 .dark-green .text-theme-accent,
 .dark-green .search-results a,
-.dark-green .message-bubble a {
-  color: hsl(100 71% 50%) !important;
-}
-
-.dark-green .markdown-content a:hover,
-.dark-green .theme-link:hover,
-.dark-green .text-theme-accent:hover,
-.dark-green .search-results a:hover,
-.dark-green .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
+.dark-green a {
+  color: var(--primary) !important;
 }
 
 .dark-yellow .markdown-content a,
 .dark-yellow .theme-link,
 .dark-yellow .text-theme-accent,
 .dark-yellow .search-results a,
-.dark-yellow .message-bubble a {
-  color: hsl(50 90% 50%) !important;
-}
-
-.dark-yellow .markdown-content a:hover,
-.dark-yellow .theme-link:hover,
-.dark-yellow .text-theme-accent:hover,
-.dark-yellow .search-results a:hover,
-.dark-yellow .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
+.dark-yellow a {
+  color: var(--primary) !important;
 }
 
 .dark-purple .markdown-content a,
 .dark-purple .theme-link,
 .dark-purple .text-theme-accent,
 .dark-purple .search-results a,
-.dark-purple .message-bubble a {
-  color: hsl(265 90% 56%) !important;
+.dark-purple a {
+  color: var(--primary) !important;
 }
 
-.dark-purple .markdown-content a:hover,
-.dark-purple .theme-link:hover,
-.dark-purple .text-theme-accent:hover,
-.dark-purple .search-results a:hover,
-.dark-purple .message-bubble a:hover {
-  color: hsl(var(--primary)) !important;
-  opacity: 0.8;
-}
-
-/* Fixed Radix UI components - CRITICAL FIX */
-[data-radix-popper-content-wrapper] {
-  z-index: 50 !important;
-  position: fixed !important;
-  pointer-events: none !important; /* FIXED: Changed from auto to none to allow clicks to pass through */
-}
-
-/* Fixed portal elements - CRITICAL FIX */
-[data-radix-portal] {
-  pointer-events: none !important; /* FIXED: Changed from auto to none to allow clicks to pass through */
-  z-index: 50 !important;
-}
-
-/* Make sure the actual content inside portals is clickable */
-[data-radix-popper-content-wrapper] > * {
-  pointer-events: auto !important;
-}
-
-/* Make sure the actual content inside portals is clickable */
-[data-radix-portal] > * {
-  pointer-events: auto !important;
-}
-
-/* Updated fix for body style to prevent background scrolling issues */
-body:has([data-radix-popper-content-wrapper]) {
-  overflow: initial !important;
-  padding-right: 0 !important;
-}
-
-/* Markdown Content */
-.markdown-content {
-  width: 100%;
-  overflow-wrap: break-word;
-}
-
-.markdown-content pre {
-    padding: 1rem;
-    overflow-x: auto;
-    border-radius: 0.375rem;
-    background-color: hsl(var(--muted));
-    color: hsl(var(--muted-foreground));
-    border: 1px solid hsl(var(--border));
-    margin: 1rem 0;
-}
-
-.markdown-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.375rem;
-  margin: 1rem 0;
-  display: block;
-}
+/* ... keep existing code (markdown content, pre, img styling) */
 
 /* Footer styles */
 .footer-container {
@@ -152,29 +62,48 @@ body:has([data-radix-popper-content-wrapper]) {
   background-color: hsl(var(--muted) / 0.5);
   backdrop-filter: blur(8px);
   border-top: 1px solid hsl(var(--border));
-  position: relative;
-  z-index: 10;
 }
 
 .footer-nav {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.25rem;
   margin-bottom: 0.75rem;
 }
 
 .footer-link {
-  color: hsl(var(--foreground));
-  text-decoration: none;
+  color: hsl(var(--foreground) / 0.7);
   transition: color 0.2s ease;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  cursor: pointer;
 }
 
 .footer-link:hover {
-  color: hsl(var(--primary));
+  color: var(--primary);
+}
+
+/* Theme-specific footer links */
+.dark-red .footer-link:hover {
+  color: var(--primary);
+}
+
+.dark-green .footer-link:hover {
+  color: var(--primary);
+}
+
+.dark-yellow .footer-link:hover {
+  color: var(--primary);
+}
+
+.dark-purple .footer-link:hover {
+  color: var(--primary);
 }
 
 .copyright {
-  font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
+  font-size: 0.8rem;
+  color: hsl(var(--foreground) / 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

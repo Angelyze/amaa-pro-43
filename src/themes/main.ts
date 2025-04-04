@@ -2,8 +2,6 @@
 /**
  * Initialize the theme based on localStorage or user preference
  */
-import { initializeBackground } from './background';
-
 export const initializeTheme = () => {
   // Check for theme in localStorage
   const savedTheme = localStorage.getItem('theme');
@@ -27,9 +25,6 @@ export const initializeTheme = () => {
   } else {
     console.log('[Theme] Initialized with: light (default - no saved preference)');
   }
-  
-  // Initialize the background animation
-  initializeBackground();
 };
 
 // Function to change theme programmatically

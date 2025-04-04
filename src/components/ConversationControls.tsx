@@ -53,7 +53,7 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 my-2 z-10 relative">
+    <div className="flex items-center justify-center gap-2 my-2">
       <Button 
         variant="outline" 
         size="sm" 
@@ -87,7 +87,7 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
             <span>Load AMAA</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 bg-popover">
+        <DropdownMenuContent align="end" className="w-56 bg-background border shadow-md">
           {savedConversations.length === 0 ? (
             <DropdownMenuItem disabled>No saved conversations</DropdownMenuItem>
           ) : (

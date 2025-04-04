@@ -5,19 +5,19 @@
 
   /* Dark theme variants - using darker backgrounds for consistency with default dark theme */
   .dark-red .amaa-input {
-    @apply bg-background/50 focus:border-primary focus:ring-primary;
+    @apply bg-background/50 focus:border-[#ff3131] focus:ring-[#ff3131];
   }
   
   .dark-green .amaa-input {
-    @apply bg-background/50 focus:border-primary focus:ring-primary;
+    @apply bg-background/50 focus:border-[#7ed957] focus:ring-[#7ed957];
   }
   
   .dark-yellow .amaa-input {
-    @apply bg-background/50 focus:border-primary focus:ring-primary;
+    @apply bg-background/50 focus:border-[#ffde59] focus:ring-[#ffde59];
   }
   
   .dark-purple .amaa-input {
-    @apply bg-background/50 focus:border-primary focus:ring-primary;
+    @apply bg-background/50 focus:border-[#8c52ff] focus:ring-[#8c52ff];
   }
 
   .amaa-button {
@@ -26,19 +26,19 @@
 
   /* Theme-specific buttons */
   .dark-red .amaa-button {
-    @apply bg-primary hover:bg-primary/90;
+    @apply bg-[#ff3131] hover:bg-[#ff3131]/90;
   }
   
   .dark-green .amaa-button {
-    @apply bg-primary hover:bg-primary/90;
+    @apply bg-[#7ed957] hover:bg-[#7ed957]/90;
   }
   
   .dark-yellow .amaa-button {
-    @apply bg-primary hover:bg-primary/90;
+    @apply bg-[#ffde59] hover:bg-[#ffde59]/90;
   }
   
   .dark-purple .amaa-button {
-    @apply bg-primary hover:bg-primary/90;
+    @apply bg-[#8c52ff] hover:bg-[#8c52ff]/90;
   }
 
   .amaa-icon-button {
@@ -47,36 +47,36 @@
 
   /* Theme-specific icon buttons */
   .dark-red .amaa-icon-button {
-    @apply hover:text-primary;
+    @apply hover:text-[#ff5757];
   }
   
   .dark-green .amaa-icon-button {
-    @apply hover:text-primary;
+    @apply hover:text-[#00bf63];
   }
   
   .dark-yellow .amaa-icon-button {
-    @apply hover:text-primary;
+    @apply hover:text-[#ffde59];
   }
   
   .dark-purple .amaa-icon-button {
-    @apply hover:text-primary;
+    @apply hover:text-[#5e17eb];
   }
 
   /* Update AMAAChatBox icons for theme colors */
   .dark-red .amaa-chatbox-icon {
-    @apply text-primary hover:text-primary/80;
+    @apply text-[#ff5757] hover:text-[#ff3131];
   }
   
   .dark-green .amaa-chatbox-icon {
-    @apply text-primary hover:text-primary/80;
+    @apply text-[#00bf63] hover:text-[#7ed957];
   }
   
   .dark-yellow .amaa-chatbox-icon {
-    @apply text-primary hover:text-primary/80;
+    @apply text-[#ffde59] hover:text-[#ffe371];
   }
   
   .dark-purple .amaa-chatbox-icon {
-    @apply text-primary hover:text-primary/80;
+    @apply text-[#5e17eb] hover:text-[#8c52ff];
   }
 
   /* Theme-specific Ask icon filters - improved to better match theme colors */
@@ -101,7 +101,7 @@
   }
 
   .message-bubble {
-    @apply p-6 rounded-2xl backdrop-blur-xl animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300;
+    @apply p-6 rounded-2xl backdrop-blur-sm animate-scale-in shadow-glass-sm hover:shadow-glass transition-all duration-300 backdrop-blur-md;
   }
 
   .user-message {
@@ -126,68 +126,30 @@
   }
 
   .assistant-message {
-    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%] backdrop-blur-3xl;
+    @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Fix link colors in default themes for markdown content */
+  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
   .markdown-content a {
-    @apply text-primary hover:text-accent transition-all duration-200 cursor-pointer;
+    @apply transition-all duration-200 cursor-pointer;
     text-decoration: none !important;
-  }
-  
-  /* Ensure ALL links in the default theme use the primary color */
-  .search-results a,
-  .message-bubble a,
-  .markdown-content a {
-    color: hsl(var(--primary)) !important;
-    text-decoration: none !important;
-    transition: all 0.2s ease;
-    /* FIXED: Removed pointer-events: auto !important to fix UI elements staying open */
-  }
-  
-  .search-results a:hover,
-  .message-bubble a:hover,
-  .markdown-content a:hover {
-    color: hsl(var(--accent)) !important;
-    opacity: 0.8;
+    color: var(--primary) !important;
   }
 
-  /* SWAPPED colors - hover color is now link color for dark themes */
   .dark-red .markdown-content a {
-    color: hsl(0 85% 40%) !important;
+    color: var(--primary) !important;
   }
   
   .dark-green .markdown-content a {
-    color: hsl(100 71% 50%) !important;
+    color: var(--primary) !important;
   }
   
   .dark-yellow .markdown-content a {
-    color: hsl(50 90% 50%) !important;
+    color: var(--primary) !important;
   }
   
   .dark-purple .markdown-content a {
-    color: hsl(265 90% 56%) !important;
-  }
-  
-  /* SWAPPED hover - link color is now hover color for dark themes */
-  .dark-red .markdown-content a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-green .markdown-content a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-yellow .markdown-content a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-purple .markdown-content a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
+    color: var(--primary) !important;
   }
 
   /* Make sure strong and emphasized text in markdown content keeps the default foreground color */

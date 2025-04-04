@@ -40,90 +40,26 @@
     display: block;
   }
   
-  /* Base link styling */
+  /* Link styling with better visibility */
   a {
     @apply transition-colors duration-200 cursor-pointer;
     pointer-events: auto !important;
     text-decoration: none !important;
-    color: hsl(var(--primary)) !important;
+    color: var(--primary) !important;
+  }
+  
+  a:hover {
+    opacity: 0.8;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
   .search-results a, 
-  .markdown-content a,
-  .message-bubble a {
+  .markdown-content a {
     display: inline-block !important;
+    color: var(--primary) !important;
     text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
-  }
-  
-  .search-results a:hover, 
-  .markdown-content a:hover,
-  .message-bubble a:hover {
-    opacity: 0.8;
-  }
-
-  /* Theme-specific link colors */
-  .dark-red .search-results a,
-  .dark-red .markdown-content a,
-  .dark-red .message-bubble a,
-  .dark-red a {
-    color: hsl(0 85% 40%) !important; /* Using theme-specific color */
-  }
-  
-  .dark-green .search-results a,
-  .dark-green .markdown-content a,
-  .dark-green .message-bubble a,
-  .dark-green a {
-    color: hsl(100 71% 50%) !important; /* Using theme-specific color */
-  }
-  
-  .dark-yellow .search-results a,
-  .dark-yellow .markdown-content a,
-  .dark-yellow .message-bubble a,
-  .dark-yellow a {
-    color: hsl(50 90% 50%) !important; /* Using theme-specific color */
-  }
-  
-  .dark-purple .search-results a,
-  .dark-purple .markdown-content a,
-  .dark-purple .message-bubble a,
-  .dark-purple a {
-    color: hsl(265 90% 56%) !important; /* Using theme-specific color */
-  }
-  
-  /* Theme-specific link hover colors */
-  .dark-red .search-results a:hover,
-  .dark-red .markdown-content a:hover,
-  .dark-red .message-bubble a:hover,
-  .dark-red a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-green .search-results a:hover,
-  .dark-green .markdown-content a:hover,
-  .dark-green .message-bubble a:hover,
-  .dark-green a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-yellow .search-results a:hover,
-  .dark-yellow .markdown-content a:hover,
-  .dark-yellow .message-bubble a:hover,
-  .dark-yellow a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
-  }
-  
-  .dark-purple .search-results a:hover,
-  .dark-purple .markdown-content a:hover,
-  .dark-purple .message-bubble a:hover,
-  .dark-purple a:hover {
-    color: hsl(var(--primary)) !important;
-    opacity: 0.8;
   }
   
   /* Remove unnecessary styling that might cause issues */
@@ -152,51 +88,5 @@
   .cursor-pointer,
   [data-state="open"] > * {
     cursor: pointer !important;
-  }
-
-  /* Critical fixes for tooltips and popups */
-  /* Fix for tooltip display */
-  .radix-tooltip {
-    z-index: 50 !important;
-    pointer-events: auto !important;
-  }
-  
-  /* Fix for popup displays */
-  .radix-popover {
-    z-index: 40 !important;
-    pointer-events: auto !important;
-  }
-  
-  .radix-dropdown,
-  [role="menu"] {
-    z-index: 40 !important;
-    pointer-events: auto !important;
-  }
-  
-  .radix-dialog {
-    z-index: 45 !important;
-    pointer-events: auto !important;
-  }
-  
-  /* Fix for tooltip and menu issues - ensure they're above background and close properly */
-  body:has(dialog[open]),
-  body:has([data-state="open"][role="dialog"]),
-  body:has([data-state="open"][role="tooltip"]),
-  body:has([data-radix-popper-content-wrapper]) {
-    overflow: auto !important;
-    padding-right: 0 !important;
-  }
-  
-  /* Ensure background doesn't interfere with clicks */
-  .background-pattern {
-    pointer-events: none !important;
-    z-index: -10 !important;
-  }
-
-  /* Fix for background canvas to ensure it doesn't block interaction */
-  canvas#background-canvas {
-    pointer-events: none !important;
-    z-index: -100 !important;
-    position: fixed !important;
   }
 }

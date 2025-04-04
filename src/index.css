@@ -1,10 +1,4 @@
 
-/* Add the required Tailwind directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Import other CSS files */
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
@@ -16,28 +10,7 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Component specific z-indices */
-[data-radix-popper-content-wrapper] {
-  z-index: 50;
-  pointer-events: none; /* Allow clicks to pass through wrapper */
-}
-
-/* Enable proper pointer events for portal content */
-[data-radix-portal] {
-  pointer-events: none; /* Allow clicks to pass through portal */
-}
-
-/* Make sure the actual content inside wrappers is clickable */
-[data-radix-popper-content-wrapper] > * {
-  pointer-events: auto;
-}
-
-/* Make sure the actual content inside portals is clickable */
-[data-radix-portal] > * {
-  pointer-events: auto;
-}
-
-/* Keep the rest of existing styling */
+/* Custom styling for search results */
 .search-results .article-preview {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
@@ -60,10 +33,10 @@
 .search-results a, 
 .theme-link,
 .text-theme-accent {
-  color: var(--primary);
-  text-decoration: none;
+  color: var(--primary) !important;
+  text-decoration: none !important;
   transition: opacity 0.2s ease;
-  cursor: pointer;
+  cursor: pointer !important;
   font-weight: 500;
 }
 
@@ -80,11 +53,11 @@
 .search-results h3 a,
 .search-results h4 a,
 .search-results .article-preview a {
-  display: inline-block;
-  color: var(--primary);
-  text-decoration: none;
-  pointer-events: auto;
-  cursor: pointer;
+  display: inline-block !important;
+  color: var(--primary) !important;
+  text-decoration: none !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 .search-results .article-description {
@@ -159,12 +132,12 @@
 
 /* Improved link display in markdown content */
 .markdown-content a {
-  color: var(--primary);
-  text-decoration: none;
+  color: var(--primary) !important;
+  text-decoration: none !important;
   font-weight: 500;
   transition: opacity 0.2s ease;
-  pointer-events: auto;
-  cursor: pointer;
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 .markdown-content a:hover {
