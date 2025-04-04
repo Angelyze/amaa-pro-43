@@ -9,45 +9,25 @@
 @import './styles/darkYellow.css';
 @import './styles/darkPurple.css';
 
-/* Component specific z-indices - removed forced z-index values */
-.radix-tooltip {
-  pointer-events: auto !important;
-}
-
-.radix-popover {
-  pointer-events: auto !important;
-}
-
-.radix-dropdown {
-  pointer-events: auto !important;
-}
-
-.radix-dialog {
-  pointer-events: auto !important;
+/* Component specific z-indices */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
+  pointer-events: none; /* Changed from auto to none to allow clicks to pass through */
 }
 
 /* Enable proper pointer events for portal content */
 [data-radix-portal] {
-  pointer-events: auto !important;
+  pointer-events: none; /* Changed from auto to none to allow clicks to pass through */
 }
 
-/* Fix body styling when overlays are open */
-body:has([data-state="open"][role="dialog"]),
-body:has([data-state="open"][role="tooltip"]) {
-  overflow: auto !important;
-  padding-right: 0 !important;
+/* Make sure the actual content inside portals is clickable */
+[data-radix-popper-content-wrapper] > * {
+  pointer-events: auto;
 }
 
-/* Fix background patterns to not interfere with interactions */
-.background-pattern {
-  pointer-events: none !important;
-  z-index: -10 !important;
-}
-
-canvas#background-canvas {
-  pointer-events: none !important;
-  z-index: -100 !important;
-  position: fixed !important;
+/* Make sure the actual content inside portals is clickable */
+[data-radix-portal] > * {
+  pointer-events: auto;
 }
 
 /* Keep the rest of existing styling */
@@ -73,10 +53,10 @@ canvas#background-canvas {
 .search-results a, 
 .theme-link,
 .text-theme-accent {
-  color: var(--primary) !important;
-  text-decoration: none !important;
+  color: var(--primary);
+  text-decoration: none;
   transition: opacity 0.2s ease;
-  cursor: pointer !important;
+  cursor: pointer;
   font-weight: 500;
 }
 
@@ -93,11 +73,11 @@ canvas#background-canvas {
 .search-results h3 a,
 .search-results h4 a,
 .search-results .article-preview a {
-  display: inline-block !important;
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  pointer-events: auto !important;
-  cursor: pointer !important;
+  display: inline-block;
+  color: var(--primary);
+  text-decoration: none;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .search-results .article-description {
@@ -172,12 +152,12 @@ canvas#background-canvas {
 
 /* Improved link display in markdown content */
 .markdown-content a {
-  color: var(--primary) !important;
-  text-decoration: none !important;
+  color: var(--primary);
+  text-decoration: none;
   font-weight: 500;
   transition: opacity 0.2s ease;
-  pointer-events: auto !important;
-  cursor: pointer !important;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .markdown-content a:hover {
