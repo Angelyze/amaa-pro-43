@@ -40,12 +40,6 @@
     --ring: 191 100% 35%;
 
     --radius: 1rem;
-    
-    /* Enhanced pattern colors for light theme - more vibrant */
-    --pattern-color: 191 80% 88%; 
-    --pattern-secondary-color: 210 60% 90%;
-    --pattern-color-rgb: 179, 230, 242;
-    --pattern-accent-rgb: 0, 151, 178;
   }
 
   .dark {
@@ -76,12 +70,6 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 191 100% 35%;
-    
-    /* Enhanced pattern colors for dark theme - more vibrant */
-    --pattern-color: 191 60% 20%; 
-    --pattern-secondary-color: 200 70% 15%;
-    --pattern-color-rgb: 12, 50, 60;
-    --pattern-accent-rgb: 0, 170, 200;
   }
   
   /* Ensure all links are visible and clickable */

@@ -28,11 +28,5 @@
     --border: 120 30% 20%;
     --input: 120 30% 20%;
     --ring: 100 61% 60%; /* #7ed957 */
-    
-    /* Enhanced pattern colors for dark green theme */
-    --pattern-color: 100 60% 20%; 
-    --pattern-secondary-color: 100 70% 15%;
-    --pattern-color-rgb: 20, 60, 30;
-    --pattern-accent-rgb: 126, 217, 87;
   }
 }

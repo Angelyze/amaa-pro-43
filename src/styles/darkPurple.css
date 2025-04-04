@@ -28,11 +28,5 @@
     --border: 270 30% 20%;
     --input: 270 30% 20%;
     --ring: 265 100% 66%; /* #8c52ff */
-    
-    /* Enhanced pattern colors for dark purple theme */
-    --pattern-color: 265 60% 20%; 
-    --pattern-secondary-color: 265 70% 15%;
-    --pattern-color-rgb: 35, 12, 60;
-    --pattern-accent-rgb: 140, 82, 255;
   }
 }

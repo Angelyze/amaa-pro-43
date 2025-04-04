@@ -28,11 +28,5 @@
     --border: 50 30% 20%;
     --input: 50 30% 20%;
     --ring: 50 100% 60%; /* #ffde59 */
-    
-    /* Enhanced pattern colors for dark yellow theme */
-    --pattern-color: 50 60% 20%;
-    --pattern-secondary-color: 50 70% 15%;
-    --pattern-color-rgb: 60, 56, 12;
-    --pattern-accent-rgb: 255, 222, 89;
   }
 }

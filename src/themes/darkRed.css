@@ -28,11 +28,5 @@
     --border: 0 30% 20%;
     --input: 0 30% 20%;
     --ring: 0 100% 60%; /* #ff3131 */
-    
-    /* Enhanced pattern colors for dark red theme */
-    --pattern-color: 0 60% 20%; 
-    --pattern-secondary-color: 0 70% 15%;
-    --pattern-color-rgb: 60, 12, 12;
-    --pattern-accent-rgb: 200, 30, 30;
   }
 }

@@ -16,7 +16,6 @@ export function Layout({ children, showBackButton, title }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="background-pattern" aria-hidden="true"></div>
       {!showBackButton ? (
         <Header 
           mainSearchVisible={false}
