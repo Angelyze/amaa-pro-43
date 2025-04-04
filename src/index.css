@@ -12,15 +12,15 @@
 /* Component specific z-indices */
 [data-radix-popper-content-wrapper] {
   z-index: 50;
-  pointer-events: none; /* Changed from auto to none to allow clicks to pass through */
+  pointer-events: none; /* Allow clicks to pass through wrapper */
 }
 
 /* Enable proper pointer events for portal content */
 [data-radix-portal] {
-  pointer-events: none; /* Changed from auto to none to allow clicks to pass through */
+  pointer-events: none; /* Allow clicks to pass through portal */
 }
 
-/* Make sure the actual content inside portals is clickable */
+/* Make sure the actual content inside wrappers is clickable */
 [data-radix-popper-content-wrapper] > * {
   pointer-events: auto;
 }

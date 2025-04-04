@@ -13,7 +13,7 @@
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
-  pointer-events: auto !important;
+  /* Removed pointer-events: auto !important to fix UI elements staying open */
 }
 
 .markdown-content a:hover,
@@ -92,17 +92,27 @@
   opacity: 0.8;
 }
 
-/* Critical fixes for Radix UI components */
+/* Fixed Radix UI components - CRITICAL FIX */
 [data-radix-popper-content-wrapper] {
   z-index: 50 !important;
   position: fixed !important;
+  pointer-events: none !important; /* FIXED: Changed from auto to none to allow clicks to pass through */
+}
+
+/* Fixed portal elements - CRITICAL FIX */
+[data-radix-portal] {
+  pointer-events: none !important; /* FIXED: Changed from auto to none to allow clicks to pass through */
+  z-index: 50 !important;
+}
+
+/* Make sure the actual content inside portals is clickable */
+[data-radix-popper-content-wrapper] > * {
   pointer-events: auto !important;
 }
 
-/* Make sure portal elements stay visible */
-[data-radix-portal] {
+/* Make sure the actual content inside portals is clickable */
+[data-radix-portal] > * {
   pointer-events: auto !important;
-  z-index: 50 !important;
 }
 
 /* Updated fix for body style to prevent background scrolling issues */
