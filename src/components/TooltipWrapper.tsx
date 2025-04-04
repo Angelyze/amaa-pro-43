@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Tooltip, 
@@ -26,12 +25,15 @@ const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
   return (
     <Tooltip delayDuration={delayDuration}>
       <TooltipTrigger asChild>
-        {children}
+        <span className="inline-block">
+          {children}
+        </span>
       </TooltipTrigger>
       <TooltipContent 
         side={side} 
         align={align} 
         className={className}
+        sideOffset={5}
       >
         {content}
       </TooltipContent>

@@ -1,4 +1,3 @@
-
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { 
@@ -65,10 +64,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     toast.success(`Theme changed to ${value}`);
   };
 
-  // Handler for logout event to prevent propagation
+  // Handler for logout event - REMOVED stopPropagation to fix menu closing issues
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
+    // Removed e.stopPropagation() to allow event bubbling
     await onLogout();
   };
   
