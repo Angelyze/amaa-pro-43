@@ -142,7 +142,7 @@
     color: hsl(var(--primary)) !important;
     text-decoration: none !important;
     transition: all 0.2s ease;
-    pointer-events: auto !important;
+    /* FIXED: Removed pointer-events: auto !important to fix UI elements staying open */
   }
   
   .search-results a:hover,
