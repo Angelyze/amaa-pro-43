@@ -1,3 +1,10 @@
+
+/* Add the required Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import other CSS files */
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
