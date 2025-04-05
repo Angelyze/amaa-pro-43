@@ -1,4 +1,3 @@
-
 @layer base {
   * {
     @apply border-border;
@@ -11,14 +10,13 @@
     overflow-x: hidden;
     width: 100%;
     height: 100%;
+    position: relative;
   }
 
   .glass {
     @apply bg-white/70 dark:bg-black/50 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-glass;
-  }
-
-  .glass-hover {
-    @apply transition-all duration-300 hover:shadow-glass-lg;
+    position: relative;
+    z-index: 1;
   }
 
   ::-webkit-scrollbar {
@@ -92,5 +90,7 @@
   .cursor-pointer,
   [data-state="open"] > * {
     cursor: pointer !important;
+    position: relative;
+    z-index: 1;
   }
 }
