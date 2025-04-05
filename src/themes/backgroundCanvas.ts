@@ -44,25 +44,33 @@ export function initBackgroundCanvas(): void {
   const run = function() {
     if (!$) return;
     
-    // Create a scaled version to render more efficiently
-    const scale = 12; // Adjust this for performance vs. quality
-    const width = Math.ceil(c.width / scale);
-    const height = Math.ceil(c.height / scale);
+    // Make the animation visible across the entire canvas
+    // Use a lower pixel density for performance
+    const pixelSize = 8; // Larger pixels for better performance
     
     // Clear the canvas first
     $.clearRect(0, 0, c.width, c.height);
     
-    // Scale the context to fill the screen
-    $.save();
-    $.scale(scale, scale);
+    // Calculate how many pixels we need to fill the screen
+    const cols = Math.ceil(c.width / pixelSize);
+    const rows = Math.ceil(c.height / pixelSize);
     
-    for(let x = 0; x <= width; x++) {
-      for(let y = 0; y <= height; y++) {
-        col(x, y, R(x, y, t), G(x, y, t), B(x, y, t));
+    for(let x = 0; x < cols; x++) {
+      for(let y = 0; y < rows; y++) {
+        // Scale the coordinates to match original algorithm's expected range
+        const scaledX = x * 35 / cols;
+        const scaledY = y * 35 / rows;
+        
+        // Calculate color using original algorithm
+        const r = R(scaledX, scaledY, t);
+        const g = G(scaledX, scaledY, t);
+        const b = B(scaledX, scaledY, t);
+        
+        // Draw a larger rectangle instead of a single pixel
+        $.fillStyle = `rgb(${r},${g},${b})`;
+        $.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
       }
     }
-    
-    $.restore();
     
     t = t + 0.120;
     window.requestAnimationFrame(run);
