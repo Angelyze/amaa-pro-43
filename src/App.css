@@ -14,8 +14,6 @@ canvas#canv {
 .markdown-content {
   width: 100%;
   overflow-wrap: break-word;
-  position: relative;
-  z-index: 1;
 }
 
 /* Theme-specific link colors */
@@ -26,8 +24,6 @@ canvas#canv {
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
-  position: relative; /* Ensure links are above background */
-  z-index: 1;
 }
 
 .markdown-content a:hover,
@@ -73,8 +69,6 @@ canvas#canv {
 .markdown-content {
   width: 100%;
   overflow-wrap: break-word;
-  position: relative;
-  z-index: 1;
 }
 
 .markdown-content pre {
@@ -103,8 +97,6 @@ canvas#canv {
   background-color: hsl(var(--muted) / 0.5);
   backdrop-filter: blur(8px);
   border-top: 1px solid hsl(var(--border));
-  position: relative;
-  z-index: 1;
 }
 
 .footer-nav {

@@ -3,7 +3,6 @@
  * Initializes and runs the background canvas animation
  */
 export function initBackgroundCanvas(): void {
-  console.log('Initializing background canvas');
   const c = document.getElementById('canv') as HTMLCanvasElement;
   if (!c) {
     console.error('Canvas element not found');
@@ -15,15 +14,6 @@ export function initBackgroundCanvas(): void {
     console.error('Could not get 2D context');
     return;
   }
-
-  // Ensure canvas is properly styled
-  c.style.position = 'fixed';
-  c.style.top = '0';
-  c.style.left = '0';
-  c.style.width = '100%';
-  c.style.height = '100%';
-  c.style.zIndex = '-100';
-  c.style.pointerEvents = 'none';
 
   // Set canvas size to match window size
   const resizeCanvas = () => {
