@@ -501,7 +501,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative">
-      <div className="absolute inset-0 -z-10 background-pattern"></div>
       
       <Header 
         mainSearchVisible={mainSearchVisible}

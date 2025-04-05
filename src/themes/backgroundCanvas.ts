@@ -51,9 +51,8 @@ export function initBackgroundCanvas(): void {
   const run = function() {
     if (!$) return;
     
-    // Use a more efficient approach for drawing the animation
-    // by using larger blocks (pixels) that still maintain the pattern
-    const pixelSize = 12; // Use larger pixels for better performance
+    // Use a smaller pixel size for less pixelation
+    const pixelSize = 4; // Reduced from 12 for smoother appearance
     
     // Clear the canvas first
     $.clearRect(0, 0, c.width, c.height);
@@ -83,7 +82,7 @@ export function initBackgroundCanvas(): void {
       }
     }
     
-    t = t + 0.080; // Slightly slower animation speed
+    t = t + 0.060; // Slightly slower animation speed
     window.requestAnimationFrame(run);
   };
 

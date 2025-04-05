@@ -9,9 +9,9 @@ import { initBackgroundCanvas } from './themes/backgroundCanvas.ts';
 // Initialize theme before rendering
 initializeTheme();
 
-// Initialize background canvas after DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, initializing background canvas');
+// Initialize background canvas after DOM is fully loaded
+window.addEventListener('load', () => {
+  console.log('Window loaded, initializing background canvas');
   initBackgroundCanvas();
 });
 
