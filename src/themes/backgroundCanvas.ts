@@ -9,6 +9,18 @@ export function initBackgroundCanvas(): void {
   const $ = c.getContext('2d');
   if (!$) return;
 
+  // Set canvas size to match window size
+  const resizeCanvas = () => {
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  };
+  
+  // Initial sizing
+  resizeCanvas();
+  
+  // Resize on window size change
+  window.addEventListener('resize', resizeCanvas);
+
   const col = function(x: number, y: number, r: number, g: number, b: number) {
     if (!$) return;
     $.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
@@ -32,17 +44,25 @@ export function initBackgroundCanvas(): void {
   const run = function() {
     if (!$) return;
     
-    // Make sure the canvas size is adjusted properly
-    if (c.width !== 32 || c.height !== 32) {
-      c.width = 32;
-      c.height = 32;
-    }
+    // Create a scaled version to render more efficiently
+    const scale = 12; // Adjust this for performance vs. quality
+    const width = Math.ceil(c.width / scale);
+    const height = Math.ceil(c.height / scale);
     
-    for(let x = 0; x <= 35; x++) {
-      for(let y = 0; y <= 35; y++) {
+    // Clear the canvas first
+    $.clearRect(0, 0, c.width, c.height);
+    
+    // Scale the context to fill the screen
+    $.save();
+    $.scale(scale, scale);
+    
+    for(let x = 0; x <= width; x++) {
+      for(let y = 0; y <= height; y++) {
         col(x, y, R(x, y, t), G(x, y, t), B(x, y, t));
       }
     }
+    
+    $.restore();
     
     t = t + 0.120;
     window.requestAnimationFrame(run);
