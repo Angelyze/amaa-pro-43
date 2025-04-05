@@ -83,7 +83,7 @@
   
   /* Prevent page content from being covered by fixed background */
   #root {
-    @apply min-h-screen relative;
+    @apply min-h-screen relative z-10;
   }
 
   /* Fix cursor pointer for dropdown items */

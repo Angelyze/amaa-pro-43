@@ -4,10 +4,16 @@
  */
 export function initBackgroundCanvas(): void {
   const c = document.getElementById('canv') as HTMLCanvasElement;
-  if (!c) return;
+  if (!c) {
+    console.error('Canvas element not found');
+    return;
+  }
   
   const $ = c.getContext('2d');
-  if (!$) return;
+  if (!$) {
+    console.error('Could not get 2D context');
+    return;
+  }
 
   // Set canvas size to match window size
   const resizeCanvas = () => {
