@@ -13,6 +13,7 @@ export function initBackgroundCanvas(): void {
   const resizeCanvas = () => {
     c.width = window.innerWidth;
     c.height = window.innerHeight;
+    console.log('Canvas resized to:', c.width, 'x', c.height);
   };
   
   // Initial sizing
@@ -44,38 +45,43 @@ export function initBackgroundCanvas(): void {
   const run = function() {
     if (!$) return;
     
-    // Make the animation visible across the entire canvas
-    // Use a lower pixel density for performance
-    const pixelSize = 8; // Larger pixels for better performance
+    // Use a more efficient approach for drawing the animation
+    // by using larger blocks (pixels) that still maintain the pattern
+    const pixelSize = 12; // Use larger pixels for better performance
     
     // Clear the canvas first
     $.clearRect(0, 0, c.width, c.height);
     
-    // Calculate how many pixels we need to fill the screen
+    // Calculate how many cells we need to fill the screen
     const cols = Math.ceil(c.width / pixelSize);
     const rows = Math.ceil(c.height / pixelSize);
     
+    // Scale factor to maintain the original algorithm's pattern spacing
+    const scaleFactorX = 50 / cols;
+    const scaleFactorY = 50 / rows;
+    
     for(let x = 0; x < cols; x++) {
       for(let y = 0; y < rows; y++) {
-        // Scale the coordinates to match original algorithm's expected range
-        const scaledX = x * 35 / cols;
-        const scaledY = y * 35 / rows;
+        // Map the screen coordinates to the algorithm's expected range
+        const mappedX = x * scaleFactorX;
+        const mappedY = y * scaleFactorY;
         
         // Calculate color using original algorithm
-        const r = R(scaledX, scaledY, t);
-        const g = G(scaledX, scaledY, t);
-        const b = B(scaledX, scaledY, t);
+        const r = R(mappedX, mappedY, t);
+        const g = G(mappedX, mappedY, t);
+        const b = B(mappedX, mappedY, t);
         
-        // Draw a larger rectangle instead of a single pixel
+        // Draw a filled rectangle instead of a single pixel
         $.fillStyle = `rgb(${r},${g},${b})`;
         $.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
       }
     }
     
-    t = t + 0.120;
+    t = t + 0.080; // Slightly slower animation speed
     window.requestAnimationFrame(run);
   };
 
-  // Start the animation
+  // Start the animation immediately
+  console.log('Starting background animation');
   run();
 }
