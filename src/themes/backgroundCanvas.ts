@@ -51,8 +51,8 @@ export function initBackgroundCanvas(): void {
   const run = function() {
     if (!$) return;
     
-    // Use a smaller pixel size for less pixelation
-    const pixelSize = 4; // Reduced from 12 for smoother appearance
+    // Use an even smaller pixel size for smoother appearance and less pixelation
+    const pixelSize = 2; // Reduced from 4 for even smoother appearance
     
     // Clear the canvas first
     $.clearRect(0, 0, c.width, c.height);
@@ -82,7 +82,7 @@ export function initBackgroundCanvas(): void {
       }
     }
     
-    t = t + 0.060; // Slightly slower animation speed
+    t = t + 0.050; // Slightly slower animation speed for smoother transitions
     window.requestAnimationFrame(run);
   };
 
