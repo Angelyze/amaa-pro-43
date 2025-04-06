@@ -79,12 +79,13 @@
   
   /* Main content should scroll, not the background */
   main {
-    @apply relative z-10;
+    @apply relative z-50; /* Increased z-index to ensure it's above the canvas */
   }
   
-  /* Prevent page content from being covered by fixed background */
+  /* Ensure root element creates a new stacking context with higher z-index */
   #root {
-    @apply min-h-screen relative z-10;
+    @apply min-h-screen relative z-50; /* Increased z-index to ensure it's above the canvas */
+    isolation: isolate; /* Create a new stacking context */
   }
 
   /* Fix cursor pointer for dropdown items */

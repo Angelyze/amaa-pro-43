@@ -1,6 +1,7 @@
 
 /**
  * Initializes and runs the background canvas animation
+ * Creates a single 32px segment pattern that stretches to cover the entire screen
  */
 export function initBackgroundCanvas(): void {
   const c = document.getElementById('canv') as HTMLCanvasElement;
@@ -47,46 +48,48 @@ export function initBackgroundCanvas(): void {
   };
 
   let t = 0;
+  
+  // Create an offscreen canvas for the pattern
+  const patternCanvas = document.createElement('canvas');
+  patternCanvas.width = 32;
+  patternCanvas.height = 32;
+  const patternCtx = patternCanvas.getContext('2d');
+  
+  if (!patternCtx) {
+    console.error('Could not get pattern context');
+    return;
+  }
 
-  const run = function() {
-    if (!$) return;
-    
-    // Use an even smaller pixel size for smoother appearance and less pixelation
-    const pixelSize = 2; // Reduced from 4 for even smoother appearance
-    
-    // Clear the canvas first
-    $.clearRect(0, 0, c.width, c.height);
-    
-    // Calculate how many cells we need to fill the screen
-    const cols = Math.ceil(c.width / pixelSize);
-    const rows = Math.ceil(c.height / pixelSize);
-    
-    // Scale factor to maintain the original algorithm's pattern spacing
-    const scaleFactorX = 50 / cols;
-    const scaleFactorY = 50 / rows;
-    
-    for(let x = 0; x < cols; x++) {
-      for(let y = 0; y < rows; y++) {
-        // Map the screen coordinates to the algorithm's expected range
-        const mappedX = x * scaleFactorX;
-        const mappedY = y * scaleFactorY;
+  const updatePattern = function() {
+    // Generate the pattern only once per frame
+    for(let x = 0; x < 32; x++) {
+      for(let y = 0; y < 32; y++) {
+        const r = R(x, y, t);
+        const g = G(x, y, t);
+        const b = B(x, y, t);
         
-        // Calculate color using original algorithm
-        const r = R(mappedX, mappedY, t);
-        const g = G(mappedX, mappedY, t);
-        const b = B(mappedX, mappedY, t);
-        
-        // Draw a filled rectangle instead of a single pixel
-        $.fillStyle = `rgb(${r},${g},${b})`;
-        $.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+        patternCtx.fillStyle = `rgb(${r},${g},${b})`;
+        patternCtx.fillRect(x, y, 1, 1);
       }
     }
     
-    t = t + 0.050; // Slightly slower animation speed for smoother transitions
-    window.requestAnimationFrame(run);
+    // Create pattern from the offscreen canvas
+    if ($) {
+      const pattern = $.createPattern(patternCanvas, 'repeat');
+      if (pattern) {
+        // Clear the main canvas
+        $.clearRect(0, 0, c.width, c.height);
+        
+        // Fill with the pattern
+        $.fillStyle = pattern;
+        $.fillRect(0, 0, c.width, c.height);
+      }
+    }
+    
+    t = t + 0.03; // Slower animation speed to reduce resource usage
+    window.requestAnimationFrame(updatePattern);
   };
 
-  // Start the animation immediately
-  console.log('Starting background animation');
-  run();
+  console.log('Starting background animation with optimized pattern');
+  updatePattern();
 }
