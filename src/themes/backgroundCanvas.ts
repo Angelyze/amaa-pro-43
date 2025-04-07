@@ -2,6 +2,7 @@
 /**
  * Initializes and runs the background canvas animation
  * Creates a single 32px element that stretches 100% to fill the screen
+ * Adapts colors to match the current theme
  */
 export function initBackgroundCanvas(): void {
   const c = document.getElementById('canv') as HTMLCanvasElement;
@@ -28,6 +29,44 @@ export function initBackgroundCanvas(): void {
   
   // Resize on window size change
   window.addEventListener('resize', resizeCanvas);
+
+  // Get current theme from document class or localStorage
+  const getCurrentTheme = (): string => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    return savedTheme;
+  };
+
+  // Apply filter based on theme
+  const applyThemeFilter = (context: CanvasRenderingContext2D | null) => {
+    if (!context) return;
+    
+    const theme = getCurrentTheme();
+    
+    // Reset any previously applied filters
+    context.filter = 'none';
+    
+    // Apply theme-specific filters
+    switch(theme) {
+      case 'dark':
+        context.filter = 'brightness(0.8) contrast(1.2)';
+        break;
+      case 'dark-red':
+        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(320deg)';
+        break;
+      case 'dark-green':
+        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(90deg)';
+        break;
+      case 'dark-yellow':
+        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.3) hue-rotate(40deg)';
+        break;
+      case 'dark-purple':
+        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(250deg)';
+        break;
+      default:
+        // Light theme - no filter
+        break;
+    }
+  };
 
   const col = function(x: number, y: number, r: number, g: number, b: number) {
     if (!$) return;
@@ -60,6 +99,15 @@ export function initBackgroundCanvas(): void {
     return;
   }
 
+  // Listen for theme changes
+  window.addEventListener('themechange', () => {
+    // When theme changes, re-apply the filter
+    applyThemeFilter($);
+  });
+
+  // Initial filter application
+  applyThemeFilter($);
+
   const updatePattern = function() {
     // Generate the pattern only once per frame
     for(let x = 0; x < 32; x++) {
@@ -77,7 +125,10 @@ export function initBackgroundCanvas(): void {
     if ($) {
       $.clearRect(0, 0, c.width, c.height);
       
-      // Instead of using createPattern, stretch the small canvas to fill the entire screen
+      // Apply the current theme filter
+      applyThemeFilter($);
+
+      // Stretch the small canvas to fill the entire screen
       $.save();
       $.imageSmoothingEnabled = false; // Turn off image smoothing for pixelated look
       $.drawImage(patternCanvas, 0, 0, c.width, c.height);
@@ -88,6 +139,6 @@ export function initBackgroundCanvas(): void {
     window.requestAnimationFrame(updatePattern);
   };
 
-  console.log('Starting background animation with stretched pattern');
+  console.log('Starting background animation with stretched pattern and theme adaptation');
   updatePattern();
 }
