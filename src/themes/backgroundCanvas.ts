@@ -1,7 +1,7 @@
 
 /**
  * Initializes and runs the background canvas animation
- * Creates a single 32px segment pattern that stretches to cover the entire screen
+ * Creates a single 32px element that stretches 100% to fill the screen
  */
 export function initBackgroundCanvas(): void {
   const c = document.getElementById('canv') as HTMLCanvasElement;
@@ -49,7 +49,7 @@ export function initBackgroundCanvas(): void {
 
   let t = 0;
   
-  // Create an offscreen canvas for the pattern
+  // Create a small canvas for our pattern
   const patternCanvas = document.createElement('canvas');
   patternCanvas.width = 32;
   patternCanvas.height = 32;
@@ -73,23 +73,21 @@ export function initBackgroundCanvas(): void {
       }
     }
     
-    // Create pattern from the offscreen canvas
+    // Clear the main canvas
     if ($) {
-      const pattern = $.createPattern(patternCanvas, 'repeat');
-      if (pattern) {
-        // Clear the main canvas
-        $.clearRect(0, 0, c.width, c.height);
-        
-        // Fill with the pattern
-        $.fillStyle = pattern;
-        $.fillRect(0, 0, c.width, c.height);
-      }
+      $.clearRect(0, 0, c.width, c.height);
+      
+      // Instead of using createPattern, stretch the small canvas to fill the entire screen
+      $.save();
+      $.imageSmoothingEnabled = false; // Turn off image smoothing for pixelated look
+      $.drawImage(patternCanvas, 0, 0, c.width, c.height);
+      $.restore();
     }
     
-    t = t + 0.03; // Slower animation speed to reduce resource usage
+    t = t + 0.03; // Slow animation speed to reduce resource usage
     window.requestAnimationFrame(updatePattern);
   };
 
-  console.log('Starting background animation with optimized pattern');
+  console.log('Starting background animation with stretched pattern');
   updatePattern();
 }
