@@ -48,19 +48,19 @@ export function initBackgroundCanvas(): void {
     // Apply theme-specific filters
     switch(theme) {
       case 'dark':
-        context.filter = 'brightness(0.8) contrast(1.2)';
+        context.filter = 'brightness(0.5) contrast(1.2)';
         break;
       case 'dark-red':
-        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(320deg)';
+        context.filter = 'brightness(0.5) contrast(1.2) sepia(0.2) hue-rotate(320deg)';
         break;
       case 'dark-green':
-        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(90deg)';
+        context.filter = 'brightness(0.5) contrast(1.2) sepia(0.2) hue-rotate(90deg)';
         break;
       case 'dark-yellow':
-        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.3) hue-rotate(40deg)';
+        context.filter = 'brightness(0.5) contrast(1.2) sepia(0.3) hue-rotate(40deg)';
         break;
       case 'dark-purple':
-        context.filter = 'brightness(0.8) contrast(1.2) sepia(0.2) hue-rotate(250deg)';
+        context.filter = 'brightness(0.5) contrast(1.2) sepia(0.2) hue-rotate(250deg)';
         break;
       default:
         // Light theme - no filter
