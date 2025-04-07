@@ -1,8 +1,6 @@
-
 /**
  * Initializes and runs the background canvas animation
- * Creates a single 32px element that stretches 100% to fill the screen
- * Adapts colors to match the current theme
+ * Creates a smooth gradient animation that adapts to the current theme
  */
 export function initBackgroundCanvas(): void {
   const c = document.getElementById('canv') as HTMLCanvasElement;
@@ -36,57 +34,106 @@ export function initBackgroundCanvas(): void {
     return savedTheme;
   };
 
-  // Apply filter based on theme
-  const applyThemeFilter = (context: CanvasRenderingContext2D | null) => {
-    if (!context) return;
-    
+  // Get theme colors from CSS variables
+  const getThemeColors = () => {
     const theme = getCurrentTheme();
+    let primaryHue = 191, primarySat = 100, primaryLightness = 35; // Default blue
+    let backgroundLightness = 98; // Light background by default
+    let colorMultiplier = 1; // Regular intensity for light theme
     
-    // Reset any previously applied filters
-    context.filter = 'none';
-    
-    // Apply theme-specific filters
+    // Set theme-specific color values
     switch(theme) {
       case 'dark':
-        context.filter = 'brightness(0.5) contrast(1.2)';
+        backgroundLightness = 7; // Dark background
+        colorMultiplier = 0.6; // Reduce intensity for dark theme
         break;
       case 'dark-red':
-        context.filter = 'brightness(0.5) contrast(1.1) sepia(0.1) hue-rotate(320deg)';
+        primaryHue = 0; // Red
+        primarySat = 100;
+        primaryLightness = 60;
+        backgroundLightness = 7;
+        colorMultiplier = 0.5;
         break;
       case 'dark-green':
-        context.filter = 'brightness(0.5) contrast(1.1) sepia(0.1) hue-rotate(90deg)';
+        primaryHue = 120; // Green
+        primarySat = 61;
+        primaryLightness = 60;
+        backgroundLightness = 7;
+        colorMultiplier = 0.5;
         break;
       case 'dark-yellow':
-        context.filter = 'brightness(0.5) contrast(1.1) sepia(0.1) hue-rotate(40deg)';
+        primaryHue = 50; // Yellow
+        primarySat = 100;
+        primaryLightness = 60;
+        backgroundLightness = 7;
+        colorMultiplier = 0.5;
         break;
       case 'dark-purple':
-        context.filter = 'brightness(0.5) contrast(1.1) sepia(0.1) hue-rotate(250deg)';
+        primaryHue = 265; // Purple
+        primarySat = 100;
+        primaryLightness = 66;
+        backgroundLightness = 7;
+        colorMultiplier = 0.5;
         break;
       default:
-        // Light theme - no filter
+        // Light theme - keep defaults
         break;
     }
+    
+    return { primaryHue, primarySat, primaryLightness, backgroundLightness, colorMultiplier, theme };
   };
 
-  const col = function(x: number, y: number, r: number, g: number, b: number) {
-    if (!$) return;
-    $.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-    $.fillRect(x, y, 1, 1);
-  };
-
-  const R = function(x: number, y: number, t: number) {
-    return Math.floor(192 + 64*Math.cos((x*x-y*y)/300 + t));
-  };
-
-  const G = function(x: number, y: number, t: number) {
-    return Math.floor(192 + 64*Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300));
-  };
-
-  const B = function(x: number, y: number, t: number) {
-    return Math.floor(192 + 64*Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100));
+  // Create RGB generator functions based on theme
+  const createColorGenerators = (themeColors: ReturnType<typeof getThemeColors>) => {
+    const { primaryHue, primarySat, primaryLightness, backgroundLightness, colorMultiplier } = themeColors;
+    const isDark = backgroundLightness < 50;
+    
+    // Base values adjusted for theme
+    const baseR = isDark ? 40 : 192;
+    const baseG = isDark ? 40 : 192;
+    const baseB = isDark ? 60 : 192;
+    
+    // Create color intensity based on theme
+    const intensity = isDark ? 40 : 64;
+    
+    // Adjust hue influence based on theme
+    const hueInfluence = isDark ? 0.8 : 1; 
+    
+    // Use primary color to influence the animation
+    return {
+      R: (x: number, y: number, t: number) => {
+        let value = baseR + intensity * Math.cos((x*x-y*y)/300 + t) * colorMultiplier;
+        // Influence from primary color (red component)
+        if (primaryHue < 30 || primaryHue > 330) {
+          value += 30 * hueInfluence;
+        }
+        return Math.floor(value);
+      },
+      
+      G: (x: number, y: number, t: number) => {
+        let value = baseG + intensity * Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300) * colorMultiplier;
+        // Influence from primary color (green component)
+        if (primaryHue > 60 && primaryHue < 180) {
+          value += 30 * hueInfluence;
+        }
+        return Math.floor(value);
+      },
+      
+      B: (x: number, y: number, t: number) => {
+        let value = baseB + intensity * Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100) * colorMultiplier;
+        // Influence from primary color (blue component)
+        if (primaryHue > 180 && primaryHue < 300) {
+          value += 30 * hueInfluence;
+        }
+        return Math.floor(value);
+      }
+    };
   };
 
   let t = 0;
+  let currentTheme = getCurrentTheme();
+  let themeColors = getThemeColors();
+  let colorGen = createColorGenerators(themeColors);
   
   // Create a small canvas for our pattern
   const patternCanvas = document.createElement('canvas');
@@ -101,20 +148,20 @@ export function initBackgroundCanvas(): void {
 
   // Listen for theme changes
   window.addEventListener('themechange', () => {
-    // When theme changes, re-apply the filter
-    applyThemeFilter($);
+    // When theme changes, update colors
+    currentTheme = getCurrentTheme();
+    themeColors = getThemeColors();
+    colorGen = createColorGenerators(themeColors);
+    console.log('Theme changed to:', currentTheme);
   });
-
-  // Initial filter application
-  applyThemeFilter($);
 
   const updatePattern = function() {
     // Generate the pattern only once per frame
     for(let x = 0; x < 32; x++) {
       for(let y = 0; y < 32; y++) {
-        const r = R(x, y, t);
-        const g = G(x, y, t);
-        const b = B(x, y, t);
+        const r = colorGen.R(x, y, t);
+        const g = colorGen.G(x, y, t);
+        const b = colorGen.B(x, y, t);
         
         patternCtx.fillStyle = `rgb(${r},${g},${b})`;
         patternCtx.fillRect(x, y, 1, 1);
@@ -125,20 +172,23 @@ export function initBackgroundCanvas(): void {
     if ($) {
       $.clearRect(0, 0, c.width, c.height);
       
-      // Apply the current theme filter
-      applyThemeFilter($);
-
-      // Stretch the small canvas to fill the entire screen
+      // Save context state
       $.save();
-      $.imageSmoothingEnabled = false; // Turn off image smoothing for pixelated look
+      // Enable image smoothing for a gradient-like effect
+      $.imageSmoothingEnabled = true;
+      // Draw the pattern scaled to fill the screen
       $.drawImage(patternCanvas, 0, 0, c.width, c.height);
+      // Restore context state
       $.restore();
     }
     
-    t = t + 0.03; // Slow animation speed to reduce resource usage
+    // Adjust animation speed based on theme (slower for dark themes)
+    const speedFactor = themeColors.theme.startsWith('dark') ? 0.02 : 0.03;
+    t = t + speedFactor;
+    
     window.requestAnimationFrame(updatePattern);
   };
 
-  console.log('Starting background animation with stretched pattern and theme adaptation');
+  console.log('Starting background animation with theme adaptation');
   updatePattern();
 }
