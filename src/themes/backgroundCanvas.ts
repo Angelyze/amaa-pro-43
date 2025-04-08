@@ -45,7 +45,7 @@ export function initBackgroundCanvas(): void {
     switch(theme) {
       case 'dark':
         backgroundLightness = 7; // Dark background
-        colorMultiplier = 0.6; // Reduce intensity for dark theme
+        colorMultiplier = 0.5; // Reduce intensity for dark theme
         break;
       case 'dark-red':
         primaryHue = 0; // Red
