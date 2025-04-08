@@ -63,7 +63,7 @@ export function initBackgroundCanvas(): void {
         break;
       case 'dark-yellow':
         primaryHue = 60; // Yellow
-        primarySat = 150;
+        primarySat = 100;
         primaryLightness = 50;
         backgroundLightness = 5;
         colorMultiplier = 0.5;
