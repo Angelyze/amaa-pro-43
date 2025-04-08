@@ -148,10 +148,10 @@ export function initBackgroundCanvas(): void {
     const [primaryR, primaryG, primaryB] = primaryRgb;
     
     // Create color intensity based on theme but with same pattern
-    const intensity = isDark ? 40 : 64;
+    const intensity = isDark ? 30 : 64;
     
     // For dark themes, blend with the primary color
-    const blendFactor = isDark ? 0.6 : 0; // Only blend in dark themes
+    const blendFactor = isDark ? 0.5 : 0; // Only blend in dark themes
     
     // Create the color generators with theme-specific adjustments
     return {
