@@ -76,7 +76,6 @@ export function initBackgroundCanvas(): void {
     // Default values in case CSS variables aren't available
     let primaryHue = 191, primarySat = 100, primaryLightness = 35; // Default blue
     let backgroundLightness = 100; // Light background by default
-    let colorMultiplier = 1; // Regular intensity for light theme
     
     // Try to read the primary color from CSS variables
     try {
@@ -102,69 +101,21 @@ export function initBackgroundCanvas(): void {
       console.warn('Could not read CSS variables, using fallback colors', e);
     }
     
-    // Theme-specific adjustments
-    let baseR = 192, baseG = 192, baseB = 192;  // Light theme defaults
-    let themeColorInfluence = 1; // Default influence
+    // Get base colors and intensity adjustment based on theme
+    const isDark = backgroundLightness < 50;
+    // Base RGB values - used for all themes as a starting point
+    let baseR = 192, baseG = 192, baseB = 192;  // Light theme default base
+    let colorMultiplier = 1; // Default intensity
     
-    switch(theme) {
-      case 'dark':
-        baseR = 20;
-        baseG = 20;
-        baseB = 30;
-        backgroundLightness = 5;
-        colorMultiplier = 0.5;
-        themeColorInfluence = 1;
-        break;
-      case 'dark-red':
-        primaryHue = 0; // Red
-        primarySat = 100;
-        primaryLightness = 50;
-        baseR = 30; // Higher red base
-        baseG = 20;
-        baseB = 20;
-        backgroundLightness = 5;
-        colorMultiplier = 0.5;
-        themeColorInfluence = 1; // Stronger red influence
-        break;
-      case 'dark-green':
-        primaryHue = 120; // Green
-        primarySat = 100;
-        primaryLightness = 50;
-        baseR = 20;
-        baseG = 30; // Higher green base
-        baseB = 20;
-        backgroundLightness = 5;
-        colorMultiplier = 0.5;
-        themeColorInfluence = 1; // Stronger green influence
-        break;
-      case 'dark-yellow':
-        primaryHue = 60; // Yellow
-        primarySat = 100;
-        primaryLightness = 50;
-        baseR = 40;
-        baseG = 30;
-        baseB = 10; // Lower blue for more yellow feel
-        backgroundLightness = 5;
-        colorMultiplier = 0.5;
-        themeColorInfluence = 1.5; // Stronger yellow influence
-        break;
-      case 'dark-purple':
-        primaryHue = 260; // Purple
-        primarySat = 100;
-        primaryLightness = 50;
-        baseR = 30;
-        baseG = 15;
-        baseB = 30; // Higher blue/red for purple base
-        backgroundLightness = 5;
-        colorMultiplier = 0.5;
-        themeColorInfluence = 1; // Stronger purple influence
-        break;
-      default:
-        // Light theme - keep defaults
-        break;
+    if (isDark) {
+      // All dark themes use similar base color but darker
+      baseR = 30;
+      baseG = 30;
+      baseB = 30;
+      colorMultiplier = 0.6; // Slightly reduced intensity for dark themes
     }
     
-    // Get the actual theme RGB color for influence
+    // Convert primary color to RGB for influence
     const primaryRgb = hslToRgb(primaryHue, primarySat, primaryLightness);
     
     return { 
@@ -172,75 +123,67 @@ export function initBackgroundCanvas(): void {
       primarySat, 
       primaryLightness, 
       backgroundLightness, 
-      colorMultiplier, 
+      colorMultiplier,
       theme,
       primaryRgb,
       baseR,
       baseG, 
       baseB,
-      themeColorInfluence
+      isDark
     };
   };
 
   // Create RGB generator functions based on theme
   const createColorGenerators = (themeColors: ReturnType<typeof getThemeColors>) => {
     const { 
-      primaryHue, 
-      backgroundLightness, 
-      colorMultiplier, 
       primaryRgb,
       baseR,
       baseG,
       baseB,
-      themeColorInfluence
+      colorMultiplier,
+      isDark
     } = themeColors;
     
-    const isDark = backgroundLightness < 50;
-    
-    // Create color intensity based on theme
-    const intensity = isDark ? 30 : 64;
-    
-    // Use primary RGB for color influence
+    // Get primary color components for theme influence
     const [primaryR, primaryG, primaryB] = primaryRgb;
     
-    // Color bias based on primary color (stronger in dark themes)
-    const rBias = isDark ? (primaryR / 255) * themeColorInfluence : 1;
-    const gBias = isDark ? (primaryG / 255) * themeColorInfluence : 1;
-    const bBias = isDark ? (primaryB / 255) * themeColorInfluence : 1;
+    // Create color intensity based on theme but with same pattern
+    const intensity = isDark ? 40 : 64;
     
+    // For dark themes, blend with the primary color
+    const blendFactor = isDark ? 0.6 : 0; // Only blend in dark themes
+    
+    // Create the color generators with theme-specific adjustments
     return {
       R: (x: number, y: number, t: number) => {
-        // Apply sine wave animation with theme-appropriate base and intensity
-        let value = baseR + (intensity * Math.cos((x*x-y*y)/300 + t) * colorMultiplier * rBias);
-        
-        // Influence from primary color (red component)
-        if (isDark && primaryHue < 30 || primaryHue > 330) {
-          value += 25 * themeColorInfluence; // Boosted in red themes
-        }
+        // Apply similar wave pattern to all themes
+        const baseValue = baseR + (intensity * Math.cos((x*x-y*y)/300 + t) * colorMultiplier);
+        // Blend with primary color in dark themes
+        const value = isDark 
+          ? baseValue * (1-blendFactor) + primaryR * blendFactor
+          : baseValue;
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       },
       
       G: (x: number, y: number, t: number) => {
-        // Different wave pattern for green
-        let value = baseG + (intensity * Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300) * colorMultiplier * gBias);
-        
-        // Influence from primary color (green component)
-        if (isDark && primaryHue > 60 && primaryHue < 180) {
-          value += 25 * themeColorInfluence; // Boosted in green themes
-        }
+        // Apply similar wave pattern to all themes
+        const baseValue = baseG + (intensity * Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300) * colorMultiplier);
+        // Blend with primary color in dark themes
+        const value = isDark 
+          ? baseValue * (1-blendFactor) + primaryG * blendFactor
+          : baseValue;
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       },
       
       B: (x: number, y: number, t: number) => {
-        // Different wave pattern for blue
-        let value = baseB + (intensity * Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100) * colorMultiplier * bBias);
-        
-        // Influence from primary color (blue/purple component)
-        if (isDark && primaryHue > 180 && primaryHue < 300) {
-          value += 25 * themeColorInfluence; // Boosted in blue/purple themes
-        }
+        // Apply similar wave pattern to all themes
+        const baseValue = baseB + (intensity * Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100) * colorMultiplier);
+        // Blend with primary color in dark themes
+        const value = isDark 
+          ? baseValue * (1-blendFactor) + primaryB * blendFactor
+          : baseValue;
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       }
@@ -304,8 +247,8 @@ export function initBackgroundCanvas(): void {
       $.restore();
     }
     
-    // Adjust animation speed based on theme (slower for dark themes)
-    const speedFactor = themeColors.theme.startsWith('dark') ? 0.015 : 0.025;
+    // Same animation speed for all themes for consistent experience
+    const speedFactor = 0.02;
     t = t + speedFactor;
     
     window.requestAnimationFrame(updatePattern);
