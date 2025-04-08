@@ -38,7 +38,7 @@ export function initBackgroundCanvas(): void {
   const getThemeColors = () => {
     const theme = getCurrentTheme();
     let primaryHue = 191, primarySat = 100, primaryLightness = 35; // Default blue
-    let backgroundLightness = 98; // Light background by default
+    let backgroundLightness = 100; // Light background by default
     let colorMultiplier = 1; // Regular intensity for light theme
     
     // Set theme-specific color values
@@ -50,28 +50,28 @@ export function initBackgroundCanvas(): void {
       case 'dark-red':
         primaryHue = 0; // Red
         primarySat = 100;
-        primaryLightness = 60;
+        primaryLightness = 50;
         backgroundLightness = 7;
         colorMultiplier = 0.5;
         break;
       case 'dark-green':
         primaryHue = 120; // Green
-        primarySat = 61;
-        primaryLightness = 60;
+        primarySat = 100;
+        primaryLightness = 50;
         backgroundLightness = 7;
         colorMultiplier = 0.5;
         break;
       case 'dark-yellow':
-        primaryHue = 50; // Yellow
+        primaryHue = 70; // Yellow
         primarySat = 100;
-        primaryLightness = 60;
+        primaryLightness = 50;
         backgroundLightness = 7;
         colorMultiplier = 0.5;
         break;
       case 'dark-purple':
-        primaryHue = 265; // Purple
+        primaryHue = 260; // Purple
         primarySat = 100;
-        primaryLightness = 66;
+        primaryLightness = 50;
         backgroundLightness = 7;
         colorMultiplier = 0.5;
         break;
