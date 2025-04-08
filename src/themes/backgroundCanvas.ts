@@ -44,35 +44,35 @@ export function initBackgroundCanvas(): void {
     // Set theme-specific color values
     switch(theme) {
       case 'dark':
-        backgroundLightness = 7; // Dark background
+        backgroundLightness = 5; // Dark background
         colorMultiplier = 0.5; // Reduce intensity for dark theme
         break;
       case 'dark-red':
         primaryHue = 0; // Red
         primarySat = 100;
         primaryLightness = 50;
-        backgroundLightness = 7;
+        backgroundLightness = 5;
         colorMultiplier = 0.5;
         break;
       case 'dark-green':
         primaryHue = 120; // Green
         primarySat = 100;
         primaryLightness = 50;
-        backgroundLightness = 7;
+        backgroundLightness = 5;
         colorMultiplier = 0.5;
         break;
       case 'dark-yellow':
-        primaryHue = 70; // Yellow
+        primaryHue = 60; // Yellow
         primarySat = 100;
         primaryLightness = 50;
-        backgroundLightness = 7;
+        backgroundLightness = 5;
         colorMultiplier = 0.5;
         break;
       case 'dark-purple':
         primaryHue = 260; // Purple
         primarySat = 100;
         primaryLightness = 50;
-        backgroundLightness = 7;
+        backgroundLightness = 5;
         colorMultiplier = 0.5;
         break;
       default:
