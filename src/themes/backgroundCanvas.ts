@@ -112,52 +112,52 @@ export function initBackgroundCanvas(): void {
         baseG = 20;
         baseB = 30;
         backgroundLightness = 5;
-        colorMultiplier = 0.4;
-        themeColorInfluence = 1.2;
+        colorMultiplier = 0.5;
+        themeColorInfluence = 1;
         break;
       case 'dark-red':
         primaryHue = 0; // Red
         primarySat = 100;
         primaryLightness = 50;
-        baseR = 40; // Higher red base
-        baseG = 10;
-        baseB = 15;
+        baseR = 30; // Higher red base
+        baseG = 20;
+        baseB = 20;
         backgroundLightness = 5;
-        colorMultiplier = 0.4;
-        themeColorInfluence = 1.5; // Stronger red influence
+        colorMultiplier = 0.5;
+        themeColorInfluence = 1; // Stronger red influence
         break;
       case 'dark-green':
         primaryHue = 120; // Green
         primarySat = 100;
         primaryLightness = 50;
-        baseR = 10;
-        baseG = 35; // Higher green base
-        baseB = 15;
+        baseR = 20;
+        baseG = 30; // Higher green base
+        baseB = 20;
         backgroundLightness = 5;
-        colorMultiplier = 0.4;
-        themeColorInfluence = 1.5; // Stronger green influence
+        colorMultiplier = 0.5;
+        themeColorInfluence = 1; // Stronger green influence
         break;
       case 'dark-yellow':
         primaryHue = 60; // Yellow
         primarySat = 100;
         primaryLightness = 50;
         baseR = 40;
-        baseG = 35;
+        baseG = 30;
         baseB = 10; // Lower blue for more yellow feel
         backgroundLightness = 5;
-        colorMultiplier = 0.4;
+        colorMultiplier = 0.5;
         themeColorInfluence = 1.5; // Stronger yellow influence
         break;
       case 'dark-purple':
         primaryHue = 260; // Purple
         primarySat = 100;
         primaryLightness = 50;
-        baseR = 25;
+        baseR = 30;
         baseG = 15;
-        baseB = 40; // Higher blue/red for purple base
+        baseB = 30; // Higher blue/red for purple base
         backgroundLightness = 5;
-        colorMultiplier = 0.4;
-        themeColorInfluence = 1.5; // Stronger purple influence
+        colorMultiplier = 0.5;
+        themeColorInfluence = 1; // Stronger purple influence
         break;
       default:
         // Light theme - keep defaults
