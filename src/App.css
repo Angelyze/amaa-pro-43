@@ -21,7 +21,7 @@ canvas#canv {
 .markdown-content a,
 .theme-link,
 .text-theme-accent {
-  color: var(--primary) !important;
+  color: hsl(var(--link-color)) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
   cursor: pointer !important;
@@ -30,40 +30,7 @@ canvas#canv {
 .markdown-content a:hover,
 .theme-link:hover,
 .text-theme-accent:hover {
-  opacity: 0.8;
-}
-
-/* Apply theme-specific link colors */
-.dark-red .markdown-content a,
-.dark-red .theme-link,
-.dark-red .text-theme-accent,
-.dark-red .search-results a,
-.dark-red a {
-  color: var(--primary) !important;
-}
-
-.dark-green .markdown-content a,
-.dark-green .theme-link,
-.dark-green .text-theme-accent,
-.dark-green .search-results a,
-.dark-green a {
-  color: var(--primary) !important;
-}
-
-.dark-yellow .markdown-content a,
-.dark-yellow .theme-link,
-.dark-yellow .text-theme-accent,
-.dark-yellow .search-results a,
-.dark-yellow a {
-  color: var(--primary) !important;
-}
-
-.dark-purple .markdown-content a,
-.dark-purple .theme-link,
-.dark-purple .text-theme-accent,
-.dark-purple .search-results a,
-.dark-purple a {
-  color: var(--primary) !important;
+  opacity: var(--link-hover-opacity);
 }
 
 /* Markdown content styling */
@@ -116,24 +83,7 @@ canvas#canv {
 }
 
 .footer-link:hover {
-  color: var(--primary);
-}
-
-/* Theme-specific footer links */
-.dark-red .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-green .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-yellow .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-purple .footer-link:hover {
-  color: var(--primary);
+  color: hsl(var(--link-color));
 }
 
 .copyright {

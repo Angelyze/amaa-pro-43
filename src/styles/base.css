@@ -40,6 +40,10 @@
     --ring: 191 100% 35%;
 
     --radius: 1rem;
+    
+    /* Explicit link color for light theme - consistent blue */
+    --link-color: var(--primary);
+    --link-hover-opacity: 0.8;
   }
 
   .dark {
@@ -70,13 +74,22 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 191 100% 35%;
+    
+    /* Same link color for default dark theme - consistent with light theme */
+    --link-color: var(--primary);
+    --link-hover-opacity: 0.8;
   }
   
   /* Ensure all links are visible and clickable */
   a, .link {
-    color: hsl(var(--primary));
+    color: hsl(var(--link-color));
     text-decoration: none;
     cursor: pointer;
     pointer-events: auto !important;
+    transition: opacity 0.2s ease;
+  }
+  
+  a:hover, .link:hover {
+    opacity: var(--link-hover-opacity);
   }
 }
