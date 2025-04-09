@@ -106,7 +106,7 @@ const Privacy = () => {
                   <li>Rights related to automated decision-making and profiling</li>
                 </ul>
                 <p className="mt-3 leading-relaxed">
-                  To exercise these rights, please contact us at <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a>.
+                  To exercise these rights, please contact us at <a href="mailto:info@amaa.pro">info@amaa.pro</a>.
                 </p>
               </section>
               
@@ -144,7 +144,7 @@ const Privacy = () => {
                   If you have any questions about this Privacy Policy, please contact us at:
                 </p>
                 <p className="mt-2">
-                  Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a><br />
+                  Email: <a href="mailto:info@amaa.pro">info@amaa.pro</a><br />
                   Angelyze<br />
                   10430 Samobor<br />
                   Zagreb County, Croatia - EU
@@ -165,7 +165,7 @@ const Privacy = () => {
               <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
             <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. Powered by AMAA
+              © Copyright 2025 <Link to="/">AMAA.pro</Link>. Powered by AMAA
             </div>
           </div>
         </div>

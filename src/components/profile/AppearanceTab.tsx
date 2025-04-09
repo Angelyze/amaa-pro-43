@@ -63,10 +63,16 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
           </SelectContent>
         </Select>
         
-        <div className="mt-4 p-3 rounded-md bg-muted/30 border border-border">
-          <p className="text-sm text-muted-foreground">
-            This is how <a href="#" onClick={(e) => e.preventDefault()}>links will appear</a> with the selected theme.
+        <div className="mt-4 p-4 rounded-md bg-muted/30 border border-border">
+          <p className="text-sm text-muted-foreground mb-2">
+            Preview how links will appear in this theme:
           </p>
+          <div className="flex gap-2 items-center">
+            <span className="text-sm">Click here:</span>
+            <a href="#" onClick={(e) => e.preventDefault()} className="text-sm">
+              This is how links will appear
+            </a>
+          </div>
         </div>
       </div>
     </div>

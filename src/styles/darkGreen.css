@@ -29,8 +29,8 @@
     --input: 120 30% 20%;
     --ring: 100 61% 60%; /* #7ed957 */
     
-    /* Theme-specific link color */
-    --link-color: var(--primary);
+    /* Theme-specific link color - green */
+    --link-color: 100 61% 60%;
     --link-hover-opacity: 0.8;
   }
 }

@@ -17,28 +17,7 @@ canvas#canv {
   overflow-wrap: break-word;
 }
 
-/* Theme-specific link colors */
-.markdown-content a,
-.theme-link,
-.text-theme-accent {
-  color: hsl(var(--link-color)) !important;
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-  cursor: pointer !important;
-}
-
-.markdown-content a:hover,
-.theme-link:hover,
-.text-theme-accent:hover {
-  opacity: var(--link-hover-opacity);
-}
-
 /* Markdown content styling */
-.markdown-content {
-  width: 100%;
-  overflow-wrap: break-word;
-}
-
 .markdown-content pre {
   background-color: hsl(var(--muted));
   color: hsl(var(--foreground));

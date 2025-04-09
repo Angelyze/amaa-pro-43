@@ -41,28 +41,13 @@
   /* Fix image display in search results */
   img {
     @apply max-w-full h-auto;
-    /* Don't hide images by default */
     display: block;
-  }
-  
-  /* Link styling with better visibility */
-  a {
-    @apply transition-colors duration-200 cursor-pointer;
-    pointer-events: auto !important;
-    text-decoration: none !important;
-    color: var(--primary) !important;
-  }
-  
-  a:hover {
-    opacity: 0.8;
   }
   
   /* Critical fix for web search links - force them to be visible and clickable */
   .search-results a, 
   .markdown-content a {
     display: inline-block !important;
-    color: var(--primary) !important;
-    text-decoration: none !important;
     pointer-events: auto !important;
     cursor: pointer !important;
   }
