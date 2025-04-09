@@ -4,8 +4,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { changeTheme } from '@/themes/main';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Info } from 'lucide-react';
 
 interface AppearanceTabProps {
   selectedTheme: string;
@@ -14,12 +12,12 @@ interface AppearanceTabProps {
 
 const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) => {
   const themes = [
-    { id: 'light', name: 'Default', description: 'Light theme with blue accents' },
-    { id: 'dark', name: 'Default Dark', description: 'Dark theme with blue accents' },
-    { id: 'dark-red', name: 'Dark Red', description: 'Dark theme with red accents' },
-    { id: 'dark-green', name: 'Dark Green', description: 'Dark theme with green accents' },
-    { id: 'dark-yellow', name: 'Dark Yellow', description: 'Dark theme with yellow accents' },
-    { id: 'dark-purple', name: 'Dark Purple', description: 'Dark theme with purple accents' },
+    { id: 'light', name: 'Default' },
+    { id: 'dark', name: 'Default Dark' },
+    { id: 'dark-red', name: 'Dark Red' },
+    { id: 'dark-green', name: 'Dark Green' },
+    { id: 'dark-yellow', name: 'Dark Yellow' },
+    { id: 'dark-purple', name: 'Dark Purple' },
   ];
 
   const handleThemeChange = (theme: string) => {
@@ -33,20 +31,7 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
     <div>
       <h3 className="text-lg font-medium mb-4">Appearance</h3>
       <div>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="theme-selection">Theme</Label>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Info size={16} className="text-muted-foreground cursor-help" />
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <p className="text-sm text-muted-foreground">
-                Choose your preferred theme. Each theme has a unique color scheme and link color.
-              </p>
-            </HoverCardContent>
-          </HoverCard>
-        </div>
-        
+        <Label htmlFor="theme-selection">Theme</Label>
         <Select
           value={selectedTheme}
           onValueChange={handleThemeChange}
@@ -62,18 +47,6 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
             ))}
           </SelectContent>
         </Select>
-        
-        <div className="mt-4 p-4 rounded-md bg-muted/30 border border-border">
-          <p className="text-sm text-muted-foreground mb-2">
-            Preview how links will appear in this theme:
-          </p>
-          <div className="flex gap-2 items-center">
-            <span className="text-sm">Click here:</span>
-            <a href="#" onClick={(e) => e.preventDefault()} className="text-sm">
-              This is how links will appear
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );
