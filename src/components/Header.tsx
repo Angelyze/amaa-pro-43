@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="text-sm gap-1.5 hover:bg-primary/10 hover:opacity-80 transition-all"
+                    className="text-sm gap-1.5 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
                   >
                     <LogIn size={16} />
                     <span className="hidden sm:inline">Log in</span>
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Button 
                     variant="default" 
                     size="sm"
-                    className="bg-primary text-white hover:opacity-80 hover:shadow-md transition-all text-sm gap-1.5"
+                    className="bg-primary text-white hover:bg-primary/90 hover:shadow-md transition-all text-sm gap-1.5 dark-red:bg-[#ff3131] dark-red:hover:bg-[#ff3131]/90 dark-green:bg-[#7ed957] dark-green:hover:bg-[#7ed957]/90 dark-yellow:bg-[#ffde59] dark-yellow:hover:bg-[#ffde59]/90 dark-purple:bg-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/90"
                   >
                     <CreditCard size={16} />
                     <span className="hidden sm:inline">Subscribe</span>
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({
               variant="ghost" 
               size="icon" 
               onClick={onScrollToTop}
-              className="rounded-full w-9 h-9 hover:bg-primary/10 hover:opacity-80 transition-all"
+              className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all dark-red:hover:text-[#ff3131] dark-red:hover:bg-[#ff3131]/10 dark-green:hover:text-[#7ed957] dark-green:hover:bg-[#7ed957]/10 dark-yellow:hover:text-[#ffde59] dark-yellow:hover:bg-[#ffde59]/10 dark-purple:hover:text-[#8c52ff] dark-purple:hover:bg-[#8c52ff]/10"
             >
               <ArrowUp size={18} />
             </Button>
