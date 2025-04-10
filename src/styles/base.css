@@ -72,11 +72,16 @@
     --ring: 191 100% 35%;
   }
   
-  /* Ensure all links are visible and clickable */
+  /* Single source of truth for links - applied globally */
   a, .link {
     color: hsl(var(--primary));
     text-decoration: none;
     cursor: pointer;
     pointer-events: auto !important;
+    transition: opacity 0.2s ease;
+  }
+
+  a:hover, .link:hover {
+    opacity: 0.8;
   }
 }

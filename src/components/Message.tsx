@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -47,7 +46,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   source: string;
 }) => (
   <div className="article-preview mb-4 border-b border-border/30 pb-3 last:border-0">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 text-theme-accent hover:underline font-medium">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 hover:underline font-medium">
       {title}
     </a>
     <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -75,7 +74,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
           <div className="flex items-center gap-1">
             <Globe size={12} className="inline" />
             <span>Source: </span>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="text-theme-accent hover:underline">
+            <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline">
               {source}
             </a>
           </div>
@@ -96,7 +95,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
     if (type === 'assistant') {
       let cleanedContent = content;
       
-      // Extract related topics if they exist
       const relatedTopicsMatch = cleanedContent.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
       if (relatedTopicsMatch && relatedTopicsMatch[1]) {
         const topicsText = relatedTopicsMatch[1];
@@ -105,7 +103,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
           .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
           .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
           .filter(topic => topic.length > 0)
-          // Remove the double asterisks from topics
           .map(topic => topic.replace(/\*\*/g, ''));
         
         setRelatedTopics(topics);
@@ -192,7 +189,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-theme-accent underline hover:opacity-80 transition-colors"
+        className="underline hover:opacity-80 transition-colors"
       >
         {children}
       </a>
