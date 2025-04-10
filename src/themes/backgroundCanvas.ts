@@ -102,7 +102,7 @@ export function initBackgroundCanvas(): void {
     }
     
     // Get base colors and intensity adjustment based on theme
-    const isDark = backgroundLightness < 20;
+    const isDark = backgroundLightness < 100;
     // Base RGB values - used for all themes as a starting point
     let baseR = 192, baseG = 192, baseB = 192;  // Light theme default base
     let colorMultiplier = 1; // Default intensity
