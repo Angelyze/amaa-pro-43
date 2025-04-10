@@ -109,9 +109,9 @@ export function initBackgroundCanvas(): void {
     
     if (isDark) {
       // All dark themes use similar base color but darker
-      baseR = 100;
-      baseG = 100;
-      baseB = 100;
+      baseR = 50;
+      baseG = 50;
+      baseB = 50;
       colorMultiplier = 0.1; // Slightly reduced intensity for dark themes
     }
     
@@ -151,7 +151,7 @@ export function initBackgroundCanvas(): void {
     const intensity = isDark ? 30 : 64;
     
     // For dark themes, blend with the primary color
-    const blendFactor = isDark ? 0.5 : 0; // Only blend in dark themes
+    const blendFactor = isDark ? 0.5 : 100; // Only blend in dark themes
     
     // Create the color generators with theme-specific adjustments
     return {
