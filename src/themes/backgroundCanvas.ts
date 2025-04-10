@@ -109,9 +109,9 @@ export function initBackgroundCanvas(): void {
     
     if (isDark) {
       // All dark themes use similar base color but darker
-      baseR = 1;
-      baseG = 1;
-      baseB = 1;
+      baseR = 100;
+      baseG = 100;
+      baseB = 100;
       colorMultiplier = 0.1; // Slightly reduced intensity for dark themes
     }
     
