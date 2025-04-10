@@ -28,8 +28,5 @@
     --border: 270 30% 20%;
     --input: 270 30% 20%;
     --ring: 265 100% 66%; /* #8c52ff */
-    
-    /* Link color uses primary theme color */
-    --link-color: 265 100% 66%; /* Same as primary */
   }
 }

@@ -12,8 +12,8 @@ interface AppearanceTabProps {
 
 const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) => {
   const themes = [
-    { id: 'light', name: 'Default (Blue links)' },
-    { id: 'dark', name: 'Dark (Blue links)' },
+    { id: 'light', name: 'Default' },
+    { id: 'dark', name: 'Default Dark' },
     { id: 'dark-red', name: 'Dark Red' },
     { id: 'dark-green', name: 'Dark Green' },
     { id: 'dark-yellow', name: 'Dark Yellow' },
@@ -47,11 +47,6 @@ const AppearanceTab = ({ selectedTheme, setSelectedTheme }: AppearanceTabProps) 
             ))}
           </SelectContent>
         </Select>
-        <p className="text-sm text-muted-foreground mt-2">
-          Each theme has its own link color: blue for default themes, 
-          and theme-specific colors for custom dark themes. 
-          <a href="#" className="ml-2 cursor-pointer">Example link</a>
-        </p>
       </div>
     </div>
   );
