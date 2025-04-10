@@ -1,82 +1,20 @@
+
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
-  }
-
-  /* Dark theme variants - using darker backgrounds for consistency with default dark theme */
-  .dark-red .amaa-input {
-    @apply bg-background/50 focus:border-[#ff3131] focus:ring-[#ff3131];
-  }
-  
-  .dark-green .amaa-input {
-    @apply bg-background/50 focus:border-[#7ed957] focus:ring-[#7ed957];
-  }
-  
-  .dark-yellow .amaa-input {
-    @apply bg-background/50 focus:border-[#ffde59] focus:ring-[#ffde59];
-  }
-  
-  .dark-purple .amaa-input {
-    @apply bg-background/50 focus:border-[#8c52ff] focus:ring-[#8c52ff];
   }
 
   .amaa-button {
     @apply px-6 py-3 rounded-full bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-300 shadow-glass-sm hover:shadow-glass active:scale-[0.98];
   }
 
-  /* Theme-specific buttons */
-  .dark-red .amaa-button {
-    @apply bg-[#ff3131] hover:bg-[#ff3131]/90;
-  }
-  
-  .dark-green .amaa-button {
-    @apply bg-[#7ed957] hover:bg-[#7ed957]/90;
-  }
-  
-  .dark-yellow .amaa-button {
-    @apply bg-[#ffde59] hover:bg-[#ffde59]/90;
-  }
-  
-  .dark-purple .amaa-button {
-    @apply bg-[#8c52ff] hover:bg-[#8c52ff]/90;
-  }
-
   .amaa-icon-button {
     @apply p-3 rounded-full text-foreground/80 hover:text-primary transition-all duration-300;
   }
 
-  /* Theme-specific icon buttons */
-  .dark-red .amaa-icon-button {
-    @apply hover:text-[#ff5757];
-  }
-  
-  .dark-green .amaa-icon-button {
-    @apply hover:text-[#00bf63];
-  }
-  
-  .dark-yellow .amaa-icon-button {
-    @apply hover:text-[#ffde59];
-  }
-  
-  .dark-purple .amaa-icon-button {
-    @apply hover:text-[#5e17eb];
-  }
-
   /* Update AMAAChatBox icons for theme colors */
-  .dark-red .amaa-chatbox-icon {
-    @apply text-[#ff5757] hover:text-[#ff3131];
-  }
-  
-  .dark-green .amaa-chatbox-icon {
-    @apply text-[#00bf63] hover:text-[#7ed957];
-  }
-  
-  .dark-yellow .amaa-chatbox-icon {
-    @apply text-[#ffde59] hover:text-[#ffe371];
-  }
-  
-  .dark-purple .amaa-chatbox-icon {
-    @apply text-[#5e17eb] hover:text-[#8c52ff];
+  .amaa-chatbox-icon {
+    @apply text-primary hover:text-primary/80;
   }
 
   /* Theme-specific Ask icon filters - improved to better match theme colors */
@@ -108,56 +46,8 @@
     @apply message-bubble bg-primary/10 text-foreground border border-primary/10 w-[90%] md:w-[50%];
   }
 
-  /* Theme-specific user messages */
-  .dark-red .user-message {
-    @apply bg-[#ff5757]/10 border-[#ff5757]/10;
-  }
-  
-  .dark-green .user-message {
-    @apply bg-[#00bf63]/10 border-[#00bf63]/10;
-  }
-  
-  .dark-yellow .user-message {
-    @apply bg-[#ffde59]/10 border-[#ffde59]/10;
-  }
-  
-  .dark-purple .user-message {
-    @apply bg-[#5e17eb]/10 border-[#5e17eb]/10;
-  }
-
   .assistant-message {
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
-  }
-
-  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
-  .markdown-content a {
-    @apply transition-all duration-200 cursor-pointer;
-    text-decoration: none !important;
-    color: var(--primary) !important;
-  }
-
-  .dark-red .markdown-content a {
-    color: var(--primary) !important;
-  }
-  
-  .dark-green .markdown-content a {
-    color: var(--primary) !important;
-  }
-  
-  .dark-yellow .markdown-content a {
-    color: var(--primary) !important;
-  }
-  
-  .dark-purple .markdown-content a {
-    color: var(--primary) !important;
-  }
-
-  /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
-  .markdown-content strong, 
-  .markdown-content em,
-  .markdown-content b,
-  .markdown-content i {
-    @apply text-foreground;
   }
 
   .header-container {
@@ -174,23 +64,6 @@
   
   .footer-link {
     @apply text-foreground hover:text-primary transition-colors cursor-pointer;
-  }
-
-  /* Theme-specific footer links */
-  .dark-red .footer-link {
-    @apply hover:text-[#ff3131];
-  }
-  
-  .dark-green .footer-link {
-    @apply hover:text-[#7ed957];
-  }
-  
-  .dark-yellow .footer-link {
-    @apply hover:text-[#ffde59];
-  }
-  
-  .dark-purple .footer-link {
-    @apply hover:text-[#8c52ff];
   }
   
   .copyright {
@@ -270,12 +143,12 @@
     }
   }
   
-  /* New - Search results header styling */
+  /* Search results header styling */
   .search-results-header {
     @apply border-t border-border/40 pt-4 mt-8;
   }
   
-  /* New - Make image previews more visually appealing */
+  /* Make image previews more visually appealing */
   .search-image-container {
     @apply flex flex-wrap gap-3 my-4;
   }
@@ -286,19 +159,14 @@
     object-fit: cover;
   }
   
-  /* New - Image hover effects */
+  /* Image hover effects */
   .search-image-container img:hover {
     transform: scale(1.05);
     border-color: rgba(var(--primary), 0.5);
   }
   
-  /* New - Search result emphasis */
+  /* Search result emphasis */
   .search-results strong {
     @apply font-medium;
-  }
-  
-  /* New - Search result links */
-  .search-results a:not(.article-preview a) {
-    @apply text-primary hover:underline transition-colors;
   }
 }

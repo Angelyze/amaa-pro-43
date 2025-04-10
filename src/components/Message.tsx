@@ -47,7 +47,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   source: string;
 }) => (
   <div className="article-preview mb-4 border-b border-border/30 pb-3 last:border-0">
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 text-theme-accent hover:underline font-medium">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block mb-2 hover:opacity-80">
       {title}
     </a>
     <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -75,7 +75,7 @@ const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
           <div className="flex items-center gap-1">
             <Globe size={12} className="inline" />
             <span>Source: </span>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="text-theme-accent hover:underline">
+            <a href={url} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
               {source}
             </a>
           </div>
@@ -192,7 +192,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-theme-accent underline hover:opacity-80 transition-colors"
+        className="hover:opacity-80 transition-opacity"
       >
         {children}
       </a>
@@ -315,7 +315,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
               variant="ghost"
               size="icon"
               onClick={cycleTextSize}
-              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              className="h-7 w-7 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
               title="Change text size"
             >
               <span className="text-xs font-medium">Aa</span>
@@ -325,7 +325,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
               variant="ghost"
               size="icon"
               onClick={handleTextToSpeech}
-              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              className="h-7 w-7 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
               title={isSpeaking ? "Stop reading" : "Read aloud"}
             >
               {isSpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
@@ -335,7 +335,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
               variant="ghost"
               size="icon"
               onClick={copyToClipboard}
-              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              className="h-7 w-7 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
               title="Copy to clipboard"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -348,7 +348,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
               variant="ghost"
               size="icon"
               onClick={handleShare}
-              className="h-7 w-7 rounded-full text-muted-foreground hover:text-teal hover:bg-teal/10"
+              className="h-7 w-7 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
               title="Share"
             >
               <Share2 size={14} />

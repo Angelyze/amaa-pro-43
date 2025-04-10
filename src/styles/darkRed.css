@@ -28,5 +28,8 @@
     --border: 0 30% 20%;
     --input: 0 30% 20%;
     --ring: 0 100% 60%; /* #ff3131 */
+    
+    /* Link color uses primary theme color */
+    --link-color: 0 100% 60%; /* Same as primary */
   }
 }

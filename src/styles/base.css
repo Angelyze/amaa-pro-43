@@ -40,6 +40,10 @@
     --ring: 191 100% 35%;
 
     --radius: 1rem;
+    
+    /* Link color - using a blue color for default theme (both light and dark) */
+    --link-color: 201 100% 50%; /* #00a3ff */
+    --link-hover-opacity: 0.8;
   }
 
   .dark {
@@ -70,13 +74,43 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 191 100% 35%;
+    
+    /* Link color - using a blue color for default dark theme */
+    --link-color: 201 100% 50%; /* #00a3ff */
+    --link-hover-opacity: 0.8;
   }
   
-  /* Ensure all links are visible and clickable */
-  a, .link {
-    color: hsl(var(--primary));
-    text-decoration: none;
-    cursor: pointer;
+  /* UNIVERSAL LINK STYLING - single source of truth */
+  a, .link, .theme-link, .text-theme-accent {
+    color: hsl(var(--link-color)) !important;
+    text-decoration: none !important;
+    transition: opacity 0.2s ease;
+    cursor: pointer !important;
     pointer-events: auto !important;
+  }
+
+  a:hover, .link:hover, .theme-link:hover, .text-theme-accent:hover {
+    opacity: var(--link-hover-opacity);
+  }
+  
+  /* Theme-specific link colors - these will override the default link color */
+  .dark-red a, .dark-red .link, .dark-red .theme-link, .dark-red .text-theme-accent, 
+  .dark-red .markdown-content a, .dark-red .search-results a, .dark-red .footer-link:hover {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  .dark-green a, .dark-green .link, .dark-green .theme-link, .dark-green .text-theme-accent, 
+  .dark-green .markdown-content a, .dark-green .search-results a, .dark-green .footer-link:hover {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  .dark-yellow a, .dark-yellow .link, .dark-yellow .theme-link, .dark-yellow .text-theme-accent, 
+  .dark-yellow .markdown-content a, .dark-yellow .search-results a, .dark-yellow .footer-link:hover {
+    color: hsl(var(--primary)) !important;
+  }
+  
+  .dark-purple a, .dark-purple .link, .dark-purple .theme-link, .dark-purple .text-theme-accent, 
+  .dark-purple .markdown-content a, .dark-purple .search-results a, .dark-purple .footer-link:hover {
+    color: hsl(var(--primary)) !important;
   }
 }
