@@ -1,4 +1,3 @@
-
 @layer components {
   .amaa-input {
     @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
@@ -130,25 +129,67 @@
     @apply message-bubble bg-foreground/5 dark:bg-foreground/10 text-foreground border border-foreground/10 w-[99%] md:w-[55%];
   }
 
-  /* Footer styling */
+  /* Theme-specific links for markdown content - ONLY for links, not strong or em elements */
+  .markdown-content a {
+    @apply transition-all duration-200 cursor-pointer;
+    text-decoration: none !important;
+    color: var(--primary) !important;
+  }
+
+  .dark-red .markdown-content a {
+    color: var(--primary) !important;
+  }
+  
+  .dark-green .markdown-content a {
+    color: var(--primary) !important;
+  }
+  
+  .dark-yellow .markdown-content a {
+    color: var(--primary) !important;
+  }
+  
+  .dark-purple .markdown-content a {
+    color: var(--primary) !important;
+  }
+
+  /* Make sure strong and emphasized text in markdown content keeps the default foreground color */
+  .markdown-content strong, 
+  .markdown-content em,
+  .markdown-content b,
+  .markdown-content i {
+    @apply text-foreground;
+  }
+
+  .header-container {
+    @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border shadow-glass-sm;
+  }
+  
+  .footer-container {
+    @apply w-full py-4 backdrop-blur-md bg-background/70 border-t border-border shadow-glass-sm;
+  }
+  
+  .footer-nav {
+    @apply flex flex-wrap items-center justify-center gap-6 mb-2;
+  }
+  
   .footer-link {
-    @apply text-foreground/70 hover:text-primary transition-colors cursor-pointer;
+    @apply text-foreground hover:text-primary transition-colors cursor-pointer;
   }
 
   /* Theme-specific footer links */
-  .dark-red .footer-link:hover {
+  .dark-red .footer-link {
     @apply hover:text-[#ff3131];
   }
   
-  .dark-green .footer-link:hover {
+  .dark-green .footer-link {
     @apply hover:text-[#7ed957];
   }
   
-  .dark-yellow .footer-link:hover {
+  .dark-yellow .footer-link {
     @apply hover:text-[#ffde59];
   }
   
-  .dark-purple .footer-link:hover {
+  .dark-purple .footer-link {
     @apply hover:text-[#8c52ff];
   }
   
@@ -229,12 +270,12 @@
     }
   }
   
-  /* Search results header styling */
+  /* New - Search results header styling */
   .search-results-header {
     @apply border-t border-border/40 pt-4 mt-8;
   }
   
-  /* Make image previews more visually appealing */
+  /* New - Make image previews more visually appealing */
   .search-image-container {
     @apply flex flex-wrap gap-3 my-4;
   }
@@ -245,9 +286,19 @@
     object-fit: cover;
   }
   
-  /* Image hover effects */
+  /* New - Image hover effects */
   .search-image-container img:hover {
     transform: scale(1.05);
     border-color: rgba(var(--primary), 0.5);
+  }
+  
+  /* New - Search result emphasis */
+  .search-results strong {
+    @apply font-medium;
+  }
+  
+  /* New - Search result links */
+  .search-results a:not(.article-preview a) {
+    @apply text-primary hover:underline transition-colors;
   }
 }

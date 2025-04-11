@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -426,7 +427,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
               {relatedTopics.map((topic, index) => (
                 <button 
                   key={index} 
-                  className="px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted cursor-pointer transition-all inline-block mr-2 mb-2"
+                  className="px-3 py-1.5 bg-muted/70 rounded-full text-sm hover:bg-muted cursor-pointer transition-all"
                   onClick={() => handleTopicClick(topic)}
                 >
                   {topic}
