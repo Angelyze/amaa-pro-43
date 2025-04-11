@@ -3,11 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Direct inclusion of theme CSS to ensure proper loading */
-@import './darkRed.css';
-@import './darkGreen.css';
-@import './darkYellow.css';
-@import './darkPurple.css';
+/* Direct inclusion of theme CSS - Updated import paths */
+@import '../themes/darkRed.css';
+@import '../themes/darkGreen.css';
+@import '../themes/darkYellow.css';
+@import '../themes/darkPurple.css';
 
 @layer base {
   :root {
