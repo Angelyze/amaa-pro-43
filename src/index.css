@@ -29,35 +29,14 @@
   margin-top: 0.5rem;
 }
 
-/* Enhanced link styling for better visibility */
-.search-results a, 
-.theme-link,
-.text-theme-accent {
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  transition: opacity 0.2s ease;
-  cursor: pointer !important;
-  font-weight: 500;
-}
-
-.search-results a:hover, 
-.theme-link:hover,
-.text-theme-accent:hover {
-  opacity: 0.8;
-}
-
-/* Critical fix for web search links - ensure they're visible and clickable */
-.search-results p a,
-.search-results h1 a,
-.search-results h2 a,
-.search-results h3 a,
-.search-results h4 a,
-.search-results .article-preview a {
-  display: inline-block !important;
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  pointer-events: auto !important;
-  cursor: pointer !important;
+/* Enhanced article preview styling */
+.search-results .article-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .search-results .article-description {
@@ -94,16 +73,6 @@
   color: var(--foreground);
 }
 
-/* Enhanced article preview styling */
-.search-results .article-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
 /* Responsive layout for article preview content */
 @media (min-width: 640px) {
   .search-results .article-preview > div {
@@ -128,20 +97,6 @@
   max-width: 100%;
   margin: 1.5rem 0;
   border-radius: 0.375rem;
-}
-
-/* Improved link display in markdown content */
-.markdown-content a {
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
-  pointer-events: auto !important;
-  cursor: pointer !important;
-}
-
-.markdown-content a:hover {
-  opacity: 0.8;
 }
 
 /* Related topics styling */

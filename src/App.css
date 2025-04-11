@@ -17,54 +17,7 @@ canvas#canv {
   overflow-wrap: break-word;
 }
 
-/* Theme-specific link colors */
-.markdown-content a,
-.theme-link,
-.text-theme-accent {
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-  cursor: pointer !important;
-}
-
-.markdown-content a:hover,
-.theme-link:hover,
-.text-theme-accent:hover {
-  opacity: 0.8;
-}
-
-/* Apply theme-specific link colors */
-.dark-red .markdown-content a,
-.dark-red .theme-link,
-.dark-red .text-theme-accent,
-.dark-red .search-results a,
-.dark-red a {
-  color: var(--primary) !important;
-}
-
-.dark-green .markdown-content a,
-.dark-green .theme-link,
-.dark-green .text-theme-accent,
-.dark-green .search-results a,
-.dark-green a {
-  color: var(--primary) !important;
-}
-
-.dark-yellow .markdown-content a,
-.dark-yellow .theme-link,
-.dark-yellow .text-theme-accent,
-.dark-yellow .search-results a,
-.dark-yellow a {
-  color: var(--primary) !important;
-}
-
-.dark-purple .markdown-content a,
-.dark-purple .theme-link,
-.dark-purple .text-theme-accent,
-.dark-purple .search-results a,
-.dark-purple a {
-  color: var(--primary) !important;
-}
+/* Theme-specific link colors are now handled in global CSS */
 
 /* Markdown content styling */
 .markdown-content {
@@ -116,23 +69,6 @@ canvas#canv {
 }
 
 .footer-link:hover {
-  color: var(--primary);
-}
-
-/* Theme-specific footer links */
-.dark-red .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-green .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-yellow .footer-link:hover {
-  color: var(--primary);
-}
-
-.dark-purple .footer-link:hover {
   color: var(--primary);
 }
 

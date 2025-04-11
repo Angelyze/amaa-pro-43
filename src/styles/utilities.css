@@ -45,18 +45,6 @@
     display: block;
   }
   
-  /* Link styling with better visibility */
-  a {
-    @apply transition-colors duration-200 cursor-pointer;
-    pointer-events: auto !important;
-    text-decoration: none !important;
-    color: var(--primary) !important;
-  }
-  
-  a:hover {
-    opacity: 0.8;
-  }
-  
   /* Critical fix for web search links - force them to be visible and clickable */
   .search-results a, 
   .markdown-content a {
