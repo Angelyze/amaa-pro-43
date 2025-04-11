@@ -4,12 +4,6 @@
 @import './styles/utilities.css';
 @import './styles/animations.css';
 
-/* Theme specific styling */
-@import './styles/darkGreen.css';
-@import './styles/darkRed.css';
-@import './styles/darkYellow.css';
-@import './styles/darkPurple.css';
-
 /* Custom styling for search results */
 .search-results .article-preview {
   margin-bottom: 1.5rem;
@@ -29,23 +23,6 @@
   margin-top: 0.5rem;
 }
 
-/* Enhanced link styling for better visibility */
-.search-results a, 
-.theme-link,
-.text-theme-accent {
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  transition: opacity 0.2s ease;
-  cursor: pointer !important;
-  font-weight: 500;
-}
-
-.search-results a:hover, 
-.theme-link:hover,
-.text-theme-accent:hover {
-  opacity: 0.8;
-}
-
 /* Critical fix for web search links - ensure they're visible and clickable */
 .search-results p a,
 .search-results h1 a,
@@ -54,8 +31,6 @@
 .search-results h4 a,
 .search-results .article-preview a {
   display: inline-block !important;
-  color: var(--primary) !important;
-  text-decoration: none !important;
   pointer-events: auto !important;
   cursor: pointer !important;
 }
@@ -130,39 +105,8 @@
   border-radius: 0.375rem;
 }
 
-/* Improved link display in markdown content */
-.markdown-content a {
-  color: var(--primary) !important;
-  text-decoration: none !important;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
-  pointer-events: auto !important;
-  cursor: pointer !important;
-}
-
-.markdown-content a:hover {
-  opacity: 0.8;
-}
-
 /* Related topics styling */
 .search-results .related-topics {
   margin-top: 2rem;
   padding-top: 1rem;
-}
-
-/* Clickable related topics style */
-.search-results .related-topics button {
-  background-color: var(--muted);
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
-  color: var(--foreground);
-}
-
-.search-results .related-topics button:hover {
-  background-color: var(--primary);
-  color: white;
 }

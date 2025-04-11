@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -192,7 +191,6 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
         href={href} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-theme-accent underline hover:opacity-80 transition-colors"
       >
         {children}
       </a>
