@@ -14,6 +14,10 @@ import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import initializeTheme from "./themes/main";
+
+// Initialize theme on app load
+initializeTheme();
 
 const queryClient = new QueryClient();
 
