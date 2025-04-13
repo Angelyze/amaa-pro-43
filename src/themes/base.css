@@ -42,7 +42,8 @@
     --radius: 1rem;
   }
 
-  .dark {
+  /* Apply dark theme with increased specificity */
+  .dark:root, html.dark {
     --background: 0 0% 7%; /* #111111 */
     --foreground: 210 40% 98%;
 

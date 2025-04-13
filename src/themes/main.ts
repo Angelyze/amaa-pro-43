@@ -44,7 +44,7 @@ export const changeTheme = (theme: string) => {
   // Apply the selected theme (if not light)
   if (theme !== 'light') {
     document.documentElement.classList.add(theme);
-    console.log(`[Theme] Applied class: ${theme}`);
+    console.log(`[Theme] Applied class: ${theme} to document.documentElement`);
   }
   
   // Save the theme selection to localStorage
