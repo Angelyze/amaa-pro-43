@@ -1,5 +1,5 @@
 
-@layer base {
+@layer utilities {
   /* Apply dark-yellow theme with increased specificity */
   html.dark-yellow, .dark-yellow:root {
     --background: 0 0% 7%; /* #111111 - same dark background as other dark themes */

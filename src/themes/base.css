@@ -3,12 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Direct inclusion of theme CSS files */
-@import './darkRed.css';
-@import './darkGreen.css';
-@import './darkYellow.css';
-@import './darkPurple.css';
-
 @layer base {
   :root {
     --background: 0 0% 98%; /* #FAFAFA */
@@ -43,7 +37,7 @@
   }
 
   /* Apply dark theme with increased specificity */
-  .dark:root, html.dark {
+  html.dark, .dark:root {
     --background: 0 0% 7%; /* #111111 */
     --foreground: 210 40% 98%;
 
@@ -86,3 +80,9 @@
     opacity: 0.8;
   }
 }
+
+/* Import theme CSS files AFTER the base layer */
+@import './darkRed.css';
+@import './darkGreen.css';
+@import './darkYellow.css';
+@import './darkPurple.css';
