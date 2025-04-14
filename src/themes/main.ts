@@ -25,12 +25,6 @@ export const initializeTheme = () => {
   } else {
     console.log('[Theme] Initialized with: light (default - no saved preference)');
   }
-  
-  // Force a repaint to ensure theme variables apply correctly
-  document.body.style.display = 'none';
-  setTimeout(() => {
-    document.body.style.display = '';
-  }, 5);
 };
 
 // Function to change theme programmatically
@@ -58,12 +52,6 @@ export const changeTheme = (theme: string) => {
   
   // Dispatch a custom event for other components to detect the theme change
   window.dispatchEvent(new Event('themechange'));
-  
-  // Force a repaint to ensure theme variables apply correctly
-  document.body.style.display = 'none';
-  setTimeout(() => {
-    document.body.style.display = '';
-  }, 5);
 };
 
 export default initializeTheme;
