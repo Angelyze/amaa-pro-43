@@ -112,7 +112,7 @@ export function initBackgroundCanvas(): void {
       baseR = 30;
       baseG = 30;
       baseB = 30;
-      colorMultiplier = 0.6; // Slightly reduced intensity for dark themes
+      colorMultiplier = 0.5; // Slightly reduced intensity for dark themes
     }
     
     // Convert primary color to RGB for influence

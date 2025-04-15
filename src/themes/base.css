@@ -11,40 +11,40 @@
 @layer base {
   /* Light theme (default) */
   :root {
-    --background: 0 0% 95%; /* #FAFAFA */
+    --background: 0 0% 90%; /* #FAFAFA */
     --foreground: 222 47% 11%;
 
-    --card: 0 0% 95%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 90%;
+    --card-foreground: 222 45% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222 45% 10%;
 
     --primary: 191 100% 35%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 210 40% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 95%;
+    --secondary-foreground: 222 47.5% 10%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 95%;
+    --muted-foreground: 215 15% 45%;
 
     --accent: 191 100% 35%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 210 40% 95%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 191 100% 35%;
+    --border: 215 30% 90%;
+    --input: 215 30% 90%;
+    --ring: 190 100% 35%;
 
     --radius: 1rem;
   }
 
   /* Apply dark theme with increased specificity */
   html.dark, .dark:root {
-    --background: 222 70% 3%; /* Very dark blue-tinted black (was pure black) */
+    --background: 222 70% 0%; /* Very dark blue-tinted black (was pure black) */
     --foreground: 210 40% 98%;
 
     --card: 222 47% 5%; /* Darker card background */
@@ -56,16 +56,16 @@
     --primary: 191 100% 35%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 217.2 32.6% 10%; /* Darker secondary */
+    --secondary: 217.2 32.6% 0%; /* Darker secondary */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 191 100% 35%;
+    --accent: 191 100% 30%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 30%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 12%;
