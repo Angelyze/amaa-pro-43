@@ -2,7 +2,7 @@
 @layer base {
   /* Apply dark-purple theme with increased specificity */
   html.dark-purple, .dark-purple:root {
-    --background: 0 0% 0%; /* #000000 - pure black for background */
+    --background: 270 100% 3%; /* Very dark purple background (was pure black) */
     --foreground: 210 40% 98%; /* same as dark theme */
 
     --card: 270 10% 5%; /* darker purple-tinted for cards */

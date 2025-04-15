@@ -2,7 +2,7 @@
 @layer base {
   /* Apply dark-yellow theme with increased specificity */
   html.dark-yellow, .dark-yellow:root {
-    --background: 0 0% 0%; /* #000000 - pure black for background */
+    --background: 50 100% 3%; /* Very dark yellow background (was pure black) */
     --foreground: 210 40% 98%; /* same as dark theme */
 
     --card: 50 10% 5%; /* darker yellow-tinted for cards */

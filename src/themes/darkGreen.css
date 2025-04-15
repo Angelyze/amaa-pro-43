@@ -2,7 +2,7 @@
 @layer base {
   /* Apply dark-green theme with increased specificity */
   html.dark-green, .dark-green:root {
-    --background: 0 0% 0%; /* #000000 - pure black for background */
+    --background: 120 100% 3%; /* Very dark green background (was pure black) */
     --foreground: 210 40% 98%; /* same as dark theme */
 
     --card: 120 10% 5%; /* darker green-tinted for cards */

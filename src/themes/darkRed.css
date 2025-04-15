@@ -2,7 +2,7 @@
 @layer base {
   /* Apply dark-red theme with increased specificity */
   html.dark-red, .dark-red:root {
-    --background: 0 0% 0%; /* #000000 - pure black for background */
+    --background: 0 100% 3%; /* Very dark red background (was pure black) */
     --foreground: 210 40% 98%; /* same as dark theme */
 
     --card: 0 10% 5%; /* darker red-tinted for cards */

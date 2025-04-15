@@ -1,4 +1,3 @@
-
 /* Import theme CSS files BEFORE the base layer */
 @import './darkRed.css';
 @import './darkGreen.css';
@@ -45,7 +44,7 @@
 
   /* Apply dark theme with increased specificity */
   html.dark, .dark:root {
-    --background: 0 0% 0%; /* #000000 - pure black for better contrast */
+    --background: 222 70% 3%; /* Very dark blue-tinted black (was pure black) */
     --foreground: 210 40% 98%;
 
     --card: 222 47% 5%; /* Darker card background */
