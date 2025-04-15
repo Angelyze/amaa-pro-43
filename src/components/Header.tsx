@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header 
-      className={`header-container fixed top-0 left-0 right-0 z-10000 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+      className={`header-container fixed top-0 left-0 right-0 z-100000 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
     >
       <div className="flex items-center justify-center h-16 px-4 md:px-6 max-w-4xl mx-auto">
         {/* Centered container with max width to contain all three elements */}
