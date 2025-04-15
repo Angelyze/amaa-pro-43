@@ -45,22 +45,22 @@
 
   /* Apply dark theme with increased specificity */
   html.dark, .dark:root {
-    --background: 0 0% 7%; /* #111111 */
+    --background: 0 0% 0%; /* #000000 - pure black for better contrast */
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 11%;
+    --card: 222 47% 5%; /* Darker card background */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    --popover: 222 47% 5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 191 100% 35%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217.2 32.6% 10%; /* Darker secondary */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 217.2 32.6% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 191 100% 35%;
@@ -69,21 +69,44 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 12%;
+    --input: 217.2 32.6% 12%;
     --ring: 191 100% 35%;
   }
-  
-  /* Unified link styling - THE SINGLE SOURCE OF TRUTH */
+}
+
+/* Unified link styling - THE SINGLE SOURCE OF TRUTH */
+@layer base {
   a, .link {
-    @apply text-primary transition-colors duration-200;
     color: hsl(var(--primary));
     text-decoration: none;
     cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
     pointer-events: auto !important;
   }
   
   a:hover, .link:hover {
     opacity: 0.8;
+  }
+  
+  /* Theme-specific link colors */
+  html.dark-red a, .dark-red .link {
+    color: hsl(var(--primary));
+  }
+  
+  html.dark-green a, .dark-green .link {
+    color: hsl(var(--primary));
+  }
+  
+  html.dark-yellow a, .dark-yellow .link {
+    color: hsl(var(--primary));
+  }
+  
+  html.dark-purple a, .dark-purple .link {
+    color: hsl(var(--primary));
+  }
+  
+  html.dark a, .dark .link {
+    color: hsl(var(--primary));
   }
 }

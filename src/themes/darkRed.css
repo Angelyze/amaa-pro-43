@@ -2,22 +2,22 @@
 @layer base {
   /* Apply dark-red theme with increased specificity */
   html.dark-red, .dark-red:root {
-    --background: 0 0% 1%; /* #111111 - same as dark theme */
+    --background: 0 0% 0%; /* #000000 - pure black for background */
     --foreground: 210 40% 98%; /* same as dark theme */
 
-    --card: 0 10% 10%; /* slightly red-tinted dark for cards */
+    --card: 0 10% 5%; /* darker red-tinted for cards */
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 10% 10%;
+    --popover: 0 10% 5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 0 100% 60%; /* #ff3131 - main red color */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 0 30% 15%; /* dark red secondary */
+    --secondary: 0 30% 10%; /* darker red secondary */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 30% 15%;
+    --muted: 0 30% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 0 100% 60%; /* #ff3131 */
@@ -26,8 +26,8 @@
     --destructive: 0 85% 40%; /* darker red for destructive actions */
     --destructive-foreground: 210 40% 98%;
 
-    --border: 0 30% 20%;
-    --input: 0 30% 20%;
+    --border: 0 30% 15%;
+    --input: 0 30% 15%;
     --ring: 0 100% 60%; /* #ff3131 */
   }
 }

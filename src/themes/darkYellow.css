@@ -2,22 +2,22 @@
 @layer base {
   /* Apply dark-yellow theme with increased specificity */
   html.dark-yellow, .dark-yellow:root {
-    --background: 0 0% 1%; /* #111111 - same dark background as other dark themes */
+    --background: 0 0% 0%; /* #000000 - pure black for background */
     --foreground: 210 40% 98%; /* same as dark theme */
 
-    --card: 50 10% 10%; /* slightly yellow-tinted dark for cards */
+    --card: 50 10% 5%; /* darker yellow-tinted for cards */
     --card-foreground: 210 40% 98%;
 
-    --popover: 50 10% 10%;
+    --popover: 50 10% 5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 50 100% 60%; /* #ffde59 - main yellow color */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 50 30% 15%; /* dark yellow secondary */
+    --secondary: 50 30% 10%; /* darker yellow secondary */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 50 30% 15%;
+    --muted: 50 30% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 50 100% 60%; /* #ffde59 */
@@ -26,8 +26,8 @@
     --destructive: 0 85% 40%; /* darker red for destructive actions */
     --destructive-foreground: 210 40% 98%;
 
-    --border: 50 30% 20%;
-    --input: 50 30% 20%;
+    --border: 50 30% 15%;
+    --input: 50 30% 15%;
     --ring: 50 100% 60%; /* #ffde59 */
   }
 }

@@ -2,22 +2,22 @@
 @layer base {
   /* Apply dark-green theme with increased specificity */
   html.dark-green, .dark-green:root {
-    --background: 0 0% 1%; /* #111111 - same dark background as other dark themes */
+    --background: 0 0% 0%; /* #000000 - pure black for background */
     --foreground: 210 40% 98%; /* same as dark theme */
 
-    --card: 120 10% 10%; /* slightly green-tinted dark for cards */
+    --card: 120 10% 5%; /* darker green-tinted for cards */
     --card-foreground: 210 40% 98%;
 
-    --popover: 120 10% 10%;
+    --popover: 120 10% 5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 100 61% 60%; /* #7ed957 - main green color */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 100 30% 15%; /* dark green secondary */
+    --secondary: 100 30% 10%; /* darker green secondary */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 100 30% 15%;
+    --muted: 100 30% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 100 61% 60%; /* #7ed957 */
@@ -26,8 +26,8 @@
     --destructive: 0 85% 40%; /* darker red for destructive actions */
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 30% 20%;
-    --input: 120 30% 20%;
+    --border: 120 30% 15%;
+    --input: 120 30% 15%;
     --ring: 100 61% 60%; /* #7ed957 */
   }
 }

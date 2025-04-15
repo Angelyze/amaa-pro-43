@@ -8,7 +8,7 @@
 .search-results .article-preview {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .search-results .article-preview:last-child {
@@ -19,7 +19,7 @@
 
 .search-results .article-meta {
   font-size: 0.75rem;
-  color: var(--muted-foreground);
+  color: hsl(var(--muted-foreground));
   margin-top: 0.5rem;
 }
 
@@ -33,6 +33,7 @@
   display: inline-block !important;
   pointer-events: auto !important;
   cursor: pointer !important;
+  /* Remove duplicate color declaration to use the one from base.css */
 }
 
 .search-results .article-description {
@@ -66,7 +67,7 @@
 .markdown-content h6,
 .markdown-content strong,
 .markdown-content em {
-  color: var(--foreground);
+  color: hsl(var(--foreground));
 }
 
 /* Enhanced article preview styling */
@@ -76,7 +77,7 @@
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 /* Responsive layout for article preview content */

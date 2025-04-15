@@ -2,22 +2,22 @@
 @layer base {
   /* Apply dark-purple theme with increased specificity */
   html.dark-purple, .dark-purple:root {
-    --background: 0 0% 1%; /* #111111 - same dark background as other dark themes */
+    --background: 0 0% 0%; /* #000000 - pure black for background */
     --foreground: 210 40% 98%; /* same as dark theme */
 
-    --card: 270 10% 10%; /* slightly purple-tinted dark for cards */
+    --card: 270 10% 5%; /* darker purple-tinted for cards */
     --card-foreground: 210 40% 98%;
 
-    --popover: 270 10% 10%;
+    --popover: 270 10% 5%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 265 100% 66%; /* #8c52ff - main purple color */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 270 30% 15%; /* dark purple secondary */
+    --secondary: 270 30% 10%; /* darker purple secondary */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 270 30% 15%;
+    --muted: 270 30% 10%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 265 100% 66%; /* #8c52ff */
@@ -26,8 +26,8 @@
     --destructive: 0 85% 40%; /* darker red for destructive actions */
     --destructive-foreground: 210 40% 98%;
 
-    --border: 270 30% 20%;
-    --input: 270 30% 20%;
+    --border: 270 30% 15%;
+    --input: 270 30% 15%;
     --ring: 265 100% 66%; /* #8c52ff */
   }
 }
