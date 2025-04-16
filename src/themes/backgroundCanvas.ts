@@ -108,11 +108,12 @@ export function initBackgroundCanvas(): void {
     let colorMultiplier = 1; // Default intensity
     
     if (isDark) {
-      // All dark themes use similar base color but darker
-      baseR = 30;
-      baseG = 30;
-      baseB = 30;
-      colorMultiplier = 0.5; // Slightly reduced intensity for dark themes
+      // CHANGE 1: Darker base RGB values (from 30 to 5)
+      baseR = 5;
+      baseG = 5;
+      baseB = 5;
+      // CHANGE 2: Higher blend factor (from 0.5 to 0.8)
+      colorMultiplier = 0.3; // Reduced intensity for dark themes (from 0.5 to 0.3)
     }
     
     // Convert primary color to RGB for influence
@@ -147,11 +148,11 @@ export function initBackgroundCanvas(): void {
     // Get primary color components for theme influence
     const [primaryR, primaryG, primaryB] = primaryRgb;
     
-    // Create color intensity based on theme but with same pattern
-    const intensity = isDark ? 30 : 64;
+    // CHANGE 3: Reduced color intensity (from 30 to 15)
+    const intensity = isDark ? 15 : 64;
     
-    // For dark themes, blend with the primary color
-    const blendFactor = isDark ? 0.5 : 0; // Only blend in dark themes
+    // CHANGE 4: Increased blend factor for dark themes (from 0.5 to 0.8)
+    const blendFactor = isDark ? 0.8 : 0; // Only blend in dark themes
     
     // Create the color generators with theme-specific adjustments
     return {
