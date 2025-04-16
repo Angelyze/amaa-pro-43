@@ -1,4 +1,3 @@
-
 /**
  * Initializes and runs the background canvas animation
  * Creates a smooth gradient animation that adapts to the current theme
@@ -108,12 +107,11 @@ export function initBackgroundCanvas(): void {
     let colorMultiplier = 1; // Default intensity
     
     if (isDark) {
-      // CHANGE 1: Darker base RGB values (from 30 to 5)
+      // Using very dark base values for multiplicative blending
       baseR = 5;
       baseG = 5;
       baseB = 5;
-      // CHANGE 2: Higher blend factor (from 0.5 to 0.8)
-      colorMultiplier = 0.3; // Reduced intensity for dark themes (from 0.5 to 0.3)
+      colorMultiplier = 0.3; // Reduced intensity for dark themes
     }
     
     // Convert primary color to RGB for influence
@@ -148,43 +146,59 @@ export function initBackgroundCanvas(): void {
     // Get primary color components for theme influence
     const [primaryR, primaryG, primaryB] = primaryRgb;
     
-    // CHANGE 3: Reduced color intensity (from 30 to 15)
-    const intensity = isDark ? 15 : 64;
-    
-    // CHANGE 4: Increased blend factor for dark themes (from 0.5 to 0.8)
-    const blendFactor = isDark ? 0.8 : 0; // Only blend in dark themes
+    // Lower intensity for dark themes
+    const intensity = isDark ? 10 : 64;
     
     // Create the color generators with theme-specific adjustments
     return {
       R: (x: number, y: number, t: number) => {
-        // Apply similar wave pattern to all themes
-        const baseValue = baseR + (intensity * Math.cos((x*x-y*y)/300 + t) * colorMultiplier);
-        // Blend with primary color in dark themes
-        const value = isDark 
-          ? baseValue * (1-blendFactor) + primaryR * blendFactor
-          : baseValue;
+        // Apply wave pattern to get base value
+        const waveComponent = Math.cos((x*x-y*y)/300 + t) * intensity * colorMultiplier;
+        
+        let value;
+        if (isDark) {
+          // Multiplicative blending for dark themes (darker result)
+          // Formula: (base * primaryColor) / 255 to keep result in 0-255 range
+          const baseValue = baseR + waveComponent;
+          value = (baseValue * primaryR) / 255;
+        } else {
+          // Keep the original additive formula for light themes
+          value = baseR + waveComponent;
+        }
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       },
       
       G: (x: number, y: number, t: number) => {
-        // Apply similar wave pattern to all themes
-        const baseValue = baseG + (intensity * Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300) * colorMultiplier);
-        // Blend with primary color in dark themes
-        const value = isDark 
-          ? baseValue * (1-blendFactor) + primaryG * blendFactor
-          : baseValue;
+        // Apply wave pattern to get base value
+        const waveComponent = Math.sin((x*x*Math.cos(t/4)+y*y*Math.sin(t/3))/300) * intensity * colorMultiplier;
+        
+        let value;
+        if (isDark) {
+          // Multiplicative blending for dark themes
+          const baseValue = baseG + waveComponent;
+          value = (baseValue * primaryG) / 255;
+        } else {
+          // Keep the original formula for light themes
+          value = baseG + waveComponent;
+        }
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       },
       
       B: (x: number, y: number, t: number) => {
-        // Apply similar wave pattern to all themes
-        const baseValue = baseB + (intensity * Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100) * colorMultiplier);
-        // Blend with primary color in dark themes
-        const value = isDark 
-          ? baseValue * (1-blendFactor) + primaryB * blendFactor
-          : baseValue;
+        // Apply wave pattern to get base value
+        const waveComponent = Math.sin(5*Math.sin(t/9) + ((x-100)*(x-100)+(y-100)*(y-100))/1100) * intensity * colorMultiplier;
+        
+        let value;
+        if (isDark) {
+          // Multiplicative blending for dark themes
+          const baseValue = baseB + waveComponent;
+          value = (baseValue * primaryB) / 255;
+        } else {
+          // Keep the original formula for light themes
+          value = baseB + waveComponent;
+        }
         
         return Math.floor(Math.max(0, Math.min(255, value)));
       }
