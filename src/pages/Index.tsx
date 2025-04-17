@@ -27,7 +27,8 @@ import {
   getGuestQueryCount,
   incrementGuestQueryCount,
   GUEST_CONVERSATION_ID,
-  clearGuestMessages
+  clearGuestMessages,
+  saveMessagesToConversation
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
 
@@ -175,21 +176,25 @@ const Index = () => {
       let finalFileData = uploadedFileData;
       
       if (user) {
-        let conversationId = currentConversationId;
-        if (!conversationId) {
-          const defaultTitle = content.substring(0, 30) + (content.length > 30 ? '...' : '');
-          const newConversation = await createConversation(defaultTitle);
-          conversationId = newConversation.id;
-          setCurrentConversationId(conversationId);
-          setConversations([newConversation, ...conversations]);
-        }
+        let userMessage: ExtendedMessage;
         
-        const userMessage = await createMessage(
-          conversationId, 
-          messageContent, 
-          'user',
-          finalFileData
-        );
+        if (currentConversationId) {
+          userMessage = await createMessage(
+            currentConversationId, 
+            messageContent, 
+            'user',
+            finalFileData
+          );
+        } else {
+          userMessage = {
+            id: crypto.randomUUID(),
+            conversation_id: 'temp',
+            content: messageContent,
+            type: 'user',
+            created_at: new Date().toISOString(),
+            fileData: finalFileData
+          };
+        }
         
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
@@ -258,21 +263,37 @@ const Index = () => {
         const assistantContent = response.data.response;
         
         if (user) {
-          try {
-            console.log('Creating message for user with conversation_id:', currentConversationId);
-            const assistantMessage = await createMessage(currentConversationId!, assistantContent, 'assistant');
-            setMessages(prev => [...prev, assistantMessage]);
-            loadConversations();
-          } catch (error) {
-            console.error('Error creating assistant message:', error);
-            toast.error('Failed to save assistant message, but here is the response:');
-            setMessages(prev => [...prev, {
+          let assistantMessage: ExtendedMessage;
+          
+          if (currentConversationId) {
+            try {
+              console.log('Creating message for user with conversation_id:', currentConversationId);
+              assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
+            } catch (error) {
+              console.error('Error creating assistant message:', error);
+              toast.error('Failed to save assistant message, but here is the response:');
+              assistantMessage = {
+                id: crypto.randomUUID(),
+                conversation_id: currentConversationId,
+                content: assistantContent,
+                type: 'assistant',
+                created_at: new Date().toISOString()
+              };
+            }
+          } else {
+            assistantMessage = {
               id: crypto.randomUUID(),
-              conversation_id: currentConversationId!,
+              conversation_id: 'temp',
               content: assistantContent,
               type: 'assistant',
               created_at: new Date().toISOString()
-            }]);
+            };
+          }
+          
+          setMessages(prev => [...prev, assistantMessage]);
+          
+          if (currentConversationId) {
+            loadConversations();
           }
         } else {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
@@ -334,28 +355,41 @@ const Index = () => {
           data: fileData as string
         };
         
-        if (user && currentConversationId) {
-          try {
-            const assistantMessage = await createMessage(
-              currentConversationId, 
-              assistantContent, 
-              'assistant',
-              isImageFile(file.type) ? fileResponse : undefined
-            );
-            
-            setMessages(prev => [...prev, assistantMessage]);
-          } catch (error) {
-            console.error('Error creating assistant message:', error);
-            toast.error('Failed to save assistant message, but here is the response:');
-            setMessages(prev => [...prev, {
+        if (user) {
+          let assistantMessage: ExtendedMessage;
+          
+          if (currentConversationId) {
+            try {
+              assistantMessage = await createMessage(
+                currentConversationId, 
+                assistantContent, 
+                'assistant',
+                isImageFile(file.type) ? fileResponse : undefined
+              );
+            } catch (error) {
+              console.error('Error creating assistant message:', error);
+              toast.error('Failed to save assistant message, but here is the response:');
+              assistantMessage = {
+                id: crypto.randomUUID(),
+                conversation_id: currentConversationId,
+                content: assistantContent,
+                type: 'assistant',
+                created_at: new Date().toISOString(),
+                fileData: isImageFile(file.type) ? fileResponse : undefined
+              };
+            }
+          } else {
+            assistantMessage = {
               id: crypto.randomUUID(),
-              conversation_id: currentConversationId,
+              conversation_id: 'temp',
               content: assistantContent,
               type: 'assistant',
               created_at: new Date().toISOString(),
               fileData: isImageFile(file.type) ? fileResponse : undefined
-            }]);
+            };
           }
+          
+          setMessages(prev => [...prev, assistantMessage]);
         } else {
           const assistantMessage = saveGuestMessage({ 
             content: assistantContent, 
@@ -420,19 +454,42 @@ const Index = () => {
   };
 
   const handleSaveConversation = async (customTitle?: string) => {
-    if (!currentConversationId) {
-      toast.error('No conversation to save');
-      return;
-    }
-    
     try {
-      const conversation = conversations.find(c => c.id === currentConversationId);
-      if (!conversation) return;
+      if (!user) {
+        toast.error('Please log in to save conversations');
+        return;
+      }
       
-      const title = customTitle || conversation.title;
-      await updateConversationTitle(currentConversationId, title);
+      if (messages.length === 0) {
+        toast.error('No conversation to save');
+        return;
+      }
       
-      loadConversations();
+      if (currentConversationId && currentConversationId !== 'temp') {
+        const conversation = conversations.find(c => c.id === currentConversationId);
+        if (!conversation) return;
+        
+        const title = customTitle || conversation.title;
+        await updateConversationTitle(currentConversationId, title);
+        
+        loadConversations();
+        toast.success('Conversation updated successfully');
+        return;
+      }
+      
+      const firstUserMessage = messages.find(m => m.type === 'user');
+      const defaultTitle = firstUserMessage 
+        ? firstUserMessage.content.substring(0, 30) + (firstUserMessage.content.length > 30 ? '...' : '') 
+        : 'New Conversation';
+      
+      const title = customTitle || defaultTitle;
+      
+      const newConversation = await createConversation(title, user.id);
+      setCurrentConversationId(newConversation.id);
+      
+      await saveMessagesToConversation(newConversation.id, messages);
+      
+      await loadConversations();
       
       toast.success('Conversation saved successfully');
     } catch (error) {

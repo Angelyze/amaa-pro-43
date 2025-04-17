@@ -1,5 +1,5 @@
+
 import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
 
 export interface Conversation {
   id: string;
@@ -88,22 +88,14 @@ export const getConversations = async (): Promise<Conversation[]> => {
   return data || [];
 };
 
-export const createConversation = async (title: string): Promise<Conversation> => {
-  // Get the current user
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user;
-  
-  if (!user) {
-    throw new Error('User must be logged in to create a conversation');
-  }
-
-  console.log('Creating conversation with user_id:', user.id);
+export const createConversation = async (title: string, userId: string): Promise<Conversation> => {
+  console.log('Creating conversation with user_id:', userId);
   
   const { data, error } = await supabase
     .from('conversations')
     .insert({ 
       title, 
-      user_id: user.id 
+      user_id: userId 
     })
     .select()
     .single();
@@ -189,4 +181,29 @@ export const createMessage = async (conversationId: string, content: string, typ
     ...data,
     fileData: data.file_data
   } as ExtendedMessage;
+};
+
+// Save temp messages in bulk to a conversation
+export const saveMessagesToConversation = async (
+  conversationId: string, 
+  messages: ExtendedMessage[]
+): Promise<void> => {
+  if (!messages.length) return;
+  
+  const messagesToSave = messages.map(msg => ({
+    conversation_id: conversationId,
+    content: msg.content,
+    type: msg.type,
+    created_at: msg.created_at,
+    file_data: msg.fileData
+  }));
+  
+  const { error } = await supabase
+    .from('messages')
+    .insert(messagesToSave);
+  
+  if (error) {
+    console.error('Error saving messages to conversation:', error);
+    throw error;
+  }
 };
