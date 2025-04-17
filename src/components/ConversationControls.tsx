@@ -36,6 +36,13 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
   currentMessages,
   savedConversations
 }) => {
+  const handleSaveConversation = () => {
+    const title = prompt('Enter a name for this conversation:', '');
+    if (title === null) return; // User cancelled
+    
+    onSaveConversation(title || undefined);
+  };
+
   const handleRename = (id: string) => {
     const conversation = savedConversations.find(c => c.id === id);
     if (!conversation) return;
@@ -50,6 +57,10 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
     if (confirm('Are you sure you want to delete this conversation?')) {
       onDeleteConversation(id);
     }
+  };
+
+  const handleLoadConversation = (conversation: SavedConversation) => {
+    onLoadConversation(conversation);
   };
 
   return (
@@ -67,7 +78,7 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
       <Button 
         variant="outline" 
         size="sm" 
-        onClick={() => onSaveConversation()}
+        onClick={handleSaveConversation}
         className="gap-1.5"
         disabled={currentMessages.length === 0}
       >
@@ -92,11 +103,15 @@ const ConversationControls: React.FC<ConversationControlsProps> = ({
             <DropdownMenuItem disabled>No saved conversations</DropdownMenuItem>
           ) : (
             savedConversations.map((conversation) => (
-              <DropdownMenuItem key={conversation.id} className="flex items-center justify-between py-2">
-                <span 
-                  className="flex-grow truncate hover:cursor-pointer" 
-                  onClick={() => onLoadConversation(conversation)}
-                >
+              <DropdownMenuItem 
+                key={conversation.id} 
+                className="flex items-center justify-between py-2"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  handleLoadConversation(conversation);
+                }}
+              >
+                <span className="flex-grow truncate hover:cursor-pointer">
                   {conversation.title}
                 </span>
                 <div className="flex items-center gap-1 ml-2">

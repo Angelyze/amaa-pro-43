@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -50,6 +51,7 @@ const Index = () => {
   const { user, signOut, isPremium } = useAuth();
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -96,13 +98,13 @@ const Index = () => {
     return () => {
       document.body.removeAttribute('data-user-logged-in');
     };
-  }, [user, currentConversationId, isPremium]);
+  }, [user, isPremium]);
 
   useEffect(() => {
-    if (currentConversationId && user) {
+    if (currentConversationId && user && !isSaving) {
       loadMessages(currentConversationId);
     }
-  }, [currentConversationId, user]);
+  }, [currentConversationId, user, isSaving]);
   
   const loadConversations = async () => {
     try {
@@ -465,18 +467,26 @@ const Index = () => {
         return;
       }
       
+      setIsSaving(true);
+      
+      // If the conversation exists, just update the title
       if (currentConversationId && currentConversationId !== 'temp') {
         const conversation = conversations.find(c => c.id === currentConversationId);
-        if (!conversation) return;
+        if (!conversation) {
+          setIsSaving(false);
+          return;
+        }
         
         const title = customTitle || conversation.title;
         await updateConversationTitle(currentConversationId, title);
         
-        loadConversations();
+        await loadConversations();
         toast.success('Conversation updated successfully');
+        setIsSaving(false);
         return;
       }
       
+      // Creating a new conversation
       const firstUserMessage = messages.find(m => m.type === 'user');
       const defaultTitle = firstUserMessage 
         ? firstUserMessage.content.substring(0, 30) + (firstUserMessage.content.length > 30 ? '...' : '') 
@@ -484,17 +494,30 @@ const Index = () => {
       
       const title = customTitle || defaultTitle;
       
+      // Create the conversation first
       const newConversation = await createConversation(title, user.id);
+      
+      // Save all messages to the new conversation
+      await saveMessagesToConversation(newConversation.id, messages);
+      
+      // Update local state only after all DB operations are complete
       setCurrentConversationId(newConversation.id);
       
-      await saveMessagesToConversation(newConversation.id, messages);
+      // Update local copy of messages to reflect the new conversation ID
+      const updatedMessages = messages.map(msg => ({
+        ...msg,
+        conversation_id: newConversation.id
+      }));
+      setMessages(updatedMessages);
       
       await loadConversations();
       
       toast.success('Conversation saved successfully');
+      setIsSaving(false);
     } catch (error) {
       console.error('Error saving conversation:', error);
       toast.error('Failed to save conversation');
+      setIsSaving(false);
     }
   };
 
