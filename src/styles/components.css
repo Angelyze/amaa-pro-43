@@ -1,7 +1,7 @@
 
 @layer components {
   .amaa-input {
-    @apply w-full px-6 py-4 bg-white dark:bg-background/50 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
+    @apply w-full px-6 py-4 bg-white dark:bg-background/90 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 glass shadow-glass-sm hover:shadow-glass;
   }
 
   .amaa-button {
