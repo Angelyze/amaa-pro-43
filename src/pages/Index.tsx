@@ -1,67 +1,72 @@
+
 import React, { useEffect, useRef, useState } from 'react';
-import AMAAChatBox from '../components/AMAAChatBox';
-import Header from '../components/Header';
-import Logo from '../components/Logo';
-import Message from '../components/Message';
-import LoadingIndicator from '../components/LoadingIndicator';
-import ConversationControls from '../components/ConversationControls';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Info, Heart, LogIn, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
+import Header from '../components/Header';
 import UserMenu from '../components/UserMenu';
+import MainSearch from '../components/MainSearch';
+import MessagesList from '../components/MessagesList';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  Conversation,
-  Message as MessageType,
+import { useConversation } from '@/hooks/useConversation';
+import { useMessageProcessor } from '@/hooks/useMessageProcessor';
+import { 
   ExtendedMessage,
-  createConversation,
-  createMessage,
-  getConversations,
-  getMessages,
-  deleteConversation,
-  updateConversationTitle,
   getGuestMessages,
-  saveGuestMessage,
   getGuestQueryCount,
-  incrementGuestQueryCount,
-  GUEST_CONVERSATION_ID,
-  clearGuestMessages,
-  saveMessagesToConversation
+  GUEST_CONVERSATION_ID
 } from '@/services/conversationService';
-import { SavedConversation } from '@/components/ConversationControls';
 
 const MAX_GUEST_QUERIES = 10;
 
 const Index = () => {
-  const [messages, setMessages] = useState<ExtendedMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadedFileData, setUploadedFileData] = useState<{
-    type: string;
-    name: string;
-    data: string;
-  } | null>(null);
+  const [guestQueriesCount, setGuestQueriesCount] = useState(0);
   
   const { user, signOut, isPremium } = useAuth();
-  const [guestQueriesCount, setGuestQueriesCount] = useState(0);
-  const [isVoiceActive, setIsVoiceActive] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const navigate = useNavigate();
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const loadingIndicatorRef = useRef<HTMLDivElement>(null);
   
+  // Initialize conversation management
+  const {
+    conversations,
+    messages,
+    setMessages,
+    currentConversationId,
+    setCurrentConversationId,
+    isLoading,
+    setIsLoading,
+    saveConversation,
+    renameConversation,
+    deleteConversation,
+    addMessage,
+    resetConversation
+  } = useConversation(user?.id);
+
+  // Initialize message processor
+  const {
+    uploadedFile,
+    isVoiceActive,
+    setIsVoiceActive,
+    handleSendMessage,
+    handleUploadFile
+  } = useMessageProcessor({
+    isPremium,
+    guestQueriesCount,
+    maxGuestQueries: MAX_GUEST_QUERIES,
+    user,
+    currentConversationId,
+    addMessage,
+    setIsLoading,
+    setGuestQueriesCount
+  });
+  
+  // Load initial data based on user status
   useEffect(() => {
     if (user) {
       document.body.setAttribute('data-user-logged-in', 'true');
-      
-      loadConversations();
       
       if (isPremium) {
         setGuestQueriesCount(0);
@@ -99,38 +104,6 @@ const Index = () => {
     };
   }, [user, isPremium]);
 
-  useEffect(() => {
-    if (currentConversationId && user && !isSaving) {
-      loadMessages(currentConversationId);
-    }
-  }, [currentConversationId, user, isSaving]);
-  
-  const loadConversations = async () => {
-    try {
-      const conversationList = await getConversations();
-      setConversations(conversationList);
-    } catch (error) {
-      console.error('Error loading conversations:', error);
-      toast.error('Failed to load conversations');
-    }
-  };
-  
-  const loadMessages = async (conversationId: string) => {
-    try {
-      const messageList = await getMessages(conversationId);
-      setMessages(messageList);
-    } catch (error) {
-      console.error('Error loading messages:', error);
-      toast.error('Failed to load messages');
-    }
-  };
-  
-  const scrollToLoadingIndicator = () => {
-    if (loadingIndicatorRef.current) {
-      loadingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-
   const handleScroll = () => {
     if (!mainSearchRef.current) return;
     
@@ -148,408 +121,13 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
-  useEffect(() => {
-    if (isLoading && loadingIndicatorRef.current) {
-      scrollToLoadingIndicator();
-    }
-  }, [isLoading]);
-  
-  const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
-    try {
-      const userHasReachedLimit = !isPremium && guestQueriesCount >= MAX_GUEST_QUERIES;
-      
-      if (userHasReachedLimit) {
-        toast.error(
-          "You've reached the maximum number of free queries. Subscribe for unlimited access!",
-          { 
-            duration: 8000,
-            action: {
-              label: "Subscribe",
-              onClick: () => window.location.href = "/subscribe"
-            }
-          }
-        );
-        return;
-      }
-      
-      let messageContent = content;
-      let finalFileData = uploadedFileData;
-      
-      if (user) {
-        let userMessage: ExtendedMessage;
-        
-        if (currentConversationId) {
-          userMessage = await createMessage(
-            currentConversationId, 
-            messageContent, 
-            'user',
-            finalFileData
-          );
-        } else {
-          userMessage = {
-            id: crypto.randomUUID(),
-            conversation_id: 'temp',
-            content: messageContent,
-            type: 'user',
-            created_at: new Date().toISOString(),
-            fileData: finalFileData
-          };
-        }
-        
-        setMessages(prev => [...prev, userMessage]);
-        setIsLoading(true);
-        
-        if (!isPremium) {
-          const newCount = incrementGuestQueryCount();
-          setGuestQueriesCount(newCount);
-          
-          if (newCount === MAX_GUEST_QUERIES) {
-            toast.warning(
-              "This is your last free query. Subscribe for unlimited access.",
-              { 
-                duration: 5000,
-                action: {
-                  label: "Subscribe",
-                  onClick: () => window.location.href = "/subscribe"
-                }
-              }
-            );
-          }
-        }
-      } else {
-        const newCount = incrementGuestQueryCount();
-        setGuestQueriesCount(newCount);
-        
-        if (newCount === MAX_GUEST_QUERIES) {
-          toast.warning(
-            "This is your last free query. Subscribe for unlimited access.",
-            { 
-              duration: 5000,
-              action: {
-                label: "Subscribe",
-                onClick: () => window.location.href = "/subscribe"
-              }
-            }
-          );
-        }
-        
-        const userMessage = saveGuestMessage({ 
-          content: messageContent, 
-          type: 'user',
-          fileData: finalFileData
-        });
-        
-        setMessages(prev => [...prev, userMessage]);
-        setIsLoading(true);
-      }
-      
-      if (uploadedFile && type !== 'web-search') {
-        await processFileWithQuestion(content, uploadedFile);
-      } else {
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-        
-        const response = await supabase.functions.invoke('ai-service', {
-          body: { message: content, type },
-          headers: session ? {
-            'Authorization': `Bearer ${session.access_token}`
-          } : {}
-        });
-        
-        if (response.error) {
-          throw new Error(response.error.message);
-        }
-        
-        const assistantContent = response.data.response;
-        
-        if (user) {
-          let assistantMessage: ExtendedMessage;
-          
-          if (currentConversationId) {
-            try {
-              console.log('Creating message for user with conversation_id:', currentConversationId);
-              assistantMessage = await createMessage(currentConversationId, assistantContent, 'assistant');
-            } catch (error) {
-              console.error('Error creating assistant message:', error);
-              toast.error('Failed to save assistant message, but here is the response:');
-              assistantMessage = {
-                id: crypto.randomUUID(),
-                conversation_id: currentConversationId,
-                content: assistantContent,
-                type: 'assistant',
-                created_at: new Date().toISOString()
-              };
-            }
-          } else {
-            assistantMessage = {
-              id: crypto.randomUUID(),
-              conversation_id: 'temp',
-              content: assistantContent,
-              type: 'assistant',
-              created_at: new Date().toISOString()
-            };
-          }
-          
-          setMessages(prev => [...prev, assistantMessage]);
-          
-          if (currentConversationId) {
-            loadConversations();
-          }
-        } else {
-          const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
-          setMessages(prev => [...prev, assistantMessage]);
-        }
-        
-        setUploadedFile(null);
-        setUploadedFileData(null);
-        
-        setIsVoiceActive(false);
-      }
-    } catch (error) {
-      console.error('Error in conversation:', error);
-      toast.error('An error occurred while processing your request');
-      setIsVoiceActive(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  const processFileWithQuestion = async (question: string, file: File) => {
-    try {
-      const reader = new FileReader();
-      
-      reader.onload = async (e) => {
-        const fileData = e.target?.result;
-        if (!fileData) {
-          toast.error('Error reading file');
-          return;
-        }
-        
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-        
-        const response = await supabase.functions.invoke('ai-service', {
-          body: { 
-            message: question,
-            type: 'upload',
-            file: {
-              name: file.name,
-              type: file.type,
-              data: fileData
-            },
-            photoContext: question
-          },
-          headers: session ? {
-            'Authorization': `Bearer ${session.access_token}`
-          } : {}
-        });
-        
-        if (response.error) {
-          throw new Error(response.error.message);
-        }
-        
-        const assistantContent = response.data.response;
-        const fileResponse = {
-          type: file.type,
-          name: file.name,
-          data: fileData as string
-        };
-        
-        if (user) {
-          let assistantMessage: ExtendedMessage;
-          
-          if (currentConversationId) {
-            try {
-              assistantMessage = await createMessage(
-                currentConversationId, 
-                assistantContent, 
-                'assistant',
-                isImageFile(file.type) ? fileResponse : undefined
-              );
-            } catch (error) {
-              console.error('Error creating assistant message:', error);
-              toast.error('Failed to save assistant message, but here is the response:');
-              assistantMessage = {
-                id: crypto.randomUUID(),
-                conversation_id: currentConversationId,
-                content: assistantContent,
-                type: 'assistant',
-                created_at: new Date().toISOString(),
-                fileData: isImageFile(file.type) ? fileResponse : undefined
-              };
-            }
-          } else {
-            assistantMessage = {
-              id: crypto.randomUUID(),
-              conversation_id: 'temp',
-              content: assistantContent,
-              type: 'assistant',
-              created_at: new Date().toISOString(),
-              fileData: isImageFile(file.type) ? fileResponse : undefined
-            };
-          }
-          
-          setMessages(prev => [...prev, assistantMessage]);
-        } else {
-          const assistantMessage = saveGuestMessage({ 
-            content: assistantContent, 
-            type: 'assistant',
-            fileData: isImageFile(file.type) ? fileResponse : undefined
-          });
-          
-          setMessages(prev => [...prev, assistantMessage]);
-        }
-        
-        setUploadedFile(null);
-        setUploadedFileData(null);
-      };
-      
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error processing file with question:', error);
-      toast.error('An error occurred while processing your file');
-      throw error;
-    }
-  };
-  
-  const isImageFile = (fileType: string): boolean => {
-    return fileType.startsWith('image/');
-  };
-  
-  const handleUploadFile = async (file: File) => {
-    try {
-      setUploadedFile(file);
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileData = e.target?.result as string;
-        setUploadedFileData({
-          type: file.type,
-          name: file.name,
-          data: fileData
-        });
-      };
-      reader.readAsDataURL(file);
-      
-      toast.success(`File uploaded: ${file.name}. Please ask a question about it.`);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      toast.error('An error occurred while uploading your file');
-    }
-  };
-
-  const handleVoiceInput = () => {
-    setIsVoiceActive(!isVoiceActive);
-  };
 
   const handleNewConversation = () => {
     if (messages.length > 0) {
       if (confirm('Start a new conversation? This will clear the current conversation.')) {
-        setMessages([]);
-        setCurrentConversationId(null);
-        setUploadedFile(null);
+        resetConversation();
         scrollToTop();
       }
-    }
-  };
-
-  const handleSaveConversation = async (customTitle?: string) => {
-    try {
-      if (!user) {
-        toast.error('Please log in to save conversations');
-        return;
-      }
-      
-      if (messages.length === 0) {
-        toast.error('No conversation to save');
-        return;
-      }
-      
-      setIsSaving(true);
-      
-      if (currentConversationId && currentConversationId !== 'temp') {
-        const conversation = conversations.find(c => c.id === currentConversationId);
-        if (!conversation) {
-          setIsSaving(false);
-          return;
-        }
-        
-        const title = customTitle || conversation.title;
-        await updateConversationTitle(currentConversationId, title);
-        
-        await loadConversations();
-        toast.success('Conversation updated successfully');
-        setIsSaving(false);
-        return;
-      }
-      
-      const firstUserMessage = messages.find(m => m.type === 'user');
-      const defaultTitle = firstUserMessage 
-        ? firstUserMessage.content.substring(0, 30) + (firstUserMessage.content.length > 30 ? '...' : '') 
-        : 'New Conversation';
-      
-      const title = customTitle || defaultTitle;
-      
-      const newConversation = await createConversation(title, user.id);
-      
-      await saveMessagesToConversation(newConversation.id, messages);
-      
-      setCurrentConversationId(newConversation.id);
-      
-      const updatedMessages = messages.map(msg => ({
-        ...msg,
-        conversation_id: newConversation.id
-      }));
-      setMessages(updatedMessages);
-      
-      await loadConversations();
-      
-      toast.success('Conversation saved successfully');
-      setIsSaving(false);
-    } catch (error) {
-      console.error('Error saving conversation:', error);
-      toast.error('Failed to save conversation');
-      setIsSaving(false);
-    }
-  };
-
-  const handleLoadConversation = (conversation: SavedConversation) => {
-    const conversationId = conversation.id;
-    setCurrentConversationId(conversationId);
-    setUploadedFile(null);
-    toast.success(`Loaded conversation: ${conversation.title}`);
-  };
-
-  const handleRenameConversation = async (id: string, newTitle: string) => {
-    try {
-      await updateConversationTitle(id, newTitle);
-      
-      loadConversations();
-      
-      toast.success('Conversation renamed');
-    } catch (error) {
-      console.error('Error renaming conversation:', error);
-      toast.error('Failed to rename conversation');
-    }
-  };
-
-  const handleDeleteConversation = async (id: string) => {
-    try {
-      await deleteConversation(id);
-      
-      if (id === currentConversationId) {
-        setCurrentConversationId(null);
-        setMessages([]);
-        setUploadedFile(null);
-      }
-      
-      loadConversations();
-      
-      toast.success('Conversation deleted');
-    } catch (error) {
-      console.error('Error deleting conversation:', error);
-      toast.error('Failed to delete conversation');
     }
   };
 
@@ -557,15 +135,7 @@ const Index = () => {
     handleSendMessage(topic, 'web-search');
   };
 
-  const displayMessages = messages.map(msg => ({
-    id: msg.id,
-    content: msg.content,
-    type: msg.type,
-    timestamp: msg.created_at,
-    fileData: msg.fileData
-  })).reverse();
-
-  const savedConversations: SavedConversation[] = conversations.map(conv => ({
+  const savedConversations = conversations.map(conv => ({
     id: conv.id,
     title: conv.title,
     messages: [],
@@ -624,89 +194,33 @@ const Index = () => {
             )}
           </div>
           
-          <div 
-            ref={mainSearchRef}
-            className="min-h-[50vh] flex flex-col items-center justify-center py-6"
-          >
-            <Logo />
-            
-            <div className="w-full max-w-3xl mt-8">
-              <AMAAChatBox 
-                onSendMessage={handleSendMessage}
-                onUploadFile={handleUploadFile}
-                onVoiceInput={handleVoiceInput}
-                disabled={guestQueriesCount >= MAX_GUEST_QUERIES && !isPremium}
-              />
-            </div>
-            
-            <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
-              <Info size={12} />
-              <span>
-                {user ? (
-                  isPremium ? (
-                    "You are a Premium user, using the unlimited capabilities of the app."
-                  ) : (
-                    <>
-                      Free users have 10 queries. 
-                      <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
-                        Go Premium
-                      </Link> 
-                      for unlimited access and much more.
-                    </>
-                  )
-                ) : (
-                  <>
-                    Free users have 10 queries. 
-                    <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
-                      Go Premium
-                    </Link> 
-                    for unlimited access and much more.
-                  </>
-                )}
-              </span>
-            </div>
-
-            {user && (
-              <ConversationControls 
-                onNewConversation={handleNewConversation}
-                onSaveConversation={handleSaveConversation}
-                onLoadConversation={handleLoadConversation}
-                onRenameConversation={handleRenameConversation}
-                onDeleteConversation={handleDeleteConversation}
-                savedConversations={savedConversations}
-                currentMessages={messages}
-              />
-            )}
+          <div ref={mainSearchRef}>
+            <MainSearch
+              onSendMessage={handleSendMessage}
+              onUploadFile={handleUploadFile}
+              onVoiceInput={() => setIsVoiceActive(!isVoiceActive)}
+              onNewConversation={handleNewConversation}
+              onSaveConversation={saveConversation}
+              onLoadConversation={(conv) => {
+                setCurrentConversationId(conv.id);
+                toast.success(`Loaded conversation: ${conv.title}`);
+              }}
+              onRenameConversation={renameConversation}
+              onDeleteConversation={deleteConversation}
+              savedConversations={savedConversations}
+              currentMessages={messages}
+              isDisabled={guestQueriesCount >= MAX_GUEST_QUERIES && !isPremium}
+              isPremium={isPremium}
+              isLoggedIn={!!user}
+            />
           </div>
           
-          {displayMessages.length > 0 && (
-            <div 
-              id="messages-section" 
-              ref={messagesContainerRef} 
-              className="w-full mx-auto mt-0 mb-8"
-            >
-              <div className="space-y-4">
-                {isLoading && (
-                  <div ref={loadingIndicatorRef}>
-                    <LoadingIndicator />
-                  </div>
-                )}
-                
-                {displayMessages.map((message, index) => (
-                  <div key={message.id}>
-                    <Message
-                      content={message.content}
-                      type={message.type}
-                      timestamp={message.timestamp}
-                      fileData={message.fileData}
-                      onTopicClick={handleTopicClick}
-                    />
-                  </div>
-                ))}
-                
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
+          {messages.length > 0 && (
+            <MessagesList 
+              messages={messages}
+              isLoading={isLoading}
+              onTopicClick={handleTopicClick}
+            />
           )}
         </div>
       </main>
