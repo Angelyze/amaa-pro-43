@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import AMAAChatBox from '../components/AMAAChatBox';
 import Header from '../components/Header';
@@ -33,7 +32,7 @@ import {
 } from '@/services/conversationService';
 import { SavedConversation } from '@/components/ConversationControls';
 
-const MAX_GUEST_QUERIES = 5;
+const MAX_GUEST_QUERIES = 10;
 
 const Index = () => {
   const [messages, setMessages] = useState<ExtendedMessage[]>([]);
@@ -469,7 +468,6 @@ const Index = () => {
       
       setIsSaving(true);
       
-      // If the conversation exists, just update the title
       if (currentConversationId && currentConversationId !== 'temp') {
         const conversation = conversations.find(c => c.id === currentConversationId);
         if (!conversation) {
@@ -486,7 +484,6 @@ const Index = () => {
         return;
       }
       
-      // Creating a new conversation
       const firstUserMessage = messages.find(m => m.type === 'user');
       const defaultTitle = firstUserMessage 
         ? firstUserMessage.content.substring(0, 30) + (firstUserMessage.content.length > 30 ? '...' : '') 
@@ -494,16 +491,12 @@ const Index = () => {
       
       const title = customTitle || defaultTitle;
       
-      // Create the conversation first
       const newConversation = await createConversation(title, user.id);
       
-      // Save all messages to the new conversation
       await saveMessagesToConversation(newConversation.id, messages);
       
-      // Update local state only after all DB operations are complete
       setCurrentConversationId(newConversation.id);
       
-      // Update local copy of messages to reflect the new conversation ID
       const updatedMessages = messages.map(msg => ({
         ...msg,
         conversation_id: newConversation.id
@@ -654,7 +647,7 @@ const Index = () => {
                     "You are a Premium user, using the unlimited capabilities of the app."
                   ) : (
                     <>
-                      Free users have 5 queries. 
+                      Free users have 10 queries. 
                       <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
                         Go Premium
                       </Link> 
@@ -663,7 +656,7 @@ const Index = () => {
                   )
                 ) : (
                   <>
-                    Free users have 5 queries. 
+                    Free users have 10 queries. 
                     <Link to="/subscribe" className="text-teal hover:text-teal-light hover:underline mx-1">
                       Go Premium
                     </Link> 
