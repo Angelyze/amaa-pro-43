@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -21,6 +22,11 @@ serve(async (req) => {
   }
   
   try {
+    // Log full request info for debugging
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
+    
     const { message, type, file, photoContext } = await req.json();
     console.log('Received request:', { 
       message, 
@@ -33,9 +39,11 @@ serve(async (req) => {
     if (type === 'web-search') {
       return await handlePerplexitySearch(message);
     } else if (type === 'upload' && file) {
+      // Only process the file if we have context from the user
       if (photoContext) {
         return await handleGeminiFileAnalysis(photoContext, file);
       } else {
+        // Just acknowledge that we received the file but don't process it yet
         return new Response(
           JSON.stringify({ 
             response: "I've received your file. What would you like to know about it?",
@@ -69,26 +77,9 @@ serve(async (req) => {
 });
 
 async function handleGeminiRegularChat(message: string) {
+  // Try each API key until one works
   let lastError = null;
   
-  const systemPrompt = `You are a helpful AI assistant that provides accurate, relevant, and engaging responses. Think carefully about each question and provide thoughtful answers.
-
-Your responses should:
-1. Be direct and focused on answering the user's question
-2. Use clear, natural language
-3. Include relevant details and context
-4. Be accurate and fact-based
-5. Be helpful while maintaining appropriate boundaries
-
-Format your responses using proper Markdown when it enhances clarity:
-- Use headings (## or ###) to organize information
-- Format code with backticks
-- Use bullet points for lists
-- Include source links when referencing external information
-- Structure with clear paragraphs
-
-Remember: Focus on answering the user's question first, then add supporting details if relevant.`;
-
   for (const apiKey of GEMINI_API_KEYS) {
     if (!apiKey) continue;
     
@@ -102,12 +93,20 @@ Remember: Focus on answering the user's question first, then add supporting deta
         body: JSON.stringify({
           contents: [
             {
-              role: "system",
-              parts: [{ text: systemPrompt }]
-            },
-            {
               role: "user",
-              parts: [{ text: message }]
+              parts: [{ 
+                text: `${message}
+                
+                FORMATTING INSTRUCTIONS:
+                - Use proper Markdown formatting in your response
+                - For links, use the full Markdown syntax: [link text](https://example.com)
+                - Use headings (##, ###) to organize information
+                - Use bullet points (*) or numbered lists (1.) where appropriate
+                - Format code snippets with backticks or code blocks
+                - Use bold and italic formatting when it enhances readability
+                - Include source links when referencing external information
+                - Structure information with clear sections and paragraphs`
+              }]
             }
           ],
           generationConfig: {
@@ -127,6 +126,7 @@ Remember: Focus on answering the user's question first, then add supporting deta
         throw new Error(`Gemini API error: ${data.error.message || JSON.stringify(data.error)}`);
       }
       
+      // Extract the response text
       const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
       
       return new Response(
@@ -144,9 +144,11 @@ Remember: Focus on answering the user's question first, then add supporting deta
     } catch (error) {
       console.error(`Error with Gemini API key: ${error.message}`);
       lastError = error;
+      // Continue to the next API key
     }
   }
   
+  // If we get here, all API keys failed
   return new Response(
     JSON.stringify({ error: `All Gemini API keys failed. Last error: ${lastError?.message}` }),
     { 
@@ -160,6 +162,7 @@ Remember: Focus on answering the user's question first, then add supporting deta
 }
 
 async function handleGeminiFileAnalysis(message: string, file: any) {
+  // Process file analysis only when we have context from the user
   const apiKey = GEMINI_API_KEYS.find(key => key) || '';
   
   if (!apiKey) {
@@ -177,13 +180,16 @@ async function handleGeminiFileAnalysis(message: string, file: any) {
   
   try {
     console.log('Processing file analysis with context:', message);
+    // Handle file analysis request
     let fileData = file.data;
     let imageData;
     
+    // If the file data is in base64 format, use it directly
     if (typeof fileData === 'string' && fileData.startsWith('data:')) {
       imageData = fileData;
     } else {
-      imageData = `data:${file.type};base64,${fileData.replace(/^data:image\/\w+;base64,/, '')}`;
+      // Convert to base64 if needed
+      imageData = `data:${file.type};base64,${fileData}`;
     }
     
     const payload = {
@@ -271,6 +277,7 @@ async function handlePerplexitySearch(message: string) {
   try {
     console.log('Sending search query to Perplexity API:', message);
     
+    // Modified system prompt with explicit instructions for proper link formatting
     const systemPrompt = `You are an up-to-date web search assistant providing the most current information available. 
     ALWAYS respond in the SAME LANGUAGE as the user's query.
     
@@ -302,6 +309,7 @@ async function handlePerplexitySearch(message: string) {
     11. NEVER put asterisks around related topics
     12. ENSURE EVERY ARTICLE HAS A DIRECT CLICKABLE LINK - this is critical`;
     
+    // Use SONAR model with optimal parameters for web search with images
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -340,6 +348,7 @@ async function handlePerplexitySearch(message: string) {
     
     let searchResponse = data.choices?.[0]?.message?.content || "Sorry, I couldn't perform the search.";
     
+    // Clean up any formatting issues in the response
     searchResponse = cleanUpSearchResponse(searchResponse);
     
     return new Response(
@@ -372,27 +381,38 @@ async function handlePerplexitySearch(message: string) {
   }
 }
 
+// Helper function to clean up the search response format
 function cleanUpSearchResponse(text: string): string {
+  // Remove any duplicate "Recent Articles" sections
   const sections = text.split(/(?=## Recent Articles)/);
   if (sections.length > 1) {
+    // Keep only the last "Recent Articles" section
     text = sections[0] + sections[sections.length - 1];
   }
   
+  // Fix broken image markdown
   text = text.replace(/!\[([^\]]*)\]\s*\(([^)]+)\)/g, '![$1]($2)\n\n');
   
+  // Remove any SOURCE: prefixes that might be in the response
   text = text.replace(/SOURCE:\s+/g, '');
   
+  // Fix any links that have extra brackets or parentheses
   text = text.replace(/\[\[([^\]]+)\]\]\(([^)]+)\)/g, '[$1]($2)');
   
-  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, url) => {
-    if (!url.startsWith('http')) {
-      if (url.startsWith('www.')) {
-        return `[${linkText}](https://${url})`;
+  // Fix broken links that don't start with http
+  text = text.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    (match, linkText, url) => {
+      if (!url.startsWith('http')) {
+        if (url.startsWith('www.')) {
+          return `[${linkText}](https://${url})`;
+        }
       }
+      return match;
     }
-    return match;
-  });
+  );
   
+  // Remove double asterisks from related topics
   const relatedTopicsMatch = text.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
   if (relatedTopicsMatch && relatedTopicsMatch[1]) {
     const topicsText = relatedTopicsMatch[1];
@@ -400,19 +420,23 @@ function cleanUpSearchResponse(text: string): string {
       .split(/\r?\n/)
       .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
       .map(line => {
+        // Clean up any markdown formatting in topics
         let topic = line.replace(/^[*-]\s+|\d+\.\s+/, '').trim();
-        topic = topic.replace(/\*\*/g, '');
-        topic = topic.replace(/\*/g, '');
-        topic = topic.replace(/`/g, '');
+        topic = topic.replace(/\*\*/g, ''); // Remove bold markers
+        topic = topic.replace(/\*/g, '');   // Remove italic markers
+        topic = topic.replace(/`/g, '');    // Remove code markers
         return `* ${topic}`;
       })
       .join('\n');
     
+    // Replace the Related Topics section with cleaned version
     text = text.replace(/## Related Topics[\s\S]*?(?=##|$)/, `## Related Topics\n${cleanedTopics}\n\n`);
   } else {
+    // Add the "Related Topics" section if it doesn't exist
     text += '\n\n## Related Topics\n* Related topic 1\n* Related topic 2\n* Related topic 3';
   }
   
+  // Remove any excessive newlines
   text = text.replace(/\n{3,}/g, '\n\n');
   
   return text;
