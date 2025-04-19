@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-// Get API keys from environment variables
 const GEMINI_API_KEYS = [
   Deno.env.get('GEMINI_API_KEY_1') || '',
   Deno.env.get('GEMINI_API_KEY_2') || '',
@@ -15,7 +14,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -29,7 +27,6 @@ serve(async (req) => {
       photoContext: photoContext ? 'Photo context present' : 'No photo context' 
     });
     
-    // Choose appropriate API based on the type
     if (type === 'web-search') {
       return await handlePerplexitySearch(message);
     } else if (type === 'upload' && file) {
@@ -41,12 +38,7 @@ serve(async (req) => {
             response: "I've received your file. What would you like to know about it?",
             model: "system-message"
           }),
-          { 
-            headers: { 
-              'Content-Type': 'application/json',
-              ...corsHeaders
-            } 
-          }
+          { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
         );
       }
     } else {
@@ -54,16 +46,9 @@ serve(async (req) => {
     }
   } catch (error) {
     console.error('Error processing request:', error);
-    
     return new Response(
       JSON.stringify({ error: 'An error occurred processing your request: ' + error.message }),
-      { 
-        status: 500,
-        headers: { 
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        } 
-      }
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
 });
@@ -71,24 +56,17 @@ serve(async (req) => {
 async function handleGeminiRegularChat(message: string) {
   let lastError = null;
   
-  const systemPrompt = `You are a helpful AI assistant that provides accurate, relevant, and engaging responses. Think carefully about each question and provide thoughtful answers.
-
-Your responses should:
-1. Be direct and focused on answering the user's question
-2. Use clear, natural language
-3. Include relevant details and context
-4. Be accurate and fact-based
-5. Be helpful while maintaining appropriate boundaries
-
-Format your responses using proper Markdown when it enhances clarity:
+  const formattingInstructions = `You are a helpful AI assistant that provides accurate, relevant, and engaging responses. Format your responses using proper Markdown:
 - Use headings (## or ###) to organize information
 - Format code with backticks
 - Use bullet points for lists
 - Include source links when referencing external information
 - Structure with clear paragraphs
 
-Remember: Focus on answering the user's question first, then add supporting details if relevant.`;
-
+Please respond to this request: `;
+  
+  const enhancedMessage = formattingInstructions + message;
+  
   for (const apiKey of GEMINI_API_KEYS) {
     if (!apiKey) continue;
     
@@ -102,12 +80,8 @@ Remember: Focus on answering the user's question first, then add supporting deta
         body: JSON.stringify({
           contents: [
             {
-              role: "system",
-              parts: [{ text: systemPrompt }]
-            },
-            {
               role: "user",
-              parts: [{ text: message }]
+              parts: [{ text: enhancedMessage }]
             }
           ],
           generationConfig: {
@@ -134,12 +108,7 @@ Remember: Focus on answering the user's question first, then add supporting deta
           response: aiResponse,
           model: "gemini-2.0-flash"
         }),
-        { 
-          headers: { 
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          } 
-        }
+        { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     } catch (error) {
       console.error(`Error with Gemini API key: ${error.message}`);
@@ -149,13 +118,7 @@ Remember: Focus on answering the user's question first, then add supporting deta
   
   return new Response(
     JSON.stringify({ error: `All Gemini API keys failed. Last error: ${lastError?.message}` }),
-    { 
-      status: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        ...corsHeaders
-      } 
-    }
+    { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
   );
 }
 
