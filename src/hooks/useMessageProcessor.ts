@@ -44,7 +44,7 @@ export function useMessageProcessor(options: ProcessorOptions) {
     return fileType.startsWith('image/');
   };
 
-  const handleSendMessage = async (content: string, type: 'regular' | 'web-search') => {
+  const handleSendMessage = async (content: string, type: 'regular' | 'web-search' | 'research') => {
     try {
       const userHasReachedLimit = !isPremium && guestQueriesCount >= maxGuestQueries;
       
@@ -133,7 +133,7 @@ export function useMessageProcessor(options: ProcessorOptions) {
         setIsLoading(true);
       }
       
-      if (uploadedFile && type !== 'web-search') {
+      if (uploadedFile && type !== 'web-search' && type !== 'research') {
         await processFileWithQuestion(content, uploadedFile);
       } else {
         const { data } = await supabase.auth.getSession();

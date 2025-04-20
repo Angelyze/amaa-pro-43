@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   mainSearchVisible: boolean;
-  onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
+  onSendMessage: (message: string, type: 'regular' | 'web-search' | 'research') => void;
   onScrollToTop: () => void;
   isLoggedIn: boolean;
   onLogin: () => Promise<void>;

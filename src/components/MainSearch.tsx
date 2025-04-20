@@ -9,7 +9,7 @@ import { Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MainSearchProps {
-  onSendMessage: (content: string, type: 'regular' | 'web-search') => void;
+  onSendMessage: (content: string, type: 'regular' | 'web-search' | 'research') => void;
   onUploadFile: (file: File) => void;
   onVoiceInput: () => void;
   onNewConversation: () => void;
