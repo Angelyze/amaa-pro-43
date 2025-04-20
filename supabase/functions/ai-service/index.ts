@@ -7,6 +7,7 @@ const GEMINI_API_KEYS = [
   Deno.env.get('GEMINI_API_KEY_3') || '',
 ];
 const PERPLEXITY_API_KEY = Deno.env.get('PERPLEXITY_API_KEY') || '';
+const XAI_API_KEY = Deno.env.get('XAI_API_KEY') || '';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,7 +28,9 @@ serve(async (req) => {
       photoContext: photoContext ? 'Photo context present' : 'No photo context' 
     });
     
-    if (type === 'web-search') {
+    if (type === 'research') {
+      return await handleResearchQuery(message);
+    } else if (type === 'web-search') {
       return await handlePerplexitySearch(message);
     } else if (type === 'upload' && file) {
       if (photoContext) {
@@ -331,6 +334,60 @@ async function handlePerplexitySearch(message: string) {
           ...corsHeaders
         } 
       }
+    );
+  }
+}
+
+async function handleResearchQuery(message: string) {
+  if (!XAI_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: 'XAI API key not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+
+  try {
+    console.log('Processing research query:', message);
+    
+    const response = await fetch('https://api.xai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${XAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'grok-3-latest',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a research assistant focused on providing in-depth analysis and insights. Your responses should be well-researched, factual, and include relevant citations when possible.'
+          },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`XAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiResponse = data.choices[0].message.content;
+
+    return new Response(
+      JSON.stringify({ 
+        response: aiResponse,
+        model: "grok-3-latest"
+      }),
+      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (error) {
+    console.error('Error in research query:', error);
+    return new Response(
+      JSON.stringify({ error: `Research query failed: ${error.message}` }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
 }

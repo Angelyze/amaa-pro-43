@@ -1,12 +1,11 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Upload, Globe, Bot } from 'lucide-react';
+import { Mic, Upload, Globe, Bot, TestTube } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface AMAAChatBoxProps {
-  onSendMessage: (message: string, type: 'regular' | 'web-search') => void;
+  onSendMessage: (message: string, type: 'regular' | 'web-search' | 'research') => void;
   onUploadFile?: (file: File) => void;
   onVoiceInput?: () => void;
   isMinimized?: boolean;
@@ -22,8 +21,13 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 }) => {
   
   const [message, setMessage] = useState('');
-  const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload'>('regular');
+  const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload' | 'research'>('regular');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFileData, setUploadedFileData] = useState<{
+    type: string;
+    name: string;
+    data: string;
+  } | null>(null);
   const [voiceInputActive, setVoiceInputActive] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -153,7 +157,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
-      onSendMessage(message, activeOption === 'web-search' ? 'web-search' : 'regular');
+      onSendMessage(message, activeOption === 'web-search' ? 'web-search' : activeOption === 'research' ? 'research' : 'regular');
       setMessage('');
       
       if (voiceInputActive) {
@@ -243,6 +247,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
       return isLoggedIn ? "Upgrade to Premium..." : "Sign in to continue...";
     }
     if (activeOption === 'web-search') return "Search the web...";
+    if (activeOption === 'research') return "Ask for in-depth research...";
     if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the file...";
     return "Ask me anything...";
   };
@@ -325,6 +330,26 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  onClick={() => !disabled && setActiveOption('research')}
+                  disabled={disabled}
+                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                    activeOption === 'research' 
+                      ? 'text-teal'
+                      : 'text-muted-foreground hover:text-teal'
+                  }`}
+                >
+                  <TestTube size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Research</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
                   onClick={() => !disabled && setActiveOption('web-search')}
                   disabled={disabled}
                   className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
@@ -396,7 +421,8 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                 'Upgrade to Premium for unlimited access!' : 
                 'Sign in to continue chatting') :
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
-             activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` : 
+             activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` :
+             activeOption === 'research' ? `Research Mode${voiceInputActive ? ' - using voice' : ''}` :
              uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>
