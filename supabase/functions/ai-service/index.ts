@@ -50,8 +50,17 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error processing request:', error);
     return new Response(
-      JSON.stringify({ error: 'An error occurred processing your request: ' + error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      JSON.stringify({ 
+        error: 'An error occurred processing your request: ' + error.message,
+        model: "system-message" 
+      }),
+      { 
+        status: 500, 
+        headers: { 
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        } 
+      }
     );
   }
 });
@@ -354,40 +363,55 @@ async function handleResearchQuery(message: string) {
       headers: {
         'Authorization': `Bearer ${XAI_API_KEY}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify({
-        model: 'grok-3-latest',
+        model: 'grok-3-mini-beta',
         messages: [
           {
             role: 'system',
-            content: 'You are a research assistant focused on providing in-depth analysis and insights. Your responses should be well-researched, factual, and include relevant citations when possible.'
+            content: `You are a research assistant focused on providing accurate, in-depth analysis with factual information. 
+            Format your responses using proper Markdown with headers, lists, and code blocks where appropriate.
+            Always cite sources when available.`
           },
           { role: 'user', content: message }
         ],
         temperature: 0.7,
         max_tokens: 2048,
+        stream: false
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`XAI API error: ${response.status}`);
+      console.error('XAI API error:', response.status, response.statusText);
+      const errorData = await response.text();
+      console.error('Error details:', errorData);
+      throw new Error(`XAI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from XAI API');
+    }
 
     return new Response(
       JSON.stringify({ 
-        response: aiResponse,
-        model: "grok-3-latest"
+        response: data.choices[0].message.content,
+        model: "grok-3-mini-beta"
       }),
       { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (error) {
     console.error('Error in research query:', error);
     return new Response(
-      JSON.stringify({ error: `Research query failed: ${error.message}` }),
-      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      JSON.stringify({ 
+        error: `Research query failed: ${error.message}`,
+        model: "system-message"
+      }),
+      { 
+        status: 500, 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      }
     );
   }
 }
