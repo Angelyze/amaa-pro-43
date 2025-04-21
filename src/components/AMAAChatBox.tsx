@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Upload, Globe, Bot, TestTube } from 'lucide-react';
+import { Mic, Upload } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import ToolIconsRow from './ToolIconsRow';
 
 interface AMAAChatBoxProps {
   onSendMessage: (message: string, type: 'regular' | 'web-search' | 'research' | 'code') => void;
@@ -278,9 +279,8 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           onBlur={handleBlur}
           placeholder={getPlaceholder()}
           disabled={disabled}
-          className={`amaa-input pr-[145px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`amaa-input pr-[80px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
         />
-        
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
           <input
             type="file"
@@ -290,168 +290,68 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             accept="image/*, application/pdf, text/plain"
             disabled={disabled}
           />
-          
-          <div className="flex items-center gap-0">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={toggleVoiceInput}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    isListening ? 'text-red-500 animate-pulse' :
-                    voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
-                  }`}
-                  aria-label={isListening ? 'Listening...' : 'Toggle voice input'}
-                >
-                  <Mic size={18} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Voice input</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={triggerFileUpload}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    activeOption === 'upload' 
-                      ? 'text-teal'
-                      : 'text-muted-foreground hover:text-teal'
-                  }`}
-                >
-                  <Upload size={18} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload file</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => !disabled && setActiveOption('research')}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    activeOption === 'research' 
-                      ? 'text-teal'
-                      : 'text-muted-foreground hover:text-teal'
-                  }`}
-                >
-                  <TestTube size={18} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Research</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => !disabled && setActiveOption('web-search')}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    activeOption === 'web-search' 
-                      ? 'text-teal'
-                      : 'text-muted-foreground hover:text-teal'
-                  }`}
-                >
-                  <Globe size={18} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Web search</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => !disabled && setActiveOption('regular')}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    activeOption === 'regular' 
-                      ? 'text-teal'
-                      : 'text-muted-foreground hover:text-teal'
-                  }`}
-                >
-                  <Bot size={18} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>AMAA</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => !disabled && setActiveOption('code')}
-                  disabled={disabled}
-                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
-                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
-                    activeOption === 'code' 
-                      ? 'text-teal'
-                      : 'text-muted-foreground hover:text-teal'
-                  }`}
-                  aria-label="Coding"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Coding AI</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={handleSend}
-                  disabled={!message.trim() || disabled}
-                  className={`ml-1 p-1.5 transition-all duration-300 focus:outline-none ${
-                    disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-teal-light hover:scale-110 hover:drop-shadow-md'
-                  }`}
-                >
-                  <img 
-                    src="/AskIcon.png" 
-                    alt="Ask" 
-                    className={`w-6 h-6 transition-opacity duration-300 ask-icon ${
-                      disabled ? 'opacity-30' : inputFocused ? 'opacity-80' : 'opacity-50'
-                    } ${!disabled && 'hover:opacity-100'}`} 
-                  />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Send</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={toggleVoiceInput}
+                disabled={disabled}
+                className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                  disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                  isListening ? 'text-red-500 animate-pulse' :
+                  voiceInputActive ? 'text-teal' : 'text-muted-foreground hover:text-teal'
+                }`}
+                aria-label={isListening ? 'Listening...' : 'Toggle voice input'}
+              >
+                <Mic size={18} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Voice input</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleSend}
+                disabled={!message.trim() || disabled}
+                className={`ml-1 p-1.5 transition-all duration-300 focus:outline-none ${
+                  disabled ? 'opacity-50 cursor-not-allowed' : 'hover:text-teal-light hover:scale-110 hover:drop-shadow-md'
+                }`}
+              >
+                <img 
+                  src="/AskIcon.png" 
+                  alt="Ask" 
+                  className={`w-6 h-6 transition-opacity duration-300 ask-icon ${
+                    disabled ? 'opacity-30' : inputFocused ? 'opacity-80' : 'opacity-50'
+                  } ${!disabled && 'hover:opacity-100'}`} 
+                />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Send</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
-      
       {!isMinimized && (
-        <div className="flex justify-center mt-2 text-xs text-muted-foreground">
-          <span className="px-2 py-1 rounded-full">
+        <div className="flex justify-between mt-2 items-center">
+          <span className="px-2 py-1 rounded-full text-xs text-muted-foreground">
             {disabled ? 
               (document.body.hasAttribute('data-user-logged-in') ? 
                 'Upgrade to Premium for unlimited access!' : 
                 'Sign in to continue chatting') :
-             activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
-             activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` :
-             activeOption === 'research' ? `Research Mode${voiceInputActive ? ' - using voice' : ''}` :
-             activeOption === 'code' ? `Coding Mode${voiceInputActive ? ' - using voice' : ''}` :
-             uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
+              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
+              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` :
+              activeOption === 'research' ? `Research Mode${voiceInputActive ? ' - using voice' : ''}` :
+              activeOption === 'code' ? `Coding Mode${voiceInputActive ? ' - using voice' : ''}` :
+              uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
+          <ToolIconsRow
+            disabled={disabled}
+            activeOption={activeOption}
+            setActiveOption={setActiveOption}
+            triggerFileUpload={triggerFileUpload}
+          />
         </div>
       )}
     </div>
