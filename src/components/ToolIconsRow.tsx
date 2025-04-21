@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Upload, TestTube, Code, Globe, Bot } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -58,7 +57,7 @@ const ToolIconsRow: React.FC<ToolIconsRowProps> = ({
   triggerFileUpload,
 }) => {
   return (
-    <div className="flex gap-2 justify-end">
+    <div className="flex gap-1.5 justify-end">
       {toolConfig.map((tool) => (
         <Tooltip key={tool.type}>
           <TooltipTrigger asChild>
@@ -95,4 +94,3 @@ const ToolIconsRow: React.FC<ToolIconsRowProps> = ({
 };
 
 export default ToolIconsRow;
-
