@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Logo from './Logo';
 import AMAAChatBox from './AMAAChatBox';
@@ -9,7 +8,7 @@ import { Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MainSearchProps {
-  onSendMessage: (content: string, type: 'regular' | 'web-search' | 'research') => void;
+  onSendMessage: (content: string, type: 'regular' | 'web-search' | 'research' | 'code') => void;
   onUploadFile: (file: File) => void;
   onVoiceInput: () => void;
   onNewConversation: () => void;

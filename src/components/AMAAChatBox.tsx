@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface AMAAChatBoxProps {
-  onSendMessage: (message: string, type: 'regular' | 'web-search' | 'research') => void;
+  onSendMessage: (message: string, type: 'regular' | 'web-search' | 'research' | 'code') => void;
   onUploadFile?: (file: File) => void;
   onVoiceInput?: () => void;
   isMinimized?: boolean;
@@ -21,7 +21,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 }) => {
   
   const [message, setMessage] = useState('');
-  const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload' | 'research'>('regular');
+  const [activeOption, setActiveOption] = useState<'regular' | 'web-search' | 'upload' | 'research' | 'code'>('regular');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedFileData, setUploadedFileData] = useState<{
     type: string;
@@ -157,7 +157,11 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
-      onSendMessage(message, activeOption === 'web-search' ? 'web-search' : activeOption === 'research' ? 'research' : 'regular');
+      let sendType: 'regular' | 'web-search' | 'research' | 'code' = 'regular';
+      if (activeOption === 'web-search') sendType = 'web-search';
+      else if (activeOption === 'research') sendType = 'research';
+      else if (activeOption === 'code') sendType = 'code';
+      onSendMessage(message, sendType);
       setMessage('');
       
       if (voiceInputActive) {
@@ -248,6 +252,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
     }
     if (activeOption === 'web-search') return "Search the web...";
     if (activeOption === 'research') return "Ask for in-depth research...";
+    if (activeOption === 'code') return "Get code explanations, snippets, or programming help...";
     if (activeOption === 'upload') return uploadedFile ? `Ask about ${uploadedFile.name}...` : "Ask about the file...";
     return "Ask me anything...";
   };
@@ -273,7 +278,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
           onBlur={handleBlur}
           placeholder={getPlaceholder()}
           disabled={disabled}
-          className={`amaa-input pr-[120px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`amaa-input pr-[145px] ${isMinimized ? 'py-3 text-sm' : 'py-4'} ${disabled ? 'opacity-70 cursor-not-allowed' : ''}`}
         />
         
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
@@ -390,6 +395,27 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  onClick={() => !disabled && setActiveOption('code')}
+                  disabled={disabled}
+                  className={`p-1.5 transition-colors focus:outline-none amaa-chatbox-icon ${
+                    disabled ? 'text-muted-foreground opacity-50 cursor-not-allowed' :
+                    activeOption === 'code' 
+                      ? 'text-teal'
+                      : 'text-muted-foreground hover:text-teal'
+                  }`}
+                  aria-label="Coding"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Coding AI</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
                   onClick={handleSend}
                   disabled={!message.trim() || disabled}
                   className={`ml-1 p-1.5 transition-all duration-300 focus:outline-none ${
@@ -423,6 +449,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
              activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
              activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` :
              activeOption === 'research' ? `Research Mode${voiceInputActive ? ' - using voice' : ''}` :
+             activeOption === 'code' ? `Coding Mode${voiceInputActive ? ' - using voice' : ''}` :
              uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
           </span>
         </div>

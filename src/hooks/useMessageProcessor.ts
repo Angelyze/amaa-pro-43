@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -44,7 +43,7 @@ export function useMessageProcessor(options: ProcessorOptions) {
     return fileType.startsWith('image/');
   };
 
-  const handleSendMessage = async (content: string, type: 'regular' | 'web-search' | 'research') => {
+  const handleSendMessage = async (content: string, type: 'regular' | 'web-search' | 'research' | 'code') => {
     try {
       const userHasReachedLimit = !isPremium && guestQueriesCount >= maxGuestQueries;
       
@@ -133,7 +132,7 @@ export function useMessageProcessor(options: ProcessorOptions) {
         setIsLoading(true);
       }
       
-      if (uploadedFile && type !== 'web-search' && type !== 'research') {
+      if (uploadedFile && type !== 'web-search' && type !== 'research' && type !== 'code') {
         await processFileWithQuestion(content, uploadedFile);
       } else {
         const { data } = await supabase.auth.getSession();

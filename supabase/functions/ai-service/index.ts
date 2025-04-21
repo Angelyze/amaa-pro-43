@@ -44,6 +44,8 @@ serve(async (req) => {
           { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
         );
       }
+    } else if (type === 'code') {
+      return await handleCodingQuery(message);
     } else {
       return await handleGeminiRegularChat(message);
     }
@@ -406,6 +408,73 @@ async function handleResearchQuery(message: string) {
     return new Response(
       JSON.stringify({ 
         error: `Research query failed: ${error.message}`,
+        model: "system-message"
+      }),
+      { 
+        status: 500, 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      }
+    );
+  }
+}
+
+async function handleCodingQuery(message: string) {
+  if (!XAI_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: 'XAI API key not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+  try {
+    const response = await fetch('https://api.xai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${XAI_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'grok-3-mini-beta',
+        messages: [
+          {
+            role: 'system',
+            content: `You are a world-class senior code assistant. 
+Answer only coding, debugging, or software engineering questions.
+Be concise, accurate, and provide working code examples in proper Markdown (triple backticks, language tags).
+Never answer non-coding questions or change the topic to unrelated content.
+Use headings where useful and briefly explain code, with comments.
+If relevant, include tips, explain tradeoffs, and mention related documentation.
+When citing sources, if possible, give links.`
+          },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.35,
+        max_tokens: 2048,
+        stream: false
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`XAI API error: ${response.status} ${response.statusText} - ${errorData}`);
+    }
+
+    const data = await response.json();
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from XAI API');
+    }
+    return new Response(
+      JSON.stringify({ 
+        response: data.choices[0].message.content,
+        model: "grok-3-mini-beta"
+      }),
+      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (error) {
+    console.error('Error in coding query:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: `Coding query failed: ${error.message}`,
         model: "system-message"
       }),
       { 
