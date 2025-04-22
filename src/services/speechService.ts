@@ -1,7 +1,9 @@
+
 import { toast } from 'sonner';
 
 // MARS5-TTS API configuration
 const MARS5_API_URL = 'https://api.cambly.ai/v1/mars5/tts';
+const MARS5_API_KEY = '601867ea-f904-4802-8c42-eb1fcd6cbf00'; // API key for authentication
 
 // TTS state tracking
 let currentAudio: HTMLAudioElement | null = null;
@@ -125,12 +127,15 @@ const requestSpeech = async (text: string, voiceId: string, retryCount = 3): Pro
   
   for (let attempt = 1; attempt <= retryCount; attempt++) {
     try {
+      console.log(`Attempting TTS request ${attempt} with API key: ${MARS5_API_KEY.substring(0, 8)}...`);
+      
       const response = await fetch(MARS5_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'API-Version': '1.0'
+          'API-Version': '1.0',
+          'Authorization': `Bearer ${MARS5_API_KEY}`
         },
         body: JSON.stringify({
           text,
@@ -142,8 +147,16 @@ const requestSpeech = async (text: string, voiceId: string, retryCount = 3): Pro
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If parsing fails, use the response text
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
@@ -214,6 +227,7 @@ export const textToSpeech = async (text: string): Promise<void> => {
           await audio.play();
         } catch (error) {
           console.error('Error in TTS chunk processing:', error);
+          toast.error('TTS error: ' + (error instanceof Error ? error.message : 'Unknown error'));
           currentChunkIndex++;
           if (isPlaying) {
             setTimeout(speakNextChunk, 50);
