@@ -107,7 +107,7 @@ const About = () => {
                   <p className="text-foreground/80">Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                   <p className="text-foreground/80">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
                   <br></br>
-                  <p className="text-foreground/80">AMAA.pro is a featured tool on <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory Wikipedia</a>.</p>
+                  <p className="text-foreground/80">AMAA.pro is proudly featured AI Tool on <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory Wikipedia</a>.</p>
                 </div>
               </section>
             </div>
