@@ -1,1 +1,5 @@
+
 project_id = "egaroeikmbyevdichpsr"
+
+[functions.stripe]
+verify_jwt = true
