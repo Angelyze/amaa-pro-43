@@ -128,7 +128,7 @@ export function useMessageProcessor(options: ProcessorOptions) {
         const assistantContent = await sendMessageToAI({
           content,
           type,
-          fileData,
+          fileData: uploadedFileData, // Fix: Explicitly providing uploadedFileData instead of using shorthand
           session
         });
         
