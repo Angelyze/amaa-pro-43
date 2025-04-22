@@ -83,7 +83,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onScrollToTop}
               className="rounded-full w-9 h-9 hover:bg-primary/10 hover:text-primary transition-all"
             >
-              <ArrowUp size={20} />
+              <ArrowUp size={30} />
             </Button>
           </div>
         </div>
