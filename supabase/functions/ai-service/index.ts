@@ -357,75 +357,86 @@ async function handleResearchQuery(message: string) {
     );
   }
 
-  try {
-    console.log('Processing research query:', message);
-    
-    const response = await fetch('https://api.x.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${XAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-API-Version': '2024-04'
-      },
-      body: JSON.stringify({
-        model: 'grok-3-latest',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a research assistant focused on providing accurate, in-depth analysis with factual information. 
-            Format your responses using proper Markdown with headers, lists, and code blocks where appropriate.
-            Always cite sources when available.`
-          },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-        max_tokens: 2048,
-        stream: false
-      }),
-    });
+  const models = ['grok-3-latest', 'grok-3-mini-beta'];
+  let lastError = null;
 
-    const responseText = await response.text();
-    console.log('XAI API response status:', response.status);
-    console.log('XAI API response body:', responseText);
-
-    if (!response.ok) {
-      throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
-    }
-
-    let data;
+  for (const model of models) {
     try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Error parsing XAI response:', e);
-      throw new Error('Invalid JSON response from XAI API');
-    }
+      console.log(`Attempting research query with model: ${model}`);
+      
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${XAI_API_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-API-Version': '2024-04'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            {
+              role: 'system',
+              content: `You are a research assistant focused on providing accurate, in-depth analysis with factual information. 
+              Format your responses using proper Markdown with headers, lists, and code blocks where appropriate.
+              Always cite sources when available.`
+            },
+            { role: 'user', content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 2048,
+          stream: false
+        }),
+      });
 
-    if (!data.choices?.[0]?.message?.content) {
-      console.error('Unexpected response format:', data);
-      throw new Error('Invalid response format from XAI API');
-    }
+      const responseText = await response.text();
+      console.log(`${model} API response status:`, response.status);
+      console.log(`${model} API response body:`, responseText);
 
-    return new Response(
-      JSON.stringify({ 
-        response: data.choices[0].message.content,
-        model: "grok-3-latest"
-      }),
-      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-    );
-  } catch (error) {
-    console.error('Error in research query:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: `Research query failed: ${error.message}`,
-        model: "system-message"
-      }),
-      { 
-        status: 500, 
-        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      if (!response.ok) {
+        throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
       }
-    );
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error(`Error parsing ${model} response:`, e);
+        throw new Error(`Invalid JSON response from ${model} API`);
+      }
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.error('Unexpected response format:', data);
+        throw new Error(`Invalid response format from ${model} API`);
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          response: data.choices[0].message.content,
+          model: model
+        }),
+        { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    } catch (error) {
+      console.error(`Error with ${model}:`, error);
+      lastError = error;
+      // Continue to next model if available
+      continue;
+    }
   }
+
+  // If we get here, all models failed
+  console.error('All models failed. Last error:', lastError);
+  return new Response(
+    JSON.stringify({ 
+      error: `All models failed. Last error: ${lastError?.message}`,
+      model: "system-message"
+    }),
+    { 
+      status: 500, 
+      headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+    }
+  );
 }
 
 async function handleCodingQuery(message: string) {
@@ -436,79 +447,90 @@ async function handleCodingQuery(message: string) {
     );
   }
   
-  try {
-    console.log('Processing coding query:', message);
-    
-    const response = await fetch('https://api.x.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${XAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-API-Version': '2024-04'
-      },
-      body: JSON.stringify({
-        model: 'grok-3-latest',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a world-class senior code assistant. 
+  const models = ['grok-3-latest', 'grok-3-mini-beta'];
+  let lastError = null;
+
+  for (const model of models) {
+    try {
+      console.log(`Attempting coding query with model: ${model}`);
+      
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${XAI_API_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-API-Version': '2024-04'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            {
+              role: 'system',
+              content: `You are a world-class senior code assistant. 
 Answer only coding, debugging, or software engineering questions.
 Be concise, accurate, and provide working code examples in proper Markdown (triple backticks, language tags).
 Never answer non-coding questions or change the topic to unrelated content.
 Use headings where useful and briefly explain code, with comments.
 If relevant, include tips, explain tradeoffs, and mention related documentation.
 When citing sources, if possible, give links.`
-          },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.35,
-        max_tokens: 2048,
-        stream: false
-      }),
-    });
+            },
+            { role: 'user', content: message }
+          ],
+          temperature: 0.35,
+          max_tokens: 2048,
+          stream: false
+        }),
+      });
 
-    const responseText = await response.text();
-    console.log('XAI API response status:', response.status);
-    console.log('XAI API response body:', responseText);
+      const responseText = await response.text();
+      console.log(`${model} API response status:`, response.status);
+      console.log(`${model} API response body:`, responseText);
 
-    if (!response.ok) {
-      throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
-    }
-
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Error parsing XAI response:', e);
-      throw new Error('Invalid JSON response from XAI API');
-    }
-
-    if (!data.choices?.[0]?.message?.content) {
-      console.error('Unexpected response format:', data);
-      throw new Error('Invalid response format from XAI API');
-    }
-
-    return new Response(
-      JSON.stringify({ 
-        response: data.choices[0].message.content,
-        model: "grok-3-latest"
-      }),
-      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-    );
-  } catch (error) {
-    console.error('Error in coding query:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: `Coding query failed: ${error.message}`,
-        model: "system-message"
-      }),
-      { 
-        status: 500, 
-        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      if (!response.ok) {
+        throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
       }
-    );
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error(`Error parsing ${model} response:`, e);
+        throw new Error(`Invalid JSON response from ${model} API`);
+      }
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.error('Unexpected response format:', data);
+        throw new Error(`Invalid response format from ${model} API`);
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          response: data.choices[0].message.content,
+          model: model
+        }),
+        { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    } catch (error) {
+      console.error(`Error with ${model}:`, error);
+      lastError = error;
+      // Continue to next model if available
+      continue;
+    }
   }
+
+  // If we get here, all models failed
+  console.error('All models failed. Last error:', lastError);
+  return new Response(
+    JSON.stringify({ 
+      error: `All models failed. Last error: ${lastError?.message}`,
+      model: "system-message"
+    }),
+    { 
+      status: 500, 
+      headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+    }
+  );
 }
 
 function cleanUpSearchResponse(text: string): string {
