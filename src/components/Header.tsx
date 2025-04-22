@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({
     <header 
       className={`header-container fixed bottom-0 left-0 right-0 z-[9999] bg-background/20 backdrop-blur-md border-t border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-99' : 'translate-y-full opacity-0'}`}
     >
-      <div className="flex items-center justify-center h-16 px-4 md:px-6 max-w-4xl mx-auto">
+      <div className="flex items-center justify-center h-18 px-4 md:px-6 max-w-4xl mx-auto">
         {/* Centered container with max width to contain all three elements */}
         <div className="flex items-center justify-between w-full max-w-2xl">
           {/* Logo positioned immediately left of the chat box */}
