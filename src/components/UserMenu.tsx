@@ -66,7 +66,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
-          <Avatar className="h-14 w-14 rounded-full bg-muted/0 overflow-hidden shadow-none border-0 p-0">
+          <Avatar 
+            className="h-14 w-14 rounded-full bg-muted/0 overflow-hidden shadow-none border-0 p-0 
+            transition-all duration-300 hover:scale-105 hover:brightness-110"
+          >
             {avatarUrl ? (
               <AvatarImage 
                 src={avatarUrl} 
@@ -84,7 +87,11 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
                 }}
               />
             ) : (
-              <AvatarFallback className="bg-muted text-muted-foreground rounded-full w-full h-full p-0 m-0" style={{ border: 'none' }}>
+              <AvatarFallback 
+                className="bg-muted text-muted-foreground rounded-full w-full h-full p-0 m-0 
+                transition-all duration-300 hover:brightness-110" 
+                style={{ border: 'none' }}
+              >
                 {userInitials}
               </AvatarFallback>
             )}
@@ -156,3 +163,4 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
 };
 
 export default UserMenu;
+
