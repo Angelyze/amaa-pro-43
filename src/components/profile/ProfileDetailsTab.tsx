@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Edit, Key, Trash2, Image } from 'lucide-react';
+import { Upload, Edit, Key, Trash2, Image, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ChangePasswordDialog from './ChangePasswordDialog';
 import DeleteProfileDialog from './DeleteProfileDialog';
@@ -21,7 +20,6 @@ function getInitials(name?: string, email?: string) {
 }
 
 function avatarUrlForUser(user: any) {
-  // Prefer avatar_url from profile, fallback to Gravatar or null
   return user?.user_metadata?.avatar_url || user?.avatar_url || null;
 }
 
@@ -43,18 +41,15 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     avatarUrlForUser(user)
   );
-  // When user changes or uploads, update avatarUrl
+
   React.useEffect(() => {
     setAvatarUrl(avatarUrlForUser(user));
   }, [user]);
 
-  // Utility to refresh profile from DB
   async function refreshProfile() {
-    // Re-fetch user profile (recommended: via context)
     toast.info("Please refresh the page to update profile changes.");
   }
 
-  // Upload avatar to Supabase Storage and update user's profile
   const uploadAvatar = async (file: File) => {
     setIsAvatarUploading(true);
     try {
@@ -72,7 +67,6 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
       const fileExt = file.name.split('.').pop();
       const filePath = `profile_${user.id}_${Date.now()}.${fileExt}`;
 
-      // Upload to Supabase storage
       const { error: uploadError } = await supabase.storage
         .from(AVATAR_BUCKET)
         .upload(filePath, file, {
@@ -82,12 +76,10 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(filePath);
       const publicUrl = data?.publicUrl;
       if (!publicUrl) throw new Error('Could not fetch public URL for avatar');
 
-      // Update on user's public profile and auth user_metadata
       let { error: userError } = await supabase.auth.updateUser({
         data: { avatar_url: publicUrl },
       });
@@ -118,7 +110,6 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
 
       if (error) throw error;
 
-      // Also update public profile table
       await supabase.from('profiles').update({ full_name: fullName }).eq('id', user.id);
 
       toast.success('Profile updated successfully!');
@@ -146,12 +137,15 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
           <Button
             variant="secondary"
             size="sm"
-            loading={isAvatarUploading}
             className="absolute right-0 bottom-0 rounded-full flex items-center"
             onClick={() => fileInputRef.current?.click()}
             disabled={isAvatarUploading}
           >
-            <Upload size={16} />
+            {isAvatarUploading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Upload size={16} />
+            )}
             <span className="sr-only">Upload new avatar</span>
           </Button>
           <input
