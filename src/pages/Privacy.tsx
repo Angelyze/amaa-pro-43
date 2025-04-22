@@ -1,14 +1,13 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
 
 const Privacy = () => {
-  const lastUpdated = "March 25, 2025";
+  const lastUpdated = "April 22, 2025";
   
   return (
-    <Layout showBackButton title="Privacy Policy">
+    <Layout showBackButton title="Privacy Policy - Secure AI Assistant Platform">
       <div className="container mx-auto px-4 py-16">
         <div className="w-full max-w-3xl mx-auto">
           <div className="flex flex-col items-center mb-8">
@@ -23,57 +22,48 @@ const Privacy = () => {
             
             <div className="space-y-6 text-foreground/80">
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">1. Introduction</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">1. Our Commitment to Privacy</h2>
                 <p className="leading-relaxed">
-                  At Angelyze, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our AMAA service. It also describes your rights regarding your personal data.
+                  At Angelyze, we prioritize the protection of your personal data. This Privacy Policy outlines our comprehensive approach to data collection, usage, and security when you use our advanced AI assistant platform, AMAA. We are committed to maintaining the trust you place in us by ensuring transparent data practices and robust security measures.
                 </p>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">2. Information We Collect</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">2. Information Collection</h2>
                 <p className="leading-relaxed mb-3">
-                  We may collect the following types of information:
+                  We collect and process the following types of information to provide and improve our service:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Account information (email, name, profile details)</li>
-                  <li>Usage data (queries, interactions with the service)</li>
-                  <li>Device information (IP address, browser type, device type)</li>
-                  <li>Payment information for premium subscriptions</li>
-                  <li>Content you upload or share through the service</li>
-                  <li>Conversation history and interactions with our AI</li>
+                  <li>Account information (email, profile details)</li>
+                  <li>Service interaction data</li>
+                  <li>Technical information</li>
+                  <li>Subscription and payment details</li>
+                  <li>User preferences and settings</li>
+                  <li>Platform usage patterns</li>
+                  <li>Customization preferences</li>
                 </ul>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">3. How We Use Your Information</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">3. Data Usage</h2>
                 <p className="leading-relaxed mb-3">
-                  We use your information for the following purposes:
+                  Your information enables us to:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>To provide and maintain our service</li>
-                  <li>To improve and personalize your experience</li>
-                  <li>To process payments and manage subscriptions</li>
-                  <li>To communicate with you about service updates</li>
-                  <li>To ensure the security of our service</li>
-                  <li>To analyze usage patterns and optimize performance</li>
-                  <li>To train and improve our AI models (using anonymized data)</li>
-                  <li>To comply with legal obligations</li>
+                  <li>Deliver personalized assistance</li>
+                  <li>Enhance service performance</li>
+                  <li>Process subscription payments</li>
+                  <li>Provide service updates</li>
+                  <li>Maintain platform security</li>
+                  <li>Optimize user experience</li>
+                  <li>Improve our technology</li>
                 </ul>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">4. Data Sharing and Disclosure</h2>
-                <p className="leading-relaxed mb-3">
-                  We may share your information with:
-                </p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Service providers who assist us in operating our business</li>
-                  <li>Payment processors for subscription management</li>
-                  <li>Legal authorities when required by law</li>
-                  <li>Business partners, with your explicit consent</li>
-                </ul>
-                <p className="mt-3 leading-relaxed">
-                  We do not sell your personal data to third parties. Any data sharing is conducted with appropriate safeguards for your privacy.
+                <h2 className="text-xl font-semibold mb-3 text-primary">4. Data Protection</h2>
+                <p className="leading-relaxed">
+                  We implement industry-leading security measures to protect your information, including advanced encryption, secure data storage, and strict access controls. Our infrastructure is regularly audited and updated to maintain the highest security standards. We process data in compliance with GDPR and other applicable privacy regulations.
                 </p>
               </section>
               
@@ -85,9 +75,18 @@ const Privacy = () => {
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">6. Data Security</h2>
-                <p className="leading-relaxed">
-                  We implement appropriate security measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. These measures include encryption, access controls, and regular security assessments. However, no method of transmission over the Internet or electronic storage is 100% secure.
+                <h2 className="text-xl font-semibold mb-3 text-primary">6. Data Sharing and Disclosure</h2>
+                <p className="leading-relaxed mb-3">
+                  We may share your information with:
+                </p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Service providers who assist us in operating our business</li>
+                  <li>Payment processors for subscription management</li>
+                  <li>Legal authorities when required by law</li>
+                  <li>Business partners, with your explicit consent</li>
+                </ul>
+                <p className="mt-3 leading-relaxed">
+                  We do not sell your personal data to third parties. Any data sharing is conducted with appropriate safeguards for your privacy.
                 </p>
               </section>
               

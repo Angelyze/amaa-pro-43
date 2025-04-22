@@ -1,14 +1,13 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
 
 const Terms = () => {
-  const lastUpdated = "March 25, 2025";
+  const lastUpdated = "April 22, 2025";
   
   return (
-    <Layout showBackButton title="Terms of Service">
+    <Layout showBackButton title="Terms of Service - AMAA AI Assistant Platform">
       <div className="container mx-auto px-4 py-16">
         <div className="w-full max-w-3xl mx-auto">
           <div className="flex flex-col items-center mb-8">
@@ -23,53 +22,60 @@ const Terms = () => {
             
             <div className="space-y-6 text-foreground/80">
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">1. Acceptance of Terms</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">1. Terms Acceptance</h2>
                 <p className="leading-relaxed">
-                  By accessing or using AMAA, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.
+                  By accessing or using the AMAA platform and its advanced AI capabilities, you agree to be bound by these Terms of Service. Please review these terms carefully before using our service.
                 </p>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">2. Description of Service</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">2. Service Description</h2>
                 <p className="leading-relaxed">
-                  AMAA is an AI assistant service that provides users with responses to queries, content generation, and various forms of assistance. The service is provided on an "as is" and "as available" basis. We may update or modify the service at any time without prior notice.
+                  AMAA is an advanced AI-powered digital assistant platform that provides intelligent responses, content generation, research assistance, and various productivity tools. Our service employs sophisticated technology to process and analyze information, providing personalized assistance while maintaining high standards of privacy and security.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">3. User Accounts</h2>
                 <p className="leading-relaxed">
-                  Some features of AMAA require user registration. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account. You must provide accurate, current, and complete information and keep your account information updated.
+                  Some features of AMAA require user registration. You are responsible for:
                 </p>
-              </section>
-              
-              <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">4. User Conduct</h2>
-                <p className="leading-relaxed mb-3">
-                  When using AMAA, you agree not to:
-                </p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Use the service for any illegal purposes or to violate any laws</li>
-                  <li>Upload or transmit viruses or malicious code</li>
-                  <li>Attempt to gain unauthorized access to the service</li>
-                  <li>Use the service to generate harmful, abusive, discriminatory, or unethical content</li>
-                  <li>Interfere with or disrupt the integrity or performance of the service</li>
-                  <li>Scrape, data-mine, or improperly extract data from the service</li>
-                  <li>Reproduce, duplicate, copy, sell, or resell any portion of the service</li>
+                <ul className="list-disc pl-5 space-y-2 mt-2">
+                  <li>Maintaining account security and confidentiality</li>
+                  <li>Providing accurate and current information</li>
+                  <li>Updating account information as needed</li>
+                  <li>All activities occurring under your account</li>
                 </ul>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">5. Subscription and Billing</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">4. Acceptable Use</h2>
+                <p className="leading-relaxed mb-3">
+                  When using AMAA, you agree not to:
+                </p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Use the service for any unlawful purposes</li>
+                  <li>Upload malicious code or content</li>
+                  <li>Attempt unauthorized access to the service</li>
+                  <li>Generate harmful or unethical content</li>
+                  <li>Interfere with service operations</li>
+                  <li>Conduct unauthorized data collection</li>
+                  <li>Redistribute or resell service features</li>
+                  <li>Attempt to reverse engineer the AI systems</li>
+                </ul>
+              </section>
+              
+              <section>
+                <h2 className="text-xl font-semibold mb-3 text-primary">5. Premium Subscriptions</h2>
                 <p className="leading-relaxed">
-                  AMAA offers both free and premium subscription plans. By subscribing to a premium plan, you agree to pay the applicable fees as described at the time of purchase. Subscription fees are billed in advance on a recurring basis. You can cancel your subscription at any time, but we do not provide refunds for partial subscription periods.
+                  AMAA offers both standard and premium subscription plans. Premium subscribers enjoy enhanced features, including advanced processing capabilities, unlimited usage, personalization options, and priority support. Subscription fees are billed in advance on a recurring basis. Cancellations take effect at the end of the current billing period without refunds for partial periods.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">6. Intellectual Property</h2>
                 <p className="leading-relaxed">
-                  All content generated through AMAA belongs to the user who requested it, subject to these Terms. However, the service itself, including software, design, and system architecture, is the intellectual property of Angelyze and is protected by copyright, trademark, and other laws.
+                  While users retain rights to their generated content, AMAA's platform, including its AI technology, interface design, and system architecture, remains the intellectual property of Angelyze. The service is protected by copyright, trademark, and other applicable laws.
                 </p>
               </section>
               
