@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/ui/layout';
@@ -9,12 +10,8 @@ import SubscriptionTab from '@/components/profile/SubscriptionTab';
 import VoiceSettingsTab from '@/components/profile/VoiceSettingsTab';
 import { toast } from 'sonner';
 import { 
-  getAllVoices, 
-  getCurrentVoice, 
-  setVoice, 
-  getAutoReadSetting, 
-  setAutoReadSetting,
-  VoiceOption
+  getAutoReadSetting,
+  setAutoReadSetting
 } from '@/services/speechService';
 
 const Profile = () => {
