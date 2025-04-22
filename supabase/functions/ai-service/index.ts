@@ -360,15 +360,16 @@ async function handleResearchQuery(message: string) {
   try {
     console.log('Processing research query:', message);
     
-    const response = await fetch('https://api.xai.com/v1/chat/completions', {
+    const response = await fetch('https://api.grok.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${XAI_API_KEY}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-API-Version': '2024-04'
       },
       body: JSON.stringify({
-        model: 'grok-3-mini-beta',
+        model: 'grok-3',
         messages: [
           {
             role: 'system',
@@ -384,22 +385,31 @@ async function handleResearchQuery(message: string) {
       }),
     });
 
+    const responseText = await response.text();
+    console.log('XAI API response status:', response.status);
+    console.log('XAI API response body:', responseText);
+
     if (!response.ok) {
-      console.error('XAI API error:', response.status, response.statusText);
-      const errorData = await response.text();
-      console.error('Error details:', errorData);
-      throw new Error(`XAI API error: ${response.status} ${response.statusText}`);
+      throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Error parsing XAI response:', e);
+      throw new Error('Invalid JSON response from XAI API');
+    }
+
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Unexpected response format:', data);
       throw new Error('Invalid response format from XAI API');
     }
 
     return new Response(
       JSON.stringify({ 
         response: data.choices[0].message.content,
-        model: "grok-3-mini-beta"
+        model: "grok-3"
       }),
       { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
@@ -425,16 +435,20 @@ async function handleCodingQuery(message: string) {
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
+  
   try {
-    const response = await fetch('https://api.xai.com/v1/chat/completions', {
+    console.log('Processing coding query:', message);
+    
+    const response = await fetch('https://api.grok.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${XAI_API_KEY}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-API-Version': '2024-04'
       },
       body: JSON.stringify({
-        model: 'grok-3-mini-beta',
+        model: 'grok-3',
         messages: [
           {
             role: 'system',
@@ -454,19 +468,31 @@ When citing sources, if possible, give links.`
       }),
     });
 
+    const responseText = await response.text();
+    console.log('XAI API response status:', response.status);
+    console.log('XAI API response body:', responseText);
+
     if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(`XAI API error: ${response.status} ${response.statusText} - ${errorData}`);
+      throw new Error(`XAI API error: ${response.status} ${response.statusText}\nResponse: ${responseText}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Error parsing XAI response:', e);
+      throw new Error('Invalid JSON response from XAI API');
+    }
+
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Unexpected response format:', data);
       throw new Error('Invalid response format from XAI API');
     }
+
     return new Response(
       JSON.stringify({ 
         response: data.choices[0].message.content,
-        model: "grok-3-mini-beta"
+        model: "grok-3"
       }),
       { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
