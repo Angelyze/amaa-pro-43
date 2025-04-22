@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,13 +22,13 @@ const MAX_GUEST_QUERIES = 10;
 const Index = () => {
   const [mainSearchVisible, setMainSearchVisible] = useState(true);
   const [guestQueriesCount, setGuestQueriesCount] = useState(0);
-  
+  const [stickyHeader, setStickyHeader] = useState<{ visible: boolean; height: number }>({ visible: false, height: 0 });
+
   const { user, signOut, isPremium } = useAuth();
   const navigate = useNavigate();
   
   const mainSearchRef = useRef<HTMLDivElement>(null);
   
-  // Initialize conversation management
   const {
     conversations,
     messages,
@@ -45,7 +44,6 @@ const Index = () => {
     resetConversation
   } = useConversation(user?.id);
 
-  // Initialize message processor
   const {
     uploadedFile,
     isVoiceActive,
@@ -63,7 +61,6 @@ const Index = () => {
     setGuestQueriesCount
   });
   
-  // Load initial data based on user status
   useEffect(() => {
     if (user) {
       document.body.setAttribute('data-user-logged-in', 'true');
@@ -151,6 +148,7 @@ const Index = () => {
         onScrollToTop={scrollToTop}
         isLoggedIn={!!user}
         onLogin={signOut}
+        onStickyHeaderStateChange={setStickyHeader}
       />
       
       <main className="container mx-auto px-4 pt-12 flex-grow">
@@ -225,7 +223,13 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="footer-container">
+      <footer
+        className="footer-container"
+        style={{
+          marginBottom: stickyHeader.visible ? `${stickyHeader.height}px` : undefined,
+          transition: 'margin-bottom 300ms',
+        }}
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="footer-nav">

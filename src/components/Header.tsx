@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUp, LogIn, CreditCard } from 'lucide-react';
 import { Button } from './ui/button';
 import AMAAChatBox from './AMAAChatBox';
@@ -12,51 +12,62 @@ interface HeaderProps {
   onScrollToTop: () => void;
   isLoggedIn: boolean;
   onLogin: () => Promise<void>;
+  // New: communicate visibility and height
+  onStickyHeaderStateChange?: (params: { visible: boolean; height: number }) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  mainSearchVisible, 
-  onSendMessage, 
+const STICKY_HEADER_HEIGHT = 64; // px, exactly matches h-16 below
+
+const Header: React.FC<HeaderProps> = ({
+  mainSearchVisible,
+  onSendMessage,
   onScrollToTop,
   isLoggedIn,
-  onLogin
+  onLogin,
+  onStickyHeaderStateChange
 }) => {
   const [visible, setVisible] = useState(false);
-  
+  const headerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    // Only show header when the main search box is completely out of view
+    // Only show header when the main search box is out of view
     setVisible(!mainSearchVisible);
   }, [mainSearchVisible]);
 
+  // Communicate header visibility & height to parent
+  useEffect(() => {
+    if (onStickyHeaderStateChange) {
+      const height = headerRef.current?.offsetHeight ?? STICKY_HEADER_HEIGHT;
+      onStickyHeaderStateChange({ visible, height });
+    }
+  }, [visible, onStickyHeaderStateChange]);
+
   return (
-    <header 
-      className={`header-container fixed bottom-0 left-0 right-0 z-[9999] bg-background/20 backdrop-blur-md border-t border-border transition-all duration-300 ${visible ? 'translate-y-0 opacity-99' : 'translate-y-full opacity-0'}`}
+    <header
+      ref={headerRef}
+      className={`header-container fixed bottom-0 left-0 right-0 z-[9999] bg-background/20 backdrop-blur-md border-t border-border transition-all duration-300
+        ${visible ? 'translate-y-0 opacity-99' : 'translate-y-full opacity-0'}`}
+      style={{ height: `${STICKY_HEADER_HEIGHT}px` }}
     >
       <div className="flex items-center justify-center h-16 px-4 md:px-6 max-w-4xl mx-auto">
-        {/* Centered container with max width to contain all three elements */}
         <div className="flex items-center justify-between w-full max-w-2xl">
-          {/* Logo positioned immediately left of the chat box */}
           <div className="flex-shrink-0">
             <img src="/AMAApp.png" alt="AMAA" className="h-14" />
           </div>
-          
-          {/* Chatbox in center */}
           <div className="flex-1 mx-3">
-            <AMAAChatBox 
+            <AMAAChatBox
               onSendMessage={onSendMessage}
               isMinimized
             />
           </div>
-          
-          {/* Controls positioned immediately right of the chat box */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {isLoggedIn ? (
               <UserMenu onLogout={onLogin} />
             ) : (
               <>
                 <Link to="/auth">
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="text-sm gap-1.4 hover:bg-primary/10 hover:text-primary transition-all"
                   >
@@ -65,8 +76,8 @@ const Header: React.FC<HeaderProps> = ({
                   </Button>
                 </Link>
                 <Link to="/subscribe">
-                  <Button 
-                    variant="default" 
+                  <Button
+                    variant="default"
                     size="sm"
                     className="bg-primary text-white hover:bg-primary/90 hover:shadow-md transition-all text-sm gap-1.5"
                   >
@@ -76,10 +87,9 @@ const Header: React.FC<HeaderProps> = ({
                 </Link>
               </>
             )}
-            
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onScrollToTop}
               className="rounded-full w-11 h-11 hover:bg-primary/10 hover:text-primary transition-all"
             >
