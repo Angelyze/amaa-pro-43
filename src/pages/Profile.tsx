@@ -24,62 +24,12 @@ const Profile = () => {
   });
   
   // Voice settings state
-  const [selectedVoice, setSelectedVoice] = useState(() => {
-    return getCurrentVoice().id;
-  });
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
     return getAutoReadSetting();
   });
-  const [availableVoices, setAvailableVoices] = useState<VoiceOption[]>(() => {
-    return getAllVoices();
-  });
-  
-  // Initialize voice options with a useEffect that responds to voices changed event
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = getAllVoices();
-      setAvailableVoices(voices);
-    };
-
-    // Load voices immediately
-    loadVoices();
-    
-    // Setup event listener for when voices are loaded (this happens asynchronously in some browsers)
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-    
-    return () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
-    };
-  }, []);
-  
-  // Listen for theme changes from other components
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'theme') {
-        setSelectedTheme(e.newValue || 'light');
-      }
-    };
-    
-    const handleThemeChange = () => {
-      setSelectedTheme(localStorage.getItem('theme') || 'light');
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('themechange', handleThemeChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('themechange', handleThemeChange);
-    };
-  }, []);
   
   // Save voice settings
   const saveVoiceSettings = () => {
-    setVoice(selectedVoice);
     setAutoReadSetting(autoReadMessages);
     toast.success('Voice settings saved successfully!');
   };
@@ -118,11 +68,8 @@ const Profile = () => {
                 <>
                   <Separator />
                   <VoiceSettingsTab 
-                    selectedVoice={selectedVoice}
-                    setSelectedVoice={setSelectedVoice}
                     autoReadMessages={autoReadMessages}
                     setAutoReadMessages={setAutoReadMessages}
-                    availableVoices={availableVoices}
                     saveVoiceSettings={saveVoiceSettings}
                   />
                 </>
