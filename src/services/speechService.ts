@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 let currentUtterance: SpeechSynthesisUtterance | null = null;
 let isPlaying = false;
 let voicesLoaded = false;
+let isSpeechPaused = false;
 
 // Voice types
 export interface VoiceOption {
@@ -143,12 +144,65 @@ const splitTextIntoChunks = (text: string, maxLength = 200): string[] => {
   return chunks;
 };
 
+// Check if synthesis is available and not busy
+const checkSynthAvailability = (): boolean => {
+  const synth = window.speechSynthesis;
+  
+  if (!synth) {
+    console.error('Speech synthesis not available');
+    return false;
+  }
+  
+  // Reset speech synthesis if it's in a broken state
+  if (synth.speaking && !synth.paused) {
+    try {
+      synth.cancel();
+      // Brief delay before continuing
+      return false;
+    } catch (e) {
+      console.error('Error resetting speech synthesis:', e);
+      return false;
+    }
+  }
+  
+  return true;
+};
+
+// Pause speech synthesis
+export const pauseSpeech = (): void => {
+  if (isPlaying && !isSpeechPaused) {
+    try {
+      window.speechSynthesis.pause();
+      isSpeechPaused = true;
+    } catch (error) {
+      console.error('Error pausing speech:', error);
+    }
+  }
+};
+
+// Resume speech synthesis
+export const resumeSpeech = (): void => {
+  if (isPlaying && isSpeechPaused) {
+    try {
+      window.speechSynthesis.resume();
+      isSpeechPaused = false;
+    } catch (error) {
+      console.error('Error resuming speech:', error);
+    }
+  }
+};
+
 // Stop any currently playing speech
 export const stopSpeech = (): void => {
   if (isPlaying) {
-    window.speechSynthesis.cancel();
-    isPlaying = false;
-    currentUtterance = null;
+    try {
+      window.speechSynthesis.cancel();
+      isPlaying = false;
+      isSpeechPaused = false;
+      currentUtterance = null;
+    } catch (error) {
+      console.error('Error stopping speech:', error);
+    }
   }
 };
 
@@ -162,20 +216,49 @@ export const textToSpeech = async (text: string): Promise<void> => {
         throw new Error('Failed to load voices');
       }
       
+      // Stop any previously playing speech
       stopSpeech();
+      
+      // Reset state
       isPlaying = true;
+      isSpeechPaused = false;
       
       const synth = window.speechSynthesis;
+      
+      // Force a reset of the speech synthesis engine to clear any stuck state
+      synth.cancel();
+      
+      // Wait a moment to ensure the engine is reset
+      await new Promise(r => setTimeout(r, 50));
+      
+      // Split the text into manageable chunks
       const chunks = splitTextIntoChunks(text);
       let currentChunkIndex = 0;
       let retryCount = 0;
       const maxRetries = 3;
       
-      const speakNextChunk = () => {
+      const speakNextChunk = async () => {
         if (currentChunkIndex >= chunks.length || !isPlaying) {
           isPlaying = false;
+          isSpeechPaused = false;
           resolve();
           return;
+        }
+        
+        // Check if synthesis is available
+        if (!checkSynthAvailability()) {
+          await new Promise(r => setTimeout(r, 300));
+          if (retryCount < maxRetries) {
+            retryCount++;
+            speakNextChunk();
+            return;
+          } else {
+            toast.error('Speech synthesis not available. Please try again later.');
+            isPlaying = false;
+            isSpeechPaused = false;
+            resolve();
+            return;
+          }
         }
         
         const chunk = chunks[currentChunkIndex];
@@ -199,57 +282,84 @@ export const textToSpeech = async (text: string): Promise<void> => {
           }
         }
         
+        // Set default rate and pitch
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        
         utterance.onend = () => {
           retryCount = 0; // Reset retry count on successful chunk
           currentChunkIndex++;
           if (isPlaying) {
-            setTimeout(speakNextChunk, 50);
+            setTimeout(() => speakNextChunk(), 150);
           }
         };
         
         utterance.onerror = (event) => {
           console.error('Speech synthesis error:', event);
           
-          if (retryCount < maxRetries) {
-            retryCount++;
-            console.log(`Retrying chunk ${currentChunkIndex + 1}, attempt ${retryCount}`);
-            setTimeout(speakNextChunk, 500); // Wait longer before retry
+          // Different handling based on error type
+          if (event.error === 'interrupted' || event.error === 'canceled') {
+            // These are likely due to another utterance starting or stopping
+            // Wait a bit longer before retrying
+            if (retryCount < maxRetries) {
+              retryCount++;
+              console.log(`Retrying chunk ${currentChunkIndex + 1} after ${event.error}, attempt ${retryCount}`);
+              setTimeout(() => speakNextChunk(), 500);
+            } else {
+              // Move to the next chunk after max retries
+              console.log(`Skipping chunk ${currentChunkIndex + 1} after max retries`);
+              currentChunkIndex++;
+              retryCount = 0;
+              if (isPlaying) {
+                setTimeout(() => speakNextChunk(), 200);
+              }
+            }
           } else {
-            toast.error('Speech synthesis failed. Please try again.');
-            currentChunkIndex++;
-            retryCount = 0;
-            if (isPlaying) {
-              setTimeout(speakNextChunk, 50);
+            // For other errors, try a standard retry
+            if (retryCount < maxRetries) {
+              retryCount++;
+              console.log(`Retrying chunk ${currentChunkIndex + 1}, attempt ${retryCount}`);
+              setTimeout(() => speakNextChunk(), 300);
+            } else {
+              toast.error(`Speech synthesis error: ${event.error || 'Unknown error'}`);
+              currentChunkIndex++;
+              retryCount = 0;
+              if (isPlaying) {
+                setTimeout(() => speakNextChunk(), 150);
+              }
             }
           }
         };
         
         // Small delay before speaking to prevent race conditions
-        setTimeout(() => {
-          try {
-            synth.speak(utterance);
-          } catch (error) {
-            console.error('Error speaking:', error);
-            if (retryCount < maxRetries) {
-              retryCount++;
-              setTimeout(speakNextChunk, 500);
-            } else {
-              toast.error('Failed to start speech synthesis');
-              currentChunkIndex++;
-              if (isPlaying) {
-                setTimeout(speakNextChunk, 50);
-              }
+        await new Promise(r => setTimeout(r, 200));
+        
+        try {
+          synth.speak(utterance);
+        } catch (error) {
+          console.error('Error speaking:', error);
+          if (retryCount < maxRetries) {
+            retryCount++;
+            setTimeout(() => speakNextChunk(), 500);
+          } else {
+            toast.error('Failed to start speech synthesis');
+            currentChunkIndex++;
+            retryCount = 0;
+            if (isPlaying) {
+              setTimeout(() => speakNextChunk(), 150);
             }
           }
-        }, 100);
+        }
       };
       
-      speakNextChunk();
+      // Start speaking after a short delay
+      setTimeout(() => speakNextChunk(), 100);
       
     } catch (error) {
       console.error('TTS error:', error);
       toast.error('Failed to convert text to speech. Please try again.');
       isPlaying = false;
+      isSpeechPaused = false;
       reject(error);
     }
   });

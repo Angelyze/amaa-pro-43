@@ -1,9 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
-import { textToSpeech, stopSpeech, getAutoReadSetting } from '@/services/speechService';
+import { 
+  textToSpeech, 
+  stopSpeech, 
+  pauseSpeech, 
+  resumeSpeech, 
+  getAutoReadSetting 
+} from '@/services/speechService';
 import ShareMenu from './ShareMenu';
 
 interface MessageProps {
