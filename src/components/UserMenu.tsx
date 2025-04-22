@@ -1,6 +1,6 @@
 
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -32,36 +32,33 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     return localStorage.getItem('theme') || 'light';
   });
   
-  // Ensure theme is synchronized on component mount and when localStorage changes
   useEffect(() => {
-    // Listen for changes to the theme in localStorage and custom event
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'theme') {
         setTheme(e.newValue || 'light');
       }
     };
-    
     const handleThemeChange = () => {
       const newTheme = localStorage.getItem('theme') || 'light';
-      console.log(`UserMenu detected theme change: ${newTheme}`);
       setTheme(newTheme);
     };
-    
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('themechange', handleThemeChange);
-    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('themechange', handleThemeChange);
     };
   }, []);
   
+  // Always resolve initials for fallback
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
-  
+
+  // Use avatar_url from user metadata, fallback to null
+  const avatarUrl: string | null = user?.user_metadata?.avatar_url || null;
+
   const handleThemeChange = (value: string) => {
-    console.log(`UserMenu changing theme to: ${value}`);
     setTheme(value);
     changeTheme(value);
     toast.success(`Theme changed to ${value}`);
@@ -72,9 +69,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
           <Avatar className="h-9 w-9 border border-border">
-            <AvatarFallback className="bg-muted text-muted-foreground">
-              {userInitials}
-            </AvatarFallback>
+            {avatarUrl ? (
+              <AvatarImage src={avatarUrl} alt="Profile picture" />
+            ) : (
+              <AvatarFallback className="bg-muted text-muted-foreground">
+                {userInitials}
+              </AvatarFallback>
+            )}
           </Avatar>
           
           {isPremium && (
