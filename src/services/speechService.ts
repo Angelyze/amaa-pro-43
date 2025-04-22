@@ -1,15 +1,11 @@
 
 import { toast } from 'sonner';
 
-// MARS5-TTS API configuration
-const MARS5_API_URL = 'https://api.cambly.ai/v1/mars5/tts';
-const MARS5_API_KEY = '601867ea-f904-4802-8c42-eb1fcd6cbf00'; // API key for authentication
-
 // TTS state tracking
-let currentAudio: HTMLAudioElement | null = null;
+let currentUtterance: SpeechSynthesisUtterance | null = null;
 let isPlaying = false;
 
-// Voice types based on MARS5-TTS available options
+// Voice types
 export interface VoiceOption {
   id: string;
   name: string;
@@ -18,18 +14,9 @@ export interface VoiceOption {
   accent?: string;
 }
 
-// Available voices (from MARS5-TTS documentation)
-export const availableVoices: VoiceOption[] = [
-  { id: 'en_female_1', name: 'Emma', gender: 'female', language: 'en', accent: 'US' },
-  { id: 'en_female_2', name: 'Clara', gender: 'female', language: 'en', accent: 'US' },
-  { id: 'en_male_1', name: 'James', gender: 'male', language: 'en', accent: 'US' },
-  { id: 'en_male_2', name: 'Daniel', gender: 'male', language: 'en', accent: 'US' }
-];
-
 // Local storage keys
 const LOCAL_STORAGE_AUTO_READ = 'auto_read_messages';
 const LOCAL_STORAGE_VOICE = 'tts_voice';
-const DEFAULT_VOICE = 'en_female_1';
 
 // Get auto-read setting
 export const getAutoReadSetting = (): boolean => {
@@ -44,7 +31,7 @@ export const setAutoReadSetting = (value: boolean): void => {
 
 // Get current voice
 export const getCurrentVoice = (): string => {
-  return localStorage.getItem(LOCAL_STORAGE_VOICE) || DEFAULT_VOICE;
+  return localStorage.getItem(LOCAL_STORAGE_VOICE) || '';
 };
 
 // Set voice
@@ -52,18 +39,29 @@ export const setVoice = (voiceId: string): void => {
   localStorage.setItem(LOCAL_STORAGE_VOICE, voiceId);
 };
 
-// Get voice by ID
-export const getVoiceById = (id: string): VoiceOption | undefined => {
-  return availableVoices.find(voice => voice.id === id);
-};
-
 // Get all available voices
 export const getAllVoices = (): VoiceOption[] => {
-  return availableVoices;
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+  
+  return voices.map(voice => ({
+    id: voice.voiceURI,
+    name: voice.name,
+    gender: voice.name.toLowerCase().includes('female') ? 'female' : 'male',
+    language: voice.lang,
+    accent: voice.name.split(' ').slice(1).join(' ')
+  }));
+};
+
+// Get voice by ID
+export const getVoiceById = (id: string): SpeechSynthesisVoice | undefined => {
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+  return voices.find(voice => voice.voiceURI === id);
 };
 
 // Split text into smaller chunks for better TTS processing
-const splitTextIntoChunks = (text: string, maxLength = 500): string[] => {
+const splitTextIntoChunks = (text: string, maxLength = 200): string[] => {
   const chunks: string[] = [];
   let startIndex = 0;
   
@@ -91,155 +89,80 @@ const splitTextIntoChunks = (text: string, maxLength = 500): string[] => {
       }
     }
     
-    chunks.push(text.substring(startIndex, endIndex));
+    chunks.push(text.substring(startIndex, endIndex).trim());
     startIndex = endIndex;
   }
   
   return chunks;
 };
 
-// Create audio from base64 response
-const createAudioFromResponse = (audioData: string): HTMLAudioElement => {
-  const audio = new Audio(`data:audio/wav;base64,${audioData}`);
-  return audio;
-};
-
 // Stop any currently playing speech
 export const stopSpeech = (): void => {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
+  if (isPlaying) {
+    window.speechSynthesis.cancel();
+    isPlaying = false;
+    currentUtterance = null;
   }
-  isPlaying = false;
 };
 
-// Create a cache for TTS audio to improve performance
-const ttsCache: { [key: string]: string } = {};
-
-// Request speech from MARS5-TTS API with retry logic
-const requestSpeech = async (text: string, voiceId: string, retryCount = 3): Promise<string> => {
-  // Check cache first
-  const cacheKey = `${voiceId}:${text}`;
-  if (ttsCache[cacheKey]) {
-    return ttsCache[cacheKey];
-  }
-  
-  for (let attempt = 1; attempt <= retryCount; attempt++) {
-    try {
-      console.log(`Attempting TTS request ${attempt} with API key: ${MARS5_API_KEY.substring(0, 8)}...`);
-      
-      const response = await fetch(MARS5_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'API-Version': '1.0',
-          'Authorization': `Bearer ${MARS5_API_KEY}`
-        },
-        body: JSON.stringify({
-          text,
-          voice_id: voiceId,
-          format: 'wav',
-          speed: 1.0,
-          pitch: 1.0
-        })
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.message || errorMessage;
-        } catch (e) {
-          // If parsing fails, use the response text
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-      
-      const data = await response.json();
-      
-      if (!data.audio) {
-        throw new Error('No audio data received from MARS5-TTS');
-      }
-      
-      // Cache the result
-      ttsCache[cacheKey] = data.audio;
-      
-      return data.audio;
-    } catch (error) {
-      console.error(`TTS request attempt ${attempt} failed:`, error);
-      if (attempt === retryCount) {
-        throw error;
-      }
-      // Wait before retrying (exponential backoff)
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-    }
-  }
-  
-  throw new Error('All retry attempts failed');
-};
-
-// Main text to speech function using MARS5-TTS
+// Main text to speech function
 export const textToSpeech = async (text: string): Promise<void> => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       stopSpeech();
       isPlaying = true;
       
-      const voiceId = getCurrentVoice();
+      const synth = window.speechSynthesis;
       const chunks = splitTextIntoChunks(text);
       let currentChunkIndex = 0;
       
-      const speakNextChunk = async () => {
+      const speakNextChunk = () => {
         if (currentChunkIndex >= chunks.length || !isPlaying) {
           isPlaying = false;
           resolve();
           return;
         }
         
-        try {
-          const chunk = chunks[currentChunkIndex];
-          console.log(`Speaking chunk ${currentChunkIndex + 1} of ${chunks.length}, length: ${chunk.length} characters`);
-          
-          const audioData = await requestSpeech(chunk, voiceId);
-          const audio = createAudioFromResponse(audioData);
-          currentAudio = audio;
-          
-          audio.onended = () => {
-            currentChunkIndex++;
-            if (isPlaying) {
-              setTimeout(speakNextChunk, 50);
-            }
-          };
-          
-          audio.onerror = (error) => {
-            console.error('Audio playback error:', error);
-            toast.error('Audio playback failed. Please try again.');
-            currentChunkIndex++;
-            if (isPlaying) {
-              setTimeout(speakNextChunk, 50);
-            }
-          };
-          
-          await audio.play();
-        } catch (error) {
-          console.error('Error in TTS chunk processing:', error);
-          toast.error('TTS error: ' + (error instanceof Error ? error.message : 'Unknown error'));
+        const chunk = chunks[currentChunkIndex];
+        console.log(`Speaking chunk ${currentChunkIndex + 1} of ${chunks.length}`);
+        
+        const utterance = new SpeechSynthesisUtterance(chunk);
+        currentUtterance = utterance;
+        
+        // Get selected voice if available
+        const selectedVoiceId = getCurrentVoice();
+        if (selectedVoiceId) {
+          const voice = getVoiceById(selectedVoiceId);
+          if (voice) {
+            utterance.voice = voice;
+          }
+        }
+        
+        utterance.onend = () => {
           currentChunkIndex++;
           if (isPlaying) {
             setTimeout(speakNextChunk, 50);
           }
-        }
+        };
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event);
+          toast.error('Speech synthesis failed. Please try again.');
+          currentChunkIndex++;
+          if (isPlaying) {
+            setTimeout(speakNextChunk, 50);
+          }
+        };
+        
+        synth.speak(utterance);
       };
       
-      await speakNextChunk();
+      speakNextChunk();
+      
     } catch (error) {
-      isPlaying = false;
       console.error('TTS error:', error);
-      toast.error('Failed to convert text to speech. Please check your connection and try again.');
+      toast.error('Failed to convert text to speech. Please try again.');
+      isPlaying = false;
       reject(error);
     }
   });
