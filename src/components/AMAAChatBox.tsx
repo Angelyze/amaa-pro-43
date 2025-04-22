@@ -336,7 +336,7 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
       {!isMinimized && (
         <>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex justify-center items-center relative">
             <span className="px-2 py-1 rounded-full text-xs text-muted-foreground max-w-max">
               {disabled ? 
                 (document.body.hasAttribute('data-user-logged-in') ? 
@@ -348,15 +348,14 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
                 activeOption === 'code' ? `Coding Mode${voiceInputActive ? ' - using voice' : ''}` :
                 uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
             </span>
-          </div>
-
-          <div className="mt-1 flex justify-end relative" style={{ right: '50px', gap: '6px' }}>
-            <ToolIconsRow
-              disabled={disabled}
-              activeOption={activeOption}
-              setActiveOption={setActiveOption}
-              triggerFileUpload={triggerFileUpload}
-            />
+            <div className="absolute right-[40px]">
+              <ToolIconsRow
+                disabled={disabled}
+                activeOption={activeOption}
+                setActiveOption={setActiveOption}
+                triggerFileUpload={triggerFileUpload}
+              />
+            </div>
           </div>
         </>
       )}
