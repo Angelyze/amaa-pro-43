@@ -67,7 +67,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <div className="flex items-center gap-2">
           <Avatar 
             className="h-14 w-14 rounded-full bg-muted/0 overflow-hidden shadow-none border-0 p-0 
-            transition-all duration-300 group 
+            transition-all duration-200 group 
             hover:scale-105 hover:brightness-110 
             data-[state=open]:scale-105 data-[state=open]:brightness-110"
           >
