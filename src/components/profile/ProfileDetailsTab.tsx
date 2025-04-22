@@ -64,8 +64,8 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
         setIsAvatarUploading(false);
         return;
       }
-      if (file.size > 4 * 1024 * 1024) {
-        toast.error('Image size should be <= 4MB');
+      if (file.size > 1 * 1024 * 1024) {
+        toast.error('Image size should be <= 1MB');
         setIsAvatarUploading(false);
         return;
       }
@@ -169,7 +169,7 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
         </div>
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
           <div className="text-xs">
-            <span className="font-medium">Recommended:</span> Square JPG, PNG, Max 4MB
+            <span className="font-medium">Recommended:</span> Square JPG, PNG, Max 1MB
           </div>
         </div>
       </div>

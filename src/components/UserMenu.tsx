@@ -65,7 +65,7 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
-          <Avatar className="h-10 w-10 border-none">
+          <Avatar className="h-11 w-11 border-none">
             {avatarUrl ? (
               <AvatarImage 
                 src={avatarUrl} 
