@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,19 +19,17 @@ const Profile = () => {
     return localStorage.getItem('theme') || 'light';
   });
   
-  // Voice settings state
   const [autoReadMessages, setAutoReadMessages] = useState(() => {
     return getAutoReadSetting();
   });
   
-  // Save voice settings
   const saveVoiceSettings = () => {
     setAutoReadSetting(autoReadMessages);
     toast.success('Voice settings saved successfully!');
   };
   
   return (
-    <Layout showBackButton title="Profile Settings">
+    <Layout showBackButton title="Profile Settings" backToHome={true}>
       <div className="container py-10 max-w-4xl">
         <Card className="mb-6">
           <CardHeader>
@@ -41,18 +38,15 @@ const Profile = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {/* Profile Information */}
               <ProfileDetailsTab user={user} />
               
               <Separator />
               
-              {/* Appearance Settings */}
               <AppearanceTab 
                 selectedTheme={selectedTheme} 
                 setSelectedTheme={setSelectedTheme} 
               />
               
-              {/* Subscription Details (Premium only) */}
               {isPremium && (
                 <>
                   <Separator />
@@ -60,7 +54,6 @@ const Profile = () => {
                 </>
               )}
               
-              {/* Voice Settings (Premium only) */}
               {isPremium && (
                 <>
                   <Separator />
