@@ -1,4 +1,3 @@
-
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
@@ -68,13 +67,17 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
         <div className="flex items-center gap-2">
           <Avatar 
             className="h-14 w-14 rounded-full bg-muted/0 overflow-hidden shadow-none border-0 p-0 
-            transition-all duration-300 hover:scale-105 hover:brightness-110"
+            transition-all duration-300 group 
+            hover:scale-105 hover:brightness-110 
+            data-[state=open]:scale-105 data-[state=open]:brightness-110"
           >
             {avatarUrl ? (
               <AvatarImage 
                 src={avatarUrl} 
                 alt="Profile picture" 
-                className="object-cover w-full h-full rounded-full border-none shadow-none m-0 p-0"
+                className="object-cover w-full h-full rounded-full border-none shadow-none m-0 p-0
+                transition-transform duration-300
+                group-hover:scale-105 group-data-[state=open]:scale-105"
                 style={{
                   objectFit: 'cover',
                   width: '100%',
@@ -89,7 +92,8 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
             ) : (
               <AvatarFallback 
                 className="bg-muted text-muted-foreground rounded-full w-full h-full p-0 m-0 
-                transition-all duration-300 hover:brightness-110" 
+                transition-all duration-300
+                group-hover:brightness-110 group-data-[state=open]:brightness-110" 
                 style={{ border: 'none' }}
               >
                 {userInitials}
@@ -163,4 +167,3 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
 };
 
 export default UserMenu;
-
