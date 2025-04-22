@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Layout } from '@/components/ui/layout';
+import { useScrollToTop } from '@/hooks/useScrollToTop';
 
 const Privacy = () => {
   const lastUpdated = "April 22, 2025";
-  
+  useScrollToTop();
+
   return (
-    <Layout showBackButton title="Privacy Policy - Secure AI Assistant Platform">
+    <Layout showBackButton backToHome title="Privacy Policy - Secure AI Assistant Platform">
       <div className="container mx-auto px-4 py-16">
         <div className="w-full max-w-3xl mx-auto">
           <div className="flex flex-col items-center mb-8">

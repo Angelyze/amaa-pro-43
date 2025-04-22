@@ -9,9 +9,10 @@ interface LayoutProps {
   children: React.ReactNode;
   showBackButton?: boolean;
   title?: string;
+  backToHome?: boolean; // new prop
 }
 
-export function Layout({ children, showBackButton, title }: LayoutProps) {
+export function Layout({ children, showBackButton, title, backToHome }: LayoutProps) {
   const navigate = useNavigate();
 
   return (
@@ -31,7 +32,7 @@ export function Layout({ children, showBackButton, title }: LayoutProps) {
               variant="ghost" 
               className="mr-4" 
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => backToHome ? navigate("/") : navigate(-1)}
             >
               <ArrowLeft size={20} />
             </Button>
