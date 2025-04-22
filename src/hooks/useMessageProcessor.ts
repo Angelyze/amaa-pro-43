@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -7,6 +8,9 @@ import {
   saveGuestMessage,
   incrementGuestQueryCount
 } from '@/services/conversationService';
+import { useFileUpload, FileData } from './useFileUpload';
+import { useSubscriptionCheck } from './useSubscriptionCheck';
+import { processFileWithQuestion, sendMessageToAI } from '@/services/messageProcessorService';
 
 interface ProcessorOptions {
   isPremium: boolean;
@@ -20,12 +24,6 @@ interface ProcessorOptions {
 }
 
 export function useMessageProcessor(options: ProcessorOptions) {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadedFileData, setUploadedFileData] = useState<{
-    type: string;
-    name: string;
-    data: string;
-  } | null>(null);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   
   const { 
@@ -39,31 +37,35 @@ export function useMessageProcessor(options: ProcessorOptions) {
     setGuestQueriesCount
   } = options;
 
-  const isImageFile = (fileType: string): boolean => {
-    return fileType.startsWith('image/');
-  };
+  const {
+    uploadedFile,
+    uploadedFileData,
+    isImageFile,
+    handleUploadFile,
+    resetFileUpload
+  } = useFileUpload();
+
+  const {
+    checkUserQueryLimit,
+    incrementQueryCount
+  } = useSubscriptionCheck({
+    isPremium,
+    guestQueriesCount,
+    maxGuestQueries,
+    setGuestQueriesCount
+  });
 
   const handleSendMessage = async (content: string, type: 'regular' | 'web-search' | 'research' | 'code') => {
     try {
-      const userHasReachedLimit = !isPremium && guestQueriesCount >= maxGuestQueries;
-      
-      if (userHasReachedLimit) {
-        toast.error(
-          "You've reached the maximum number of free queries. Subscribe for unlimited access!",
-          { 
-            duration: 8000,
-            action: {
-              label: "Subscribe",
-              onClick: () => window.location.href = "/subscribe"
-            }
-          }
-        );
+      // Check if user has reached their query limit
+      if (!checkUserQueryLimit()) {
         return;
       }
       
       let messageContent = content;
       let finalFileData = uploadedFileData;
       
+      // Handle user message (create and display it)
       if (user) {
         let userMessage: ExtendedMessage;
         
@@ -88,39 +90,11 @@ export function useMessageProcessor(options: ProcessorOptions) {
         addMessage(userMessage);
         setIsLoading(true);
         
-        if (!isPremium) {
-          const newCount = incrementGuestQueryCount();
-          setGuestQueriesCount(newCount);
-          
-          if (newCount === maxGuestQueries) {
-            toast.warning(
-              "This is your last free query. Subscribe for unlimited access.",
-              { 
-                duration: 5000,
-                action: {
-                  label: "Subscribe",
-                  onClick: () => window.location.href = "/subscribe"
-                }
-              }
-            );
-          }
-        }
+        // Increment query count for non-premium users
+        incrementQueryCount();
       } else {
-        const newCount = incrementGuestQueryCount();
-        setGuestQueriesCount(newCount);
-        
-        if (newCount === maxGuestQueries) {
-          toast.warning(
-            "This is your last free query. Subscribe for unlimited access.",
-            { 
-              duration: 5000,
-              action: {
-                label: "Subscribe",
-                onClick: () => window.location.href = "/subscribe"
-              }
-            }
-          );
-        }
+        // Handle guest user
+        incrementQueryCount();
         
         const userMessage = saveGuestMessage({ 
           content: messageContent, 
@@ -132,24 +106,31 @@ export function useMessageProcessor(options: ProcessorOptions) {
         setIsLoading(true);
       }
       
+      // Process message with AI service
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+      
+      // If there's a file upload, process it with the file handler
       if (uploadedFile && type !== 'web-search' && type !== 'research' && type !== 'code') {
-        await processFileWithQuestion(content, uploadedFile);
-      } else {
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-        
-        const response = await supabase.functions.invoke('ai-service', {
-          body: { message: content, type },
-          headers: session ? {
-            'Authorization': `Bearer ${session.access_token}`
-          } : {}
+        await processFileWithQuestion({
+          question: content,
+          file: uploadedFile,
+          fileData: uploadedFileData as FileData,
+          user,
+          currentConversationId,
+          addMessage,
+          isImageFile,
+          createMessage,
+          saveGuestMessage
         });
-        
-        if (response.error) {
-          throw new Error(response.error.message);
-        }
-        
-        const assistantContent = response.data.response;
+      } else {
+        // Handle regular message
+        const assistantContent = await sendMessageToAI({
+          content,
+          type,
+          fileData,
+          session
+        });
         
         if (user) {
           let assistantMessage: ExtendedMessage;
@@ -184,138 +165,18 @@ export function useMessageProcessor(options: ProcessorOptions) {
           const assistantMessage = saveGuestMessage({ content: assistantContent, type: 'assistant' });
           addMessage(assistantMessage);
         }
-        
-        setUploadedFile(null);
-        setUploadedFileData(null);
-        
-        setIsVoiceActive(false);
       }
+      
+      // Reset state
+      resetFileUpload();
+      setIsVoiceActive(false);
+      
     } catch (error) {
       console.error('Error in conversation:', error);
       toast.error('An error occurred while processing your request');
       setIsVoiceActive(false);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const processFileWithQuestion = async (question: string, file: File) => {
-    try {
-      const reader = new FileReader();
-      
-      reader.onload = async (e) => {
-        const fileData = e.target?.result;
-        if (!fileData) {
-          toast.error('Error reading file');
-          return;
-        }
-        
-        const { data } = await supabase.auth.getSession();
-        const session = data.session;
-        
-        const response = await supabase.functions.invoke('ai-service', {
-          body: { 
-            message: question,
-            type: 'upload',
-            file: {
-              name: file.name,
-              type: file.type,
-              data: fileData
-            },
-            photoContext: question
-          },
-          headers: session ? {
-            'Authorization': `Bearer ${session.access_token}`
-          } : {}
-        });
-        
-        if (response.error) {
-          throw new Error(response.error.message);
-        }
-        
-        const assistantContent = response.data.response;
-        const fileResponse = {
-          type: file.type,
-          name: file.name,
-          data: fileData as string
-        };
-        
-        if (user) {
-          let assistantMessage: ExtendedMessage;
-          
-          if (currentConversationId) {
-            try {
-              assistantMessage = await createMessage(
-                currentConversationId, 
-                assistantContent, 
-                'assistant',
-                isImageFile(file.type) ? fileResponse : undefined
-              );
-            } catch (error) {
-              console.error('Error creating assistant message:', error);
-              toast.error('Failed to save assistant message, but here is the response:');
-              assistantMessage = {
-                id: crypto.randomUUID(),
-                conversation_id: currentConversationId,
-                content: assistantContent,
-                type: 'assistant',
-                created_at: new Date().toISOString(),
-                fileData: isImageFile(file.type) ? fileResponse : undefined
-              };
-            }
-          } else {
-            assistantMessage = {
-              id: crypto.randomUUID(),
-              conversation_id: 'temp',
-              content: assistantContent,
-              type: 'assistant',
-              created_at: new Date().toISOString(),
-              fileData: isImageFile(file.type) ? fileResponse : undefined
-            };
-          }
-          
-          addMessage(assistantMessage);
-        } else {
-          const assistantMessage = saveGuestMessage({ 
-            content: assistantContent, 
-            type: 'assistant',
-            fileData: isImageFile(file.type) ? fileResponse : undefined
-          });
-          
-          addMessage(assistantMessage);
-        }
-        
-        setUploadedFile(null);
-        setUploadedFileData(null);
-      };
-      
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error processing file with question:', error);
-      toast.error('An error occurred while processing your file');
-      throw error;
-    }
-  };
-
-  const handleUploadFile = async (file: File) => {
-    try {
-      setUploadedFile(file);
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileData = e.target?.result as string;
-        setUploadedFileData({
-          type: file.type,
-          name: file.name,
-          data: fileData
-        });
-      };
-      reader.readAsDataURL(file);
-      
-      toast.success(`File uploaded: ${file.name}. Please ask a question about it.`);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      toast.error('An error occurred while uploading your file');
     }
   };
 
