@@ -1,9 +1,7 @@
-
 import { toast } from 'sonner';
 
 // MARS5-TTS API configuration
-const MARS5_API_URL = 'https://api.mars5.ai/tts/v1/generate';
-const MARS5_API_KEY = ''; // Public API key will need to be provided
+const MARS5_API_URL = 'https://mars5api.camb.ai/api/tts';
 
 // TTS state tracking
 let currentAudio: HTMLAudioElement | null = null;
@@ -20,16 +18,16 @@ export interface VoiceOption {
 
 // Available voices (from MARS5-TTS documentation)
 export const availableVoices: VoiceOption[] = [
-  { id: 'en_US_001', name: 'Emily', gender: 'female', language: 'en', accent: 'US' },
-  { id: 'en_US_002', name: 'Michael', gender: 'male', language: 'en', accent: 'US' },
-  { id: 'en_GB_001', name: 'Charlotte', gender: 'female', language: 'en', accent: 'GB' },
-  { id: 'en_GB_002', name: 'James', gender: 'male', language: 'en', accent: 'GB' }
+  { id: 'en_female_1', name: 'Emma', gender: 'female', language: 'en', accent: 'US' },
+  { id: 'en_female_2', name: 'Clara', gender: 'female', language: 'en', accent: 'US' },
+  { id: 'en_male_1', name: 'James', gender: 'male', language: 'en', accent: 'US' },
+  { id: 'en_male_2', name: 'Daniel', gender: 'male', language: 'en', accent: 'US' }
 ];
 
 // Local storage keys
 const LOCAL_STORAGE_AUTO_READ = 'auto_read_messages';
 const LOCAL_STORAGE_VOICE = 'tts_voice';
-const DEFAULT_VOICE = 'en_US_001';
+const DEFAULT_VOICE = 'en_female_1';
 
 // Get auto-read setting
 export const getAutoReadSetting = (): boolean => {
@@ -63,7 +61,7 @@ export const getAllVoices = (): VoiceOption[] => {
 };
 
 // Split text into smaller chunks for better TTS processing
-const splitTextIntoChunks = (text: string, maxLength = 2000): string[] => {
+const splitTextIntoChunks = (text: string, maxLength = 500): string[] => {
   const chunks: string[] = [];
   let startIndex = 0;
   
@@ -129,16 +127,14 @@ const requestSpeech = async (text: string, voiceId: string): Promise<string> => 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${MARS5_API_KEY}`,
       'Accept': 'application/json'
     },
     body: JSON.stringify({
       text,
       voice_id: voiceId,
-      output_format: 'wav',
+      format: 'wav',
       speed: 1.0,
-      pitch: 1.0,
-      sample_rate: 24000
+      pitch: 1.0
     })
   });
   
@@ -188,7 +184,7 @@ export const textToSpeech = async (text: string): Promise<void> => {
           audio.onended = () => {
             currentChunkIndex++;
             if (isPlaying) {
-              setTimeout(speakNextChunk, 50); // Increased pause between chunks
+              setTimeout(speakNextChunk, 50);
             }
           };
           
