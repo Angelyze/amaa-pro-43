@@ -1,4 +1,3 @@
-
 @layer components {
 .amaa-input {
     @apply w-full px-6 py-4 bg-background/80 dark:bg-background/90 rounded-full border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300 backdrop-blur-md shadow-glass-sm hover:shadow-glass;
@@ -25,7 +24,7 @@
   }
 
   .header-container {
-    @apply fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-b border-border shadow-glass-sm;
+    @apply fixed bottom-0 left-0 right-0 w-full backdrop-blur-lg bg-background/80 dark:bg-background/80 z-50 transition-all duration-500 border-t border-border shadow-glass-sm;
   }
   
   .footer-container {
