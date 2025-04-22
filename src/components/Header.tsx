@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between w-full max-w-2xl">
           {/* Logo positioned immediately left of the chat box */}
           <div className="flex-shrink-0">
-            <img src="/AMAApp.png" alt="AMAA" className="h-12" />
+            <img src="/AMAApp.png" alt="AMAA" className="h-16" />
           </div>
           
           {/* Chatbox in center */}
