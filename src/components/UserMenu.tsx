@@ -1,4 +1,3 @@
-
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
@@ -50,12 +49,10 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     };
   }, []);
   
-  // Always resolve initials for fallback
   const userInitials = user?.user_metadata?.full_name
     ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email?.substring(0, 2).toUpperCase() || 'U';
 
-  // Use avatar_url from user metadata, fallback to null
   const avatarUrl: string | null = user?.user_metadata?.avatar_url || null;
 
   const handleThemeChange = (value: string) => {
@@ -68,9 +65,13 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
-          <Avatar className="h-9 w-9 border border-border">
+          <Avatar className="h-10 w-10 border-none">
             {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="Profile picture" />
+              <AvatarImage 
+                src={avatarUrl} 
+                alt="Profile picture" 
+                className="object-cover w-full h-full"
+              />
             ) : (
               <AvatarFallback className="bg-muted text-muted-foreground">
                 {userInitials}
