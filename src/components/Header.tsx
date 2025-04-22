@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="text-sm gap-1.5 hover:bg-primary/10 hover:text-primary transition-all"
+                    className="text-sm gap-1.4 hover:bg-primary/10 hover:text-primary transition-all"
                   >
                     <LogIn size={16} />
                     <span className="hidden sm:inline">Log in</span>
@@ -81,9 +81,9 @@ const Header: React.FC<HeaderProps> = ({
               variant="ghost" 
               size="icon" 
               onClick={onScrollToTop}
-              className="rounded-full w-12 h-12 hover:bg-primary/10 hover:text-primary transition-all"
+              className="rounded-full w-11 h-11 hover:bg-primary/10 hover:text-primary transition-all"
             >
-              <ArrowUp size={22} />
+              <ArrowUp size={18} />
             </Button>
           </div>
         </div>
