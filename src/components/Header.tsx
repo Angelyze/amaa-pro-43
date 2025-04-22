@@ -81,9 +81,9 @@ const Header: React.FC<HeaderProps> = ({
               variant="ghost" 
               size="icon" 
               onClick={onScrollToTop}
-              className="rounded-full w-12 h-12 hover:bg-primary/12 hover:text-primary transition-all"
+              className="rounded-full w-12 h-12 hover:bg-primary/10 hover:text-primary transition-all"
             >
-              <ArrowUp size={18} />
+              <ArrowUp size={22} />
             </Button>
           </div>
         </div>
