@@ -336,26 +336,13 @@ const AMAAChatBox: React.FC<AMAAChatBoxProps> = ({
 
       {!isMinimized && (
         <>
-          <div className="mt-2 flex flex-col items-center relative">
-            <span className="px-2 py-1 rounded-full text-xs text-muted-foreground max-w-max">
-              {disabled ? 
-                (document.body.hasAttribute('data-user-logged-in') ? 
-                  'Upgrade to Premium for unlimited access!' : 
-                  'Sign in to continue chatting') :
-                activeOption === 'regular' ? `Ask AI Assistant${voiceInputActive ? ' - using voice' : ''}` : 
-                activeOption === 'web-search' ? `Search the internet${voiceInputActive ? ' - using voice' : ''}` :
-                activeOption === 'research' ? `Research Mode${voiceInputActive ? ' - using voice' : ''}` :
-                activeOption === 'code' ? `Coding Mode${voiceInputActive ? ' - using voice' : ''}` :
-                uploadedFile ? `Ask a question about the uploaded file${voiceInputActive ? ' - using voice' : ''}` : `Upload file${voiceInputActive ? ' - using voice' : ''}`}
-            </span>
-            <div className="mt-2 flex justify-center items-center w-full">
-              <ToolIconsRow
-                disabled={disabled}
-                activeOption={activeOption}
-                setActiveOption={setActiveOption}
-                triggerFileUpload={triggerFileUpload}
-              />
-            </div>
+          <div className="mt-2 flex justify-center items-center w-full">
+            <ToolIconsRow
+              disabled={disabled}
+              activeOption={activeOption}
+              setActiveOption={setActiveOption}
+              triggerFileUpload={triggerFileUpload}
+            />
           </div>
         </>
       )}
