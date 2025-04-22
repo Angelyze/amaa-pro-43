@@ -151,7 +151,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
       await textToSpeech(cleanText);
     } catch (error) {
       console.error('Error during text-to-speech:', error);
-      toast.error('Failed to read text. Falling back to browser voices.');
+      toast.error('Failed to read text.');
     } finally {
       setIsSpeaking(false);
     }
