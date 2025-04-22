@@ -360,7 +360,7 @@ async function handleResearchQuery(message: string) {
   try {
     console.log('Processing research query:', message);
     
-    const response = await fetch('https://api.grok.x.ai/v1/chat/completions', {
+    const response = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${XAI_API_KEY}`,
@@ -369,7 +369,7 @@ async function handleResearchQuery(message: string) {
         'X-API-Version': '2024-04'
       },
       body: JSON.stringify({
-        model: 'grok-3',
+        model: 'grok-3-latest',
         messages: [
           {
             role: 'system',
@@ -409,7 +409,7 @@ async function handleResearchQuery(message: string) {
     return new Response(
       JSON.stringify({ 
         response: data.choices[0].message.content,
-        model: "grok-3"
+        model: "grok-3-latest"
       }),
       { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
@@ -439,7 +439,7 @@ async function handleCodingQuery(message: string) {
   try {
     console.log('Processing coding query:', message);
     
-    const response = await fetch('https://api.grok.x.ai/v1/chat/completions', {
+    const response = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${XAI_API_KEY}`,
@@ -448,7 +448,7 @@ async function handleCodingQuery(message: string) {
         'X-API-Version': '2024-04'
       },
       body: JSON.stringify({
-        model: 'grok-3',
+        model: 'grok-3-latest',
         messages: [
           {
             role: 'system',
@@ -492,7 +492,7 @@ When citing sources, if possible, give links.`
     return new Response(
       JSON.stringify({ 
         response: data.choices[0].message.content,
-        model: "grok-3"
+        model: "grok-3-latest"
       }),
       { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
