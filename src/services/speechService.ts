@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 // TTS state tracking
@@ -19,7 +18,7 @@ export interface VoiceOption {
 // Local storage keys
 const LOCAL_STORAGE_AUTO_READ = 'auto_read_messages';
 const LOCAL_STORAGE_VOICE = 'tts_voice';
-const DEFAULT_VOICE_NAME = 'Google US English';
+const DEFAULT_VOICE_NAME = 'Microsoft Mark - English (United States)';
 
 // Initialize voices when they're ready
 window.speechSynthesis.onvoiceschanged = () => {
@@ -29,8 +28,21 @@ window.speechSynthesis.onvoiceschanged = () => {
     const defaultVoice = getVoiceByName(DEFAULT_VOICE_NAME);
     if (defaultVoice) {
       setVoice(defaultVoice.voiceURI);
+    } else {
+      // Try to find any Microsoft voice as fallback
+      const microsoftVoice = findMicrosoftVoice();
+      if (microsoftVoice) {
+        setVoice(microsoftVoice.voiceURI);
+      }
     }
   }
+};
+
+// Find any Microsoft voice as fallback
+const findMicrosoftVoice = (): SpeechSynthesisVoice | undefined => {
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+  return voices.find(voice => voice.name.includes('Microsoft'));
 };
 
 // Get auto-read setting
@@ -274,10 +286,16 @@ export const textToSpeech = async (text: string): Promise<void> => {
           if (voice) {
             utterance.voice = voice;
           } else {
-            // Fallback to default voice
+            // Fallback to Microsoft voice instead of Google
             const defaultVoice = getVoiceByName(DEFAULT_VOICE_NAME);
             if (defaultVoice) {
               utterance.voice = defaultVoice;
+            } else {
+              // Try any Microsoft voice as a fallback
+              const microsoftVoice = findMicrosoftVoice();
+              if (microsoftVoice) {
+                utterance.voice = microsoftVoice;
+              }
             }
           }
         }
