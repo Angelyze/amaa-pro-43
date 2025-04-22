@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 
 // MARS5-TTS API configuration
-const MARS5_API_URL = 'https://mars5api.camb.ai/api/tts';
+const MARS5_API_URL = 'https://api.cambly.ai/v1/mars5/tts';
 
 // TTS state tracking
 let currentAudio: HTMLAudioElement | null = null;
@@ -115,44 +115,58 @@ export const stopSpeech = (): void => {
 // Create a cache for TTS audio to improve performance
 const ttsCache: { [key: string]: string } = {};
 
-// Request speech from MARS5-TTS API
-const requestSpeech = async (text: string, voiceId: string): Promise<string> => {
+// Request speech from MARS5-TTS API with retry logic
+const requestSpeech = async (text: string, voiceId: string, retryCount = 3): Promise<string> => {
   // Check cache first
   const cacheKey = `${voiceId}:${text}`;
   if (ttsCache[cacheKey]) {
     return ttsCache[cacheKey];
   }
   
-  const response = await fetch(MARS5_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      text,
-      voice_id: voiceId,
-      format: 'wav',
-      speed: 1.0,
-      pitch: 1.0
-    })
-  });
-  
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to convert text to speech');
+  for (let attempt = 1; attempt <= retryCount; attempt++) {
+    try {
+      const response = await fetch(MARS5_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'API-Version': '1.0'
+        },
+        body: JSON.stringify({
+          text,
+          voice_id: voiceId,
+          format: 'wav',
+          speed: 1.0,
+          pitch: 1.0
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.audio) {
+        throw new Error('No audio data received from MARS5-TTS');
+      }
+      
+      // Cache the result
+      ttsCache[cacheKey] = data.audio;
+      
+      return data.audio;
+    } catch (error) {
+      console.error(`TTS request attempt ${attempt} failed:`, error);
+      if (attempt === retryCount) {
+        throw error;
+      }
+      // Wait before retrying (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+    }
   }
   
-  const data = await response.json();
-  
-  if (!data.audio) {
-    throw new Error('No audio data received from MARS5-TTS');
-  }
-  
-  // Cache the result
-  ttsCache[cacheKey] = data.audio;
-  
-  return data.audio;
+  throw new Error('All retry attempts failed');
 };
 
 // Main text to speech function using MARS5-TTS
@@ -190,6 +204,7 @@ export const textToSpeech = async (text: string): Promise<void> => {
           
           audio.onerror = (error) => {
             console.error('Audio playback error:', error);
+            toast.error('Audio playback failed. Please try again.');
             currentChunkIndex++;
             if (isPlaying) {
               setTimeout(speakNextChunk, 50);
