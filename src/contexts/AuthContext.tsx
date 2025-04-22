@@ -21,6 +21,7 @@ interface AuthContextProps {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshSubscriptionStatus: () => Promise<void>;
+  refreshUser: () => Promise<void>; // <--- new
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -64,6 +65,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setSubscriptionStatus(null);
       setIsPremium(false);
+    }
+  };
+
+  // <--- Add refreshUser
+  const refreshUser = async () => {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      setUser(data.user ?? null);
+    } catch (err) {
+      console.error('Failed to refresh user:', err);
+      toast.error('Failed to refresh user info. Try re-logging in.');
     }
   };
 
@@ -182,6 +195,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signOut,
         refreshSubscriptionStatus,
+        refreshUser, // <--- Add here
       }}
     >
       {children}

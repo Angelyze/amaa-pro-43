@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,7 @@ import { Upload, Edit, Key, Trash2, Image, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ChangePasswordDialog from './ChangePasswordDialog';
 import DeleteProfileDialog from './DeleteProfileDialog';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AVATAR_BUCKET = "avatars";
 
@@ -28,6 +30,7 @@ interface ProfileDetailsTabProps {
 }
 
 const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
+  const { refreshUser } = useAuth();
   const [fullName, setFullName] = useState(
     user?.user_metadata?.full_name || user?.full_name || ""
   );
@@ -46,8 +49,11 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
     setAvatarUrl(avatarUrlForUser(user));
   }, [user]);
 
+  // Remove toast/info for refresh, handle in code instead!
   async function refreshProfile() {
-    toast.info("Please refresh the page to update profile changes.");
+    // Re-fetch user info from supabase and context to update avatars instantly
+    await refreshUser();
+    toast.success("Profile has been updated across the app!");
   }
 
   const uploadAvatar = async (file: File) => {
@@ -93,8 +99,8 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
       if (profileError) throw profileError;
 
       setAvatarUrl(publicUrl);
-      toast.success('Avatar updated!');
-      refreshProfile();
+      // Instead of a generic refresh, update everywhere instantly:
+      await refreshProfile();
     } catch (error: any) {
       toast.error(error.message || "Failed to upload avatar.");
     } finally {
@@ -113,7 +119,7 @@ const ProfileDetailsTab = ({ user }: ProfileDetailsTabProps) => {
       await supabase.from('profiles').update({ full_name: fullName }).eq('id', user.id);
 
       toast.success('Profile updated successfully!');
-      refreshProfile();
+      await refreshProfile();
     } catch (error: any) {
       toast.error(`Error updating profile: ${error.message}`);
     }
