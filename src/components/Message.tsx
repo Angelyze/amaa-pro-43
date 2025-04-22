@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Share2, Volume2, VolumeX, Globe, Calendar, FileText } from 'lucide-react';
 import { Button } from './ui/button';
@@ -25,7 +24,6 @@ interface MessageProps {
   onTopicClick?: (topic: string) => void;
 }
 
-// Function to strip all markdown for TTS
 const stripMarkdown = (text: string): string => {
   let cleaned = text.replace(/^#{1,6}\s+/gm, '');
   
@@ -43,7 +41,6 @@ const stripMarkdown = (text: string): string => {
   return cleaned;
 };
 
-// Component to render article previews in search results with improved layout
 const ArticlePreview = ({ title, url, date, description, imageUrl, source }: {
   title: string;
   url: string;
@@ -101,8 +98,11 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
   useEffect(() => {
     if (type === 'assistant') {
       let cleanedContent = content;
-      
-      // Extract related topics if they exist
+
+      cleanedContent = cleanedContent.replace(/^---$/gm, '');
+      cleanedContent = cleanedContent.replace(/^___+$/gm, '');
+      cleanedContent = cleanedContent.replace(/^\*\*\*+$/gm, '');
+
       const relatedTopicsMatch = cleanedContent.match(/## Related Topics\s+([\s\S]*?)(?=##|$)/);
       if (relatedTopicsMatch && relatedTopicsMatch[1]) {
         const topicsText = relatedTopicsMatch[1];
@@ -111,14 +111,13 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
           .filter(line => line.trim().startsWith('*') || line.trim().startsWith('-') || /^\d+\./.test(line.trim()))
           .map(line => line.replace(/^[*-]\s+|\d+\.\s+/, '').trim())
           .filter(topic => topic.length > 0)
-          // Remove the double asterisks from topics
           .map(topic => topic.replace(/\*\*/g, ''));
         
         setRelatedTopics(topics);
         
         cleanedContent = cleanedContent.replace(/## Related Topics[\s\S]*?(?=##|$)/, '');
       }
-      
+
       setProcessedContent(cleanedContent);
     } else {
       setProcessedContent(content);
@@ -315,7 +314,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
     <div className="flex justify-center mb-4">
       <div className={`${type === 'user' ? 'user-message' : 'assistant-message'} relative`}>
         {type === 'assistant' && (
-          <div className="absolute top-2 right-2 flex items-center gap-1">
+          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
             <Button
               variant="ghost"
               size="icon"
@@ -410,7 +409,7 @@ const Message: React.FC<MessageProps> = ({ content, type, timestamp, fileData, o
           </div>
         )}
         
-        <div className={`${getFontSize()} prose-container`}>
+        <div className={`${getFontSize()} prose-container ${type === 'assistant' ? 'mt-9' : ''}`}>
           {type === 'user' ? (
             <div className="whitespace-pre-wrap">{content}</div>
           ) : (

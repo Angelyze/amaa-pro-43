@@ -1,3 +1,4 @@
+
 import { LogOut, Moon, Settings, Sun, Flame, Leaf, Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { 
@@ -65,15 +66,25 @@ const UserMenu = ({ onLogout, isPremium }: UserMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none cursor-pointer">
         <div className="flex items-center gap-2">
-          <Avatar className="h-12 w-12 border-none">
+          <Avatar className="h-14 w-14 rounded-full bg-muted/30 overflow-hidden shadow-none border-0 p-0">
             {avatarUrl ? (
               <AvatarImage 
                 src={avatarUrl} 
                 alt="Profile picture" 
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full rounded-full border-none shadow-none m-0 p-0"
+                style={{
+                  objectFit: 'cover',
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  boxShadow: 'none',
+                  background: 'none',
+                  padding: 0,
+                  margin: 0,
+                }}
               />
             ) : (
-              <AvatarFallback className="bg-muted text-muted-foreground">
+              <AvatarFallback className="bg-muted text-muted-foreground rounded-full w-full h-full p-0 m-0" style={{ border: 'none' }}>
                 {userInitials}
               </AvatarFallback>
             )}
