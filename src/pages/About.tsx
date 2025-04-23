@@ -35,7 +35,7 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Comprehensive Features for Your Workflow</h2>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
-                <li>AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:</li>
+                <p>AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:</p>
                   <li><span className="font-medium">Conversational AI:</span> Natural language Q&A, explanations, and clarifications</li>
                   <li><span className="font-medium">Content Creation:</span> Professional email and message drafts, content rewriting, document summaries</li>
                   <li><span className="font-medium">Research & Analysis:</span> Quick facts, market research, web search, citation generation</li>
