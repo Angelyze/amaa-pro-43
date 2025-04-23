@@ -80,18 +80,18 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Cutting-Edge Enterprise Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA.PRO leverages advanced machine learning, a secure European infrastructure, and continuous improvements to deliver accurate, contextual results. All user interactions are protected by rigorous privacy controls and best-in-class security measures.
+                  AMAA.PRO leverages state-of-the-art AI technology and robust infrastructure to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols. We employ sophisticated processing algorithms to ensure accurate, relevant, and contextual responses to your queries.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">About Angelyze</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  Angelyze, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
+                  <a href="https://angelyze.org/" className="text-primary hover:underline">Angelyze</a>, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
-                  Discover new project <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>: free file conversion, transcription, and unit calculation from Angelyze.
+                  Discover the newest project: <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>- free file conversion, transcription, and unit calculation from Angelyze.
                 </p>
               </section>
               
