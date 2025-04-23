@@ -22,38 +22,35 @@ const About = () => {
           </div>
           
           <div className="bg-background/80 dark:bg-background/30 backdrop-blur-lg rounded-2xl p-8 shadow-glass">
-            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA - Your Intelligent Digital Assistant</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA - Your AI Assistant for Everyone</h1>
             
             <div className="space-y-6">
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Our Mission</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Meet AMAA, Your Everyday AI Assistant</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA.pro (Ask Me About Anything) is an innovative digital productivity platform designed to revolutionize how professionals interact with advanced AI technology. Our mission is to empower users with intelligent assistance for research, content creation, and complex problem-solving while maintaining the highest standards of privacy and security. We're building the next generation of AI-powered productivity tools that adapt to your needs.
+                  AMAA is built as an AI Assistant for everyone—no matter your profession or background. We believe technology should be accessible, stress-free, and genuinely helpful.
+                  <br /><br />
+                  AMAA can help with your questions, assist with writing, explore new ideas, analyze information, and simplify your daily tasks. We’re here to make smart tools easy and fun for people everywhere.
                 </p>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Comprehensive Features</h2>
-                <p className="text-foreground/80 leading-relaxed mb-4">
-                  Our platform combines cutting-edge AI technology with an intuitive interface to deliver:
-                </p>
+                <h2 className="text-xl font-semibold mb-3 text-primary">What Can AMAA Do for You?</h2>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
-                  <li>Intelligent conversational assistance with context awareness</li>
-                  <li>Advanced content generation and creative writing support</li>
-                  <li>Professional research assistance and data analysis</li>
-                  <li>Technical problem-solving across multiple domains</li>
-                  <li>Real-time information processing and synthesis</li>
-                  <li>Visual content analysis and interpretation</li>
-                  <li>Customizable interface themes for optimal productivity</li>
-
+                  <li>Answer your questions and explain things in easy language</li>
+                  <li>Help you write and edit text or emails</li>
+                  <li>Find information and summarize key ideas</li>
+                  <li>Assist with creative tasks like brainstorming or story writing</li>
+                  <li>Analyze simple data and help you understand it</li>
+                  <li>Support with technical or everyday problems</li>
+                  <li>Offer helpful suggestions and fun facts</li>
+                  <li>Let you pick your preferred look and style for the interface</li>
                   {isPremium && (
                     <>
-                    <li>Unlimited high-priority processing</li>
-                    <li>Advanced customization and personalization</li>
-                    <li>Enhanced processing capabilities</li>
-                    <li>Comprehensive conversation management</li>
-                    <li>Premium voice interaction features</li>
-                    <li>Priority technical support</li>
+                      <li>Enjoy unlimited and faster processing</li>
+                      <li>Access advanced customization and organization options</li>
+                      <li>Get higher-level support and voice features</li>
+                      <li>Manage your AI conversations more easily</li>
                     </>
                   )}
                 </ul>
@@ -63,15 +60,13 @@ const About = () => {
                 <section className="bg-primary/10 p-6 rounded-xl border border-primary/20">
                   <h2 className="text-xl font-semibold mb-3 text-primary">Upgrade to Premium</h2>
                   <p className="text-foreground/80 leading-relaxed mb-4">
-                    Enhance your productivity with our premium features for just $6.99:
+                    Unlock more with premium for just $6.99:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
-                    <li>Unlimited high-priority processing</li>
-                    <li>Advanced customization and personalization</li>
-                    <li>Enhanced processing capabilities</li>
-                    <li>Comprehensive conversation management</li>
-                    <li>Premium voice interaction features</li>
-                    <li>Priority technical support</li>
+                    <li>Unlimited and faster AI responses</li>
+                    <li>Extra customization and organizing tools</li>
+                    <li>Better voice interaction features</li>
+                    <li>Priority help and support</li>
                   </ul>
                   <div className="flex justify-center">
                     <Link to="/subscribe">
