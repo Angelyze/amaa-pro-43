@@ -28,13 +28,14 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Empowering People with Advanced AI Tools</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise.
+                  AMAA.pro (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise. The mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience. Think of it as a Google 2.0!
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Comprehensive Features for Your Workflow</h2>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
+                <li>AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:</li>
                   <li><span className="font-medium">Conversational AI:</span> Natural language Q&A, explanations, and clarifications</li>
                   <li><span className="font-medium">Content Creation:</span> Professional email and message drafts, content rewriting, document summaries</li>
                   <li><span className="font-medium">Research & Analysis:</span> Quick facts, market research, web search, citation generation</li>
