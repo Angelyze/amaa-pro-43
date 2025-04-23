@@ -91,7 +91,7 @@ const About = () => {
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
-                  Discover more at <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>: free file conversion, transcription, and unit calculation from Angelyze.
+                  Discover new project <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>: free file conversion, transcription, and unit calculation from Angelyze.
                 </p>
               </section>
               
