@@ -87,7 +87,7 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">About Angelyze</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  Angelyze, the Croatian-based company behind AMAA, brings together a global team of experts in AI, UX, and enterprise development. Our vision is to enable professionals everywhere to benefit from ethical and dependable artificial intelligence tools.
+                  Angelyze, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
