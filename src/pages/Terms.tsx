@@ -26,21 +26,21 @@ const Terms = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">1. Terms Acceptance</h2>
                 <p className="leading-relaxed">
-                  By accessing or using the AMAA platform and its advanced AI capabilities, you agree to be bound by these Terms of Service. Please review these terms carefully before using our service.
+                  By accessing or using the AMAA.pro platform and its advanced AI capabilities, you agree to be bound by these Terms of Service. Please review these terms carefully before using our service.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">2. Service Description</h2>
                 <p className="leading-relaxed">
-                  AMAA is an advanced AI-powered digital assistant platform that provides intelligent responses, content generation, research assistance, and various productivity tools. Our service employs sophisticated technology to process and analyze information, providing personalized assistance while maintaining high standards of privacy and security.
+                  AMAA.pro is an advanced AI-powered digital assistant platform that provides intelligent responses, content generation, research assistance, and various productivity tools. Our service employs sophisticated technology to process and analyze information, providing personalized assistance while maintaining high standards of privacy and security.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">3. User Accounts</h2>
                 <p className="leading-relaxed">
-                  Some features of AMAA require user registration. You are responsible for:
+                  Some features of AMAA.pro require user registration. You are responsible for:
                 </p>
                 <ul className="list-disc pl-5 space-y-2 mt-2">
                   <li>Maintaining account security and confidentiality</li>
@@ -53,7 +53,7 @@ const Terms = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">4. Acceptable Use</h2>
                 <p className="leading-relaxed mb-3">
-                  When using AMAA, you agree not to:
+                  When using AMAA.pro, you agree not to:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
                   <li>Use the service for any unlawful purposes</li>
@@ -70,21 +70,21 @@ const Terms = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">5. Premium Subscriptions</h2>
                 <p className="leading-relaxed">
-                  AMAA offers both standard and premium subscription plans. Premium subscribers enjoy enhanced features, including advanced processing capabilities, unlimited usage, personalization options, and priority support. Subscription fees are billed in advance on a recurring basis. Cancellations take effect at the end of the current billing period without refunds for partial periods.
+                  AMAA.pro offers both free and premium subscription plans. Premium subscribers enjoy enhanced features, including unlimited AI queries, advanced processing capabilities, unlimited usage, personalization options, and priority support. Subscription fees are billed in advance on a recurring basis. Cancellations take effect at the end of the current billing period without refunds for partial periods.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">6. Intellectual Property</h2>
                 <p className="leading-relaxed">
-                  While users retain rights to their generated content, AMAA's platform, including its AI technology, interface design, and system architecture, remains the intellectual property of Angelyze. The service is protected by copyright, trademark, and other applicable laws.
+                  While users retain rights to their generated content, AMAA.pro's platform, including its AI technology, interface design, and system architecture, remains the intellectual property of Angelyze. The service is protected by copyright, trademark, and other applicable laws.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">7. Data Usage and Privacy</h2>
                 <p className="leading-relaxed">
-                  We collect and use your information as described in our Privacy Policy. By using AMAA, you consent to such collection and use of data. We may use anonymized data to improve our services and train our AI models.
+                  We collect and use your information as described in our Privacy Policy. By using AMAA.pro, you consent to such collection and use of data. We may use anonymized data to improve our services and train our AI models.
                 </p>
               </section>
               
@@ -105,14 +105,14 @@ const Terms = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">10. Changes to Terms</h2>
                 <p className="leading-relaxed">
-                  Angelyze reserves the right to modify these Terms of Service at any time. We will provide notice of significant changes by posting the updated terms on our website. Your continued use of AMAA after such modifications constitutes your acceptance of the updated terms.
+                  Angelyze reserves the right to modify these Terms of Service at any time. We will provide notice of significant changes by posting the updated terms on our website. Your continued use of AMAA.pro after such modifications constitutes your acceptance of the updated terms.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">11. Governing Law</h2>
                 <p className="leading-relaxed">
-                  These Terms shall be governed by the laws of the Republic of Croatia without regard to its conflict of law provisions. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts located in Croatia.
+                  These Terms shall be governed by the laws of the Republic of Croatia without regard to its conflict of law provisions. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the court located in Zagreb, Croatia.
                 </p>
               </section>
               
