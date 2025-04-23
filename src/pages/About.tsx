@@ -96,8 +96,9 @@ const About = () => {
                 <p className="text-foreground/80 leading-relaxed">
                   Angelyze, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
                 </p>
+                <br></br>
                 <p className="text-foreground/80 leading-relaxed">
-                  Check the new <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>, a free file & unit conversion, and transcription tool!
+                  Check the new <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>, a free file conversion and transcription, as well as a unit conversion tool!
                 </p>
               </section>
               
