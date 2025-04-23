@@ -150,7 +150,7 @@ const Subscribe = () => {
           <Card>
             <CardHeader>
               <CardTitle>Free Plan</CardTitle>
-              <CardDescription>Basic access to AMAA</CardDescription>
+              <CardDescription>Basic access to AMAA.pro</CardDescription>
               <div className="text-3xl font-bold mt-2">$0</div>
             </CardHeader>
             <CardContent>
@@ -193,7 +193,7 @@ const Subscribe = () => {
           <Card className="border-teal">
             <CardHeader className="bg-teal/5 rounded-t-lg">
               <CardTitle>Premium Plan</CardTitle>
-              <CardDescription>Full access to all AMAA features</CardDescription>
+              <CardDescription>Full access to all AMAA.pro features</CardDescription>
               <div className="text-3xl font-bold mt-2">$6.99<span className="text-sm font-normal">/month</span></div>
             </CardHeader>
             <CardContent>
