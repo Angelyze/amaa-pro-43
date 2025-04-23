@@ -64,6 +64,7 @@ const Auth = () => {
           </Link>
           <br></br>
           <Logo />
+        </div>
           <div className="w-[73px]"></div> {/* Spacer for alignment */}
         </div>
         
