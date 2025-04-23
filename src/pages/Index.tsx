@@ -239,7 +239,7 @@ const Index = () => {
               <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
             <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
             </div>
           </div>
         </div>
