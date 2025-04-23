@@ -40,7 +40,6 @@ const About = () => {
                   <li><span className="font-medium">Research & Analysis:</span> Quick facts, market research, web search, citation generation</li>
                   <li><span className="font-medium">Data Tools:</span> Data extraction, table analysis, and charting (CSV/XLS support)</li>
                   <li><span className="font-medium">Text & Code Utilities:</span> Translation, proofing, summarization, code explanations</li>
-                  <li><span className="font-medium">Customization Tools:</span> Choose your preferred app appearance and settings</li>
                   <li><span className="font-medium">Voice Assist:</span> Hands-free communication and voice input/output</li>
                   <li><span className="font-medium">Privacy & Security:</span> Enterprise-grade infrastructure and strict data protection</li>
                   {isPremium && (
@@ -61,8 +60,8 @@ const About = () => {
                     Unlock the full power of AMAA for $6.99/month:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
-                    <li>Unlimited and accelerated AI responses</li>
-                    <li>Advanced customization and organization</li>
+                    <li>Unlimited queries and accelerated AI responses</li>
+                    <li>Advanced Chat customization and organization</li>
                     <li>Premium voice input/output tools</li>
                     <li>Dedicated Premium user support</li>
                   </ul>
@@ -91,7 +90,7 @@ const About = () => {
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
-                  Discover the newest project: <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>- free file conversion, transcription, and unit calculation from Angelyze.
+                  Discover the newest project: <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a> - a free file conversion, transcription, and unit calculation from Angelyze.
                 </p>
               </section>
               
