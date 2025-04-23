@@ -34,7 +34,7 @@ const Profile = () => {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Profile Settings</CardTitle>
-            <CardDescription>Update your profile information and preferences in one place.</CardDescription>
+            <CardDescription>Update your profile information and preferences.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
