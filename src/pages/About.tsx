@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, CreditCard } from 'lucide-react';
+import { CreditCard } from 'lucide-react';
 import { Layout } from '@/components/ui/layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
@@ -22,35 +23,34 @@ const About = () => {
           </div>
           
           <div className="bg-background/80 dark:bg-background/30 backdrop-blur-lg rounded-2xl p-8 shadow-glass">
-            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA - Your AI Assistant for Everyone</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA – The AI Assistant for Everyone</h1>
             
             <div className="space-y-6">
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Meet AMAA, Your Everyday AI Assistant</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Empowering People with Advanced AI Tools</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA is built as an AI Assistant for everyone—no matter your profession or background. We believe technology should be accessible, stress-free, and genuinely helpful.
-                  <br /><br />
-                  AMAA can help with your questions, assist with writing, explore new ideas, analyze information, and simplify your daily tasks. We’re here to make smart tools easy and fun for people everywhere.
+                  AMAA (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise.
                 </p>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">What Can AMAA Do for You?</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Comprehensive Features for Your Workflow</h2>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
-                  <li>Answer your questions and explain things in easy language</li>
-                  <li>Help you write and edit text or emails</li>
-                  <li>Find information and summarize key ideas</li>
-                  <li>Assist with creative tasks like brainstorming or story writing</li>
-                  <li>Analyze simple data and help you understand it</li>
-                  <li>Support with technical or everyday problems</li>
-                  <li>Offer helpful suggestions and fun facts</li>
-                  <li>Let you pick your preferred look and style for the interface</li>
+                  <li><span className="font-medium">Conversational AI:</span> Natural language Q&A, explanations, and clarifications</li>
+                  <li><span className="font-medium">Content Creation:</span> Professional email and message drafts, content rewriting, document summaries</li>
+                  <li><span className="font-medium">Research & Analysis:</span> Quick facts, market research, web search, citation generation</li>
+                  <li><span className="font-medium">Data Tools:</span> Data extraction, table analysis, and charting (CSV/XLS support)</li>
+                  <li><span className="font-medium">Text & Code Utilities:</span> Translation, proofing, summarization, code explanations</li>
+                  <li><span className="font-medium">File Conversion:</span> Direct integration with <a href="https://convertlab.pro/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Convert Lab</a> for all file types</li>
+                  <li><span className="font-medium">Customization Tools:</span> Choose your preferred app appearance and settings</li>
+                  <li><span className="font-medium">Voice Assist:</span> Hands-free communication and voice input/output</li>
+                  <li><span className="font-medium">Privacy & Security:</span> Enterprise-grade infrastructure and strict data protection</li>
                   {isPremium && (
                     <>
-                      <li>Enjoy unlimited and faster processing</li>
-                      <li>Access advanced customization and organization options</li>
-                      <li>Get higher-level support and voice features</li>
-                      <li>Manage your AI conversations more easily</li>
+                      <li><span className="font-medium">Unlimited AI Access:</span> Faster and unlimited question processing</li>
+                      <li><span className="font-medium">Advanced Organization:</span> Enhanced chat management, folders, and sorting</li>
+                      <li><span className="font-medium">Premium Voice Features:</span> Priority AI voice usage and transcription</li>
+                      <li><span className="font-medium">Priority User Support:</span> Dedicated help and accelerated response</li>
                     </>
                   )}
                 </ul>
@@ -60,19 +60,19 @@ const About = () => {
                 <section className="bg-primary/10 p-6 rounded-xl border border-primary/20">
                   <h2 className="text-xl font-semibold mb-3 text-primary">Upgrade to Premium</h2>
                   <p className="text-foreground/80 leading-relaxed mb-4">
-                    Unlock more with premium for just $6.99:
+                    Unlock the full power of AMAA for $6.99/month:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
-                    <li>Unlimited and faster AI responses</li>
-                    <li>Extra customization and organizing tools</li>
-                    <li>Better voice interaction features</li>
-                    <li>Priority help and support</li>
+                    <li>Unlimited and accelerated AI responses</li>
+                    <li>Advanced customization and organization</li>
+                    <li>Premium voice input/output tools</li>
+                    <li>Dedicated user support</li>
                   </ul>
                   <div className="flex justify-center">
                     <Link to="/subscribe">
                       <Button className="gap-2">
                         <CreditCard size={16} />
-                        <span>Upgrade Now</span>
+                        Upgrade Now
                       </Button>
                     </Link>
                   </div>
@@ -80,33 +80,33 @@ const About = () => {
               )}
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Enterprise-Grade Technology</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Cutting-Edge Enterprise Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA.PRO leverages state-of-the-art AI technology and robust infrastructure to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols. We employ sophisticated processing algorithms to ensure accurate, relevant, and contextual responses to your queries.
+                  AMAA.PRO leverages advanced machine learning, a secure European infrastructure, and continuous improvements to deliver accurate, contextual results. All user interactions are protected by rigorous privacy controls and best-in-class security measures.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">About Angelyze</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  Angelyze, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
+                  Angelyze, the Croatian-based company behind AMAA, brings together a global team of experts in AI, UX, and enterprise development. Our vision is to enable professionals everywhere to benefit from ethical and dependable artificial intelligence tools.
                 </p>
-                <br></br>
+                <br />
                 <p className="text-foreground/80 leading-relaxed">
-                  Check the latest Angelyze project <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>, a free file conversion and transcription, as well as a unit conversion tool!
+                  Discover more at <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a>: free file conversion, transcription, and unit calculation from Angelyze.
                 </p>
               </section>
               
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Contact Information</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Contact & Recognition</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  We value your feedback and are here to assist you with any questions or concerns.
+                  Reach out for guidance, partnership, or support.
                 </p>
                 <div className="mt-2">
                   <p className="text-foreground/80">Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                   <p className="text-foreground/80">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
-                  <br></br>
-                  <p className="text-foreground/80">AMAA.pro is proudly featured AI Tool on <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory Wikipedia</a>.</p>
+                  <br />
+                  <p className="text-foreground/80">AMAA.pro is listed in the <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.</p>
                 </div>
               </section>
             </div>
