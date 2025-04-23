@@ -26,7 +26,7 @@ const Privacy = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">1. Our Commitment to Privacy</h2>
                 <p className="leading-relaxed">
-                  At Angelyze, we prioritize the protection of your personal data. This Privacy Policy outlines our comprehensive approach to data collection, usage, and security when you use our advanced AI assistant platform, AMAA. We are committed to maintaining the trust you place in us by ensuring transparent data practices and robust security measures.
+                  At Angelyze, we prioritize the protection of your personal data. This Privacy Policy outlines our comprehensive approach to data collection, usage, and security when you use our advanced AI assistant platform, AMAA.pro. We are committed to maintaining the trust you place in us by ensuring transparent data practices and robust security measures.
                 </p>
               </section>
               
@@ -166,7 +166,7 @@ const Privacy = () => {
               <Link to="/privacy" className="footer-link">Privacy</Link>
             </div>
             <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. Powered by AMAA
+              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. Powered by AMAA.pro
             </div>
           </div>
         </div>
