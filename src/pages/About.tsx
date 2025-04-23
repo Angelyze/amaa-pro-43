@@ -57,7 +57,7 @@ const About = () => {
               {!isPremium && (
                 <section className="bg-primary/10 p-6 rounded-xl border border-primary/20">
                   <h2 className="text-xl font-semibold mb-3 text-primary">Upgrade to Premium</h2>
-                  <p className="text-foreground/80 leading-relaxed mb-2">
+                  <p className="text-foreground/80 font-medium leading-relaxed mb-2">
                     Unlock the full, unlimited power of AMAA.pro for only $6.99/month:
                   </p>
                   <ul className="list-disc pl-5 space-y-2 text-foreground/80 mb-4">
