@@ -41,14 +41,13 @@ const About = () => {
                   <li><span className="font-medium">Research & Analysis:</span> Quick facts, market research, web search, citation generation</li>
                   <li><span className="font-medium">Data Tools:</span> Data extraction, table analysis, and charting (CSV/XLS support)</li>
                   <li><span className="font-medium">Text & Code Utilities:</span> Translation, proofing, summarization, code explanations</li>
-                  <li><span className="font-medium">File Conversion:</span> Direct integration with <a href="https://convertlab.pro/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Convert Lab</a> for all file types</li>
                   <li><span className="font-medium">Customization Tools:</span> Choose your preferred app appearance and settings</li>
                   <li><span className="font-medium">Voice Assist:</span> Hands-free communication and voice input/output</li>
                   <li><span className="font-medium">Privacy & Security:</span> Enterprise-grade infrastructure and strict data protection</li>
                   {isPremium && (
                     <>
                       <li><span className="font-medium">Unlimited AI Access:</span> Faster and unlimited question processing</li>
-                      <li><span className="font-medium">Advanced Organization:</span> Enhanced chat management, folders, and sorting</li>
+                      <li><span className="font-medium">Advanced Organization:</span> Chat history and management</li>
                       <li><span className="font-medium">Premium Voice Features:</span> Priority AI voice usage and transcription</li>
                       <li><span className="font-medium">Priority User Support:</span> Dedicated help and accelerated response</li>
                     </>
@@ -66,7 +65,7 @@ const About = () => {
                     <li>Unlimited and accelerated AI responses</li>
                     <li>Advanced customization and organization</li>
                     <li>Premium voice input/output tools</li>
-                    <li>Dedicated user support</li>
+                    <li>Dedicated Premium user support</li>
                   </ul>
                   <div className="flex justify-center">
                     <Link to="/subscribe">
