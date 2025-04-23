@@ -75,7 +75,7 @@ const Auth = () => {
                 </TabsList>
               </div>
               <CardDescription className="text-center mt-2">
-                Welcome to AMAA.pro - your AI assistant
+                Welcome to AMAA.pro - your AI Assistant
               </CardDescription>
             </CardHeader>
             
