@@ -12,7 +12,7 @@ const About = () => {
   useScrollToTop();
 
   return (
-    <Layout showBackButton backToHome title="About AMAA - Advanced AI Assistant Platform">
+    <Layout showBackButton backToHome title="About AMAA.pro - Advanced AI Assistant Platform">
       <div className="container mx-auto px-4 py-16">
         <div className="w-full max-w-3xl mx-auto">
           <div className="flex flex-col items-center mb-8">
@@ -22,7 +22,7 @@ const About = () => {
           </div>
           
           <div className="bg-background/80 dark:bg-background/30 backdrop-blur-lg rounded-2xl p-8 shadow-glass">
-            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA – The AI Assistant for Everyone</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center">About AMAA.pro – The AI Assistant for Everyone</h1>
             
             <div className="space-y-6">
               <section>
@@ -34,7 +34,7 @@ const About = () => {
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Comprehensive Features for Your Workflow</h2>
-                <p className="text-foreground/80 font-medium leading-relaxed mb-2">AMAA combines multy cutting-edge AI models with a simple, intuitive interface to provide:</p>
+                <p className="text-foreground/80 font-medium leading-relaxed mb-2">AMAA.pro combines multy cutting-edge AI models with a simple, intuitive interface to provide:</p>
                 <ul className="list-disc pl-5 space-y-2 text-foreground/80">
                   <li><span className="font-medium">Conversational AI:</span> Natural language Q&A, explanations, and clarifications</li>
                   <li><span className="font-medium">Content Creation:</span> Professional email and message drafts, content rewriting, document summaries</li>
@@ -80,14 +80,14 @@ const About = () => {
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">Cutting-Edge Enterprise Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA.PRO leverages state-of-the-art AI technology and robust infrastructure to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols. We employ sophisticated processing algorithms to ensure accurate, relevant, and contextual responses to your queries.
+                  AMAA.pro leverages state-of-the-art AI technology and robust infrastructure to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols. We employ sophisticated processing algorithms to ensure accurate, relevant, and contextual responses to your queries.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">About Angelyze</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  <a href="https://angelyze.org/" className="text-primary hover:underline">Angelyze</a>, the company behind AMAA, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
+                  <a href="https://angelyze.org/" className="text-primary hover:underline">Angelyze</a>, the company behind AMAA.pro, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
