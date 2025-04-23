@@ -62,11 +62,7 @@ const Auth = () => {
               <span>Back to App</span>
             </Button>
           </Link>
-          <br></br>
           <Logo />
-        </div>
-        <div className="w-full max-w-md">
-          <div className="w-[73px]"></div> {/* Spacer for alignment */}
         </div>
         
         <Card className="w-full">
