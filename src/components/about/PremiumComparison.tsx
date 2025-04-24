@@ -12,14 +12,13 @@ export function PremiumComparison() {
         <div className="bg-background p-6 pb-2">
           <h3 className="text-xl font-semibold">Free Plan</h3>
           <p className="text-xl font-medium mt-2">$0</p>
-          <p className="text-muted-foreground text-sm">Perfect for getting started</p>
+          <p className="text-muted-foreground text-sm">Try our AI assistant</p>
         </div>
         <CardContent className="pt-6">
           <ul className="space-y-3">
-            <FeatureItem>Basic AI conversations</FeatureItem>
+            <FeatureItem>10 AI conversations per day</FeatureItem>
+            <FeatureItem>Basic content generation</FeatureItem>
             <FeatureItem>Standard response time</FeatureItem>
-            <FeatureItem>Limited to 30 messages per day</FeatureItem>
-            <FeatureItem>Basic text-to-speech voices</FeatureItem>
             <FeatureItem>Community support</FeatureItem>
           </ul>
           <div className="mt-6">
@@ -34,7 +33,7 @@ export function PremiumComparison() {
 
       <Card className="border-primary overflow-hidden relative">
         <div className="absolute top-0 right-0 mt-4 mr-4">
-          <Badge className="bg-primary text-white">Recommended</Badge>
+          <Badge className="bg-primary text-white">Popular Choice</Badge>
         </div>
         <div className="bg-primary/5 p-6 pb-2 border-b border-primary/10">
           <h3 className="text-xl font-semibold">Premium Plan</h3>
@@ -42,17 +41,16 @@ export function PremiumComparison() {
             $6.99
             <span className="text-muted-foreground text-sm ml-1">/month</span>
           </p>
-          <p className="text-muted-foreground text-sm">Unlock the full power of AMAA.pro</p>
+          <p className="text-muted-foreground text-sm">Unlock full potential</p>
         </div>
         <CardContent className="pt-6">
           <ul className="space-y-3">
             <FeatureItem isPremium>Unlimited AI conversations</FeatureItem>
-            <FeatureItem isPremium>Priority message processing</FeatureItem>
-            <FeatureItem isPremium>Save & retrieve conversation history</FeatureItem>
-            <FeatureItem isPremium>Advanced text-to-speech with custom voices</FeatureItem>
-            <FeatureItem isPremium>Interactive content generation</FeatureItem>
-            <FeatureItem isPremium>Voice customization options</FeatureItem>
-            <FeatureItem isPremium>Premium email support</FeatureItem>
+            <FeatureItem isPremium>Priority processing</FeatureItem>
+            <FeatureItem isPremium>Advanced content generation</FeatureItem>
+            <FeatureItem isPremium>Save conversation history</FeatureItem>
+            <FeatureItem isPremium>File upload & processing</FeatureItem>
+            <FeatureItem isPremium>Premium support access</FeatureItem>
           </ul>
           <div className="mt-6">
             <Link to="/subscribe">

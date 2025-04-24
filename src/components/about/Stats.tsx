@@ -1,5 +1,5 @@
 
-import { Award, MessageSquare, Star } from "lucide-react";
+import { MessageSquare, Star, CircleCheck } from "lucide-react";
 
 interface StatItemProps {
   icon: React.ReactNode;
@@ -31,7 +31,7 @@ export function Stats() {
         label="User Rating" 
       />
       <StatItem 
-        icon={<Award className="h-6 w-6" />} 
+        icon={<CircleCheck className="h-6 w-6" />} 
         value="100K+" 
         label="AI Conversations" 
       />
