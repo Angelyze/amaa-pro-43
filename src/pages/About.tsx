@@ -21,8 +21,10 @@ const About = () => {
         <div className="container mx-auto px-4 pt-16 pb-0 flex-1">
           <div className="max-w-[800px] mx-auto">
             <div className="flex flex-col items-center text-center space-y-6">
-              <div className="animate-float w-full flex justify-center">
-                <Logo size="large" />
+              <div className="animate-float w-full flex justify-center overflow-visible">
+                <div className="w-[600px] min-w-[600px]">
+                  <Logo size="large" className="w-full" />
+                </div>
               </div>
               <h1 className="text-4xl font-bold tracking-tight">
                 Your AI Research Assistant for Coding, Content, and File Analysis

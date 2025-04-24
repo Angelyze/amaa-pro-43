@@ -11,7 +11,7 @@ const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
   return (
     <div className={cn(
       "flex flex-col items-center", 
-      size === 'large' && "w-[600px]", 
+      size === 'large' && "w-[600px] min-w-[600px]", 
       className
     )}>
       <img 
@@ -19,7 +19,7 @@ const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
         alt="AMAA" 
         className={cn(
           "h-16 md:h-24", 
-          size === 'large' && "w-[600px] h-auto object-contain"
+          size === 'large' && "w-[600px] min-w-[600px] h-auto object-contain"
         )} 
       />
     </div>
