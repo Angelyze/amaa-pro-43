@@ -1,78 +1,93 @@
 
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
 
 export function PremiumComparison() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card className="border-border overflow-hidden">
-        <div className="bg-background p-6 pb-2">
-          <h3 className="text-xl font-semibold">Free Plan</h3>
-          <p className="text-xl font-medium mt-2">$0</p>
-          <p className="text-muted-foreground text-sm">Try our AI assistant</p>
-        </div>
-        <CardContent className="pt-6">
-          <ul className="space-y-3">
-            <FeatureItem>10 AI conversations per day</FeatureItem>
-            <FeatureItem>Internet search capability</FeatureItem>
-            <FeatureItem>Code analysis & research</FeatureItem>
-            <FeatureItem>File upload capability</FeatureItem>
-            <FeatureItem>Standard response time</FeatureItem>
-            <FeatureItem>Voice input support</FeatureItem>
-            <FeatureItem>Theme customization</FeatureItem>
-            <FeatureItem>Basic text-to-speech</FeatureItem>
+    <div className="grid md:grid-cols-2 gap-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Free Plan</CardTitle>
+          <CardDescription>Basic access to AMAA.pro</CardDescription>
+          <div className="text-3xl font-bold mt-2">$0</div>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>10 AI queries per day</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>File upload analysis & transcription</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>Web search integration</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>Code creation and edit</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>Advanced Research</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-muted-foreground mt-0.5" />
+              <span>Voice input and basic Text to Speech</span>
+            </li>
           </ul>
-          <div className="mt-6">
-            <Link to="/auth">
-              <Button variant="outline" className="w-full" size="lg">
-                Start for Free
-              </Button>
-            </Link>
-          </div>
         </CardContent>
+        <CardFooter>
+          <Link to="/" className="w-full">
+            <Button variant="outline" className="w-full">Current Plan</Button>
+          </Link>
+        </CardFooter>
       </Card>
-
-      <Card className="border-primary overflow-hidden relative">
-        <div className="absolute top-0 right-0 mt-4 mr-4">
-          <Badge className="bg-primary text-white">Popular Choice</Badge>
-        </div>
-        <div className="bg-primary/5 p-6 pb-2 border-b border-primary/10">
-          <h3 className="text-xl font-semibold">Premium Plan</h3>
-          <p className="text-xl font-medium mt-2 flex items-center">
-            $6.99
-            <span className="text-muted-foreground text-sm ml-1">/month</span>
-          </p>
-          <p className="text-muted-foreground text-sm">Unlock full potential</p>
-        </div>
-        <CardContent className="pt-6">
-          <ul className="space-y-3">
-            <FeatureItem isPremium>Unlimited AI conversations</FeatureItem>
-            <FeatureItem isPremium>All Free Plan features</FeatureItem>
-            <FeatureItem isPremium>Save & manage conversations</FeatureItem>
-            <FeatureItem isPremium>Custom voice selection</FeatureItem>
-            <FeatureItem isPremium>Priority support access</FeatureItem>
+      
+      <Card className="border-teal">
+        <CardHeader className="bg-teal/5 rounded-t-lg">
+          <CardTitle>Premium Plan</CardTitle>
+          <CardDescription>Full access to all AMAA.pro features</CardDescription>
+          <div className="text-3xl font-bold mt-2">$6.99<span className="text-sm font-normal">/month</span></div>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Everything in Free Plan</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Unlimited AI queries</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Advanced AI models and capabilities</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Save and manage conversations</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Custom Text to Speech voice options</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check size={18} className="text-teal mt-0.5" />
+              <span>Priority support access</span>
+            </li>
           </ul>
-          <div className="mt-6">
-            <Link to="/subscribe">
-              <Button className="w-full" size="lg">
-                Upgrade to Premium
-              </Button>
-            </Link>
-          </div>
         </CardContent>
+        <CardFooter>
+          <Link to="/subscribe" className="w-full">
+            <Button className="w-full bg-teal hover:bg-teal-light">Subscribe Now</Button>
+          </Link>
+        </CardFooter>
       </Card>
     </div>
-  );
-}
-
-function FeatureItem({ children, isPremium = false }: { children: React.ReactNode; isPremium?: boolean }) {
-  return (
-    <li className="flex items-center gap-2">
-      <Check className={`w-5 h-5 ${isPremium ? "text-primary" : "text-muted-foreground"}`} />
-      <span className={isPremium ? "text-foreground" : "text-muted-foreground"}>{children}</span>
-    </li>
   );
 }
