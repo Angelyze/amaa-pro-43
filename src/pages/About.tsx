@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -6,8 +5,7 @@ import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import { Star, MessageSquare, FileText, CircleCheck } from 'lucide-react';
-import { Footer } from '@/components/Footer';
+import { Star, MessageSquare, FileText, CircleCheck, Heart } from 'lucide-react';
 import { PremiumComparison } from '@/components/about/PremiumComparison';
 import { TeamMember } from '@/components/about/TeamMember';
 import { Stats } from '@/components/about/Stats';
@@ -100,17 +98,12 @@ const About = () => {
               <PremiumComparison />
             </div>
 
-            {/* About Angelyze Section */}
-            <div className="mt-24 space-y-6">
-              <h2 className="text-2xl font-bold mb-6">About Angelyze</h2>
-              <p className="text-foreground/80 leading-relaxed">
-                Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
-              </p>
-            </div>
-
             {/* Meet the Team & Projects Section */}
             <div className="mt-24">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
+              <p className="text-foreground/80 leading-relaxed mb-12">
+                Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <TeamMember 
                   name="Angelo Horvat"
@@ -143,7 +136,21 @@ const About = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <footer className="footer-container">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center">
+            <div className="footer-nav">
+              <Link to="/" className="footer-link">Home</Link>
+              <Link to="/about" className="footer-link">About</Link>
+              <Link to="/terms" className="footer-link">Terms</Link>
+              <Link to="/privacy" className="footer-link">Privacy</Link>
+            </div>
+            <div className="copyright">
+              © 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+            </div>
+          </div>
+        </div>
+      </footer>
     </Layout>
   );
 };

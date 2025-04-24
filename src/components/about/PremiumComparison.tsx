@@ -17,9 +17,13 @@ export function PremiumComparison() {
         <CardContent className="pt-6">
           <ul className="space-y-3">
             <FeatureItem>10 AI conversations per day</FeatureItem>
-            <FeatureItem>Basic content generation</FeatureItem>
+            <FeatureItem>Internet search capability</FeatureItem>
+            <FeatureItem>Code analysis & research</FeatureItem>
+            <FeatureItem>File upload capability</FeatureItem>
             <FeatureItem>Standard response time</FeatureItem>
-            <FeatureItem>Community support</FeatureItem>
+            <FeatureItem>Voice input support</FeatureItem>
+            <FeatureItem>Theme customization</FeatureItem>
+            <FeatureItem>Basic text-to-speech</FeatureItem>
           </ul>
           <div className="mt-6">
             <Link to="/auth">
@@ -46,11 +50,10 @@ export function PremiumComparison() {
         <CardContent className="pt-6">
           <ul className="space-y-3">
             <FeatureItem isPremium>Unlimited AI conversations</FeatureItem>
-            <FeatureItem isPremium>Priority processing</FeatureItem>
-            <FeatureItem isPremium>Advanced content generation</FeatureItem>
-            <FeatureItem isPremium>Save conversation history</FeatureItem>
-            <FeatureItem isPremium>File upload & processing</FeatureItem>
-            <FeatureItem isPremium>Premium support access</FeatureItem>
+            <FeatureItem isPremium>All Free Plan features</FeatureItem>
+            <FeatureItem isPremium>Save & manage conversations</FeatureItem>
+            <FeatureItem isPremium>Custom voice selection</FeatureItem>
+            <FeatureItem isPremium>Priority support access</FeatureItem>
           </ul>
           <div className="mt-6">
             <Link to="/subscribe">
