@@ -128,9 +128,7 @@ const About = () => {
                   link="https://convertlab.pro"
                 />
               </div>
-              <br></br>
             </div>
-
             {/* Contact & Recognition Section */}
             <div className="mt-14 mb-0">
               <h2 className="text-2xl font-bold text-left mb-6">Contact & Recognition</h2>
@@ -143,6 +141,7 @@ const About = () => {
                 <p className="mt-6">AMAA.pro is listed in the Free AI Tools Directory (Wikipedia)</p>
               </div>
             </div>
+            <br></br>
           </div>
         </div>
         {/* Footer with no top margin to eliminate gap */}
