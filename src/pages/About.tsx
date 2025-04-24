@@ -61,7 +61,7 @@ const About = () => {
               <h2 className="text-2xl font-bold text-center mb-12">What You Can Do with AMAA.pro</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <div className="flex items-start gap-2 bg-foreground/5 p-3 rounded-lg border border-foreground/10">
+                  <div className="flex items-start gap-2 bg-foreground/5 p-2 rounded-lg border border-foreground/10">
                     <MessageSquare className="w-10 h-10 text-primary mt-1" />
                     <div>
                       <h3 className="text-lg font-semibold">Smart Research & Analysis</h3>
