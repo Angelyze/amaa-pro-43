@@ -16,7 +16,7 @@ export function ProjectCard({ name, role, image, description, link }: ProjectCar
       {image && (
         <Avatar className="h-24 w-24 mb-6">
           <AvatarImage
-            src={`https://images.unsplash.com/${image}`}
+            src={image}
             alt={name}
             className="object-cover"
           />
