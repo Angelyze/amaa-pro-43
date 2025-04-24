@@ -17,8 +17,8 @@ const About = () => {
 
   return (
     <Layout showBackButton backToHome title="About AMAA.pro">
-      <div className="w-full bg-gradient-to-b from-background/50 to-background">
-        <div className="container mx-auto px-4 py-16">
+      <div className="w-full bg-gradient-to-b from-background/50 to-background flex flex-col min-h-screen">
+        <div className="container mx-auto px-4 py-16 flex-1">
           <div className="max-w-[800px] mx-auto">
             {/* Hero Section */}
             <div className="flex flex-col items-center text-center space-y-6">
@@ -99,7 +99,7 @@ const About = () => {
             </div>
 
             {/* Meet the Team & Projects Section */}
-            <div className="mt-24">
+            <div className="mt-24 mb-0">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
