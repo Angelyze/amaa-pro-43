@@ -61,15 +61,15 @@ const About = () => {
               <h2 className="text-2xl font-bold text-center mb-12">What You Can Do with AMAA.pro</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <div className="flex items-start gap-3 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
-                    <MessageSquare className="w-12 h-12 text-primary mt-1" />
+                  <div className="flex items-start gap-2 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
+                    <MessageSquare className="w-20 h-20 text-primary mt-1" />
                     <div>
                       <h3 className="text-lg font-semibold">Smart Research & Analysis</h3>
                       <p className="text-muted-foreground">Get instant answers to complex questions with context-aware AI that understands your needs and provides detailed explanations.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
-                    <FileText className="w-6 h-6 text-primary mt-1" />
+                  <div className="flex items-start gap-2 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
+                    <FileText className="w-20 h-20 text-primary mt-1" />
                     <div>
                       <h3 className="text-lg font-semibold">Advanced Content Generation</h3>
                       <p className="text-muted-foreground">Create high-quality content, from technical documentation to creative writing, with AI that adapts to your style and requirements.</p>
@@ -77,15 +77,15 @@ const About = () => {
                   </div>
                 </div>
                 <div className="space-y-6">
-                  <div className="flex items-start gap-3 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
-                    <Star className="w-6 h-6 text-primary mt-1" />
+                  <div className="flex items-start gap-2 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
+                    <Star className="w-20 h-20 text-primary mt-1" />
                     <div>
                       <h3 className="text-lg font-semibold">File Processing & Analysis</h3>
                       <p className="text-muted-foreground">Upload and analyze files, get insights, and generate summaries with our advanced AI processing capabilities.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
-                    <CircleCheck className="w-6 h-6 text-primary mt-1" />
+                  <div className="flex items-start gap-2 bg-foreground/5 p-5 rounded-lg border border-foreground/10">
+                    <CircleCheck className="w-20 h-20 text-primary mt-1" />
                     <div>
                       <h3 className="text-lg font-semibold">Code Understanding</h3>
                       <p className="text-muted-foreground">Get code explanations, suggestions for improvements, and help with debugging across multiple programming languages.</p>
