@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -100,7 +101,7 @@ const About = () => {
             </div>
 
             {/* Meet the Team & Projects Section */}
-            <div className="mt-24">
+            <div className="mt-24 mb-0">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
@@ -121,7 +122,6 @@ const About = () => {
                 />
               </div>
             </div>
-
           </div>
         </div>
       </div>

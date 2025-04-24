@@ -1,5 +1,6 @@
 
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface ProjectCardProps {
   name: string;
@@ -11,21 +12,20 @@ interface ProjectCardProps {
 
 export function ProjectCard({ name, role, image, description, link }: ProjectCardProps) {
   const content = (
-    <Card className="overflow-hidden">
-      <div className="aspect-video relative overflow-hidden">
-        {image && (
-          <img
+    <Card className="overflow-hidden p-6 flex flex-col items-center text-center">
+      {image && (
+        <Avatar className="h-24 w-24 mb-6">
+          <AvatarImage
             src={`https://images.unsplash.com/${image}`}
             alt={name}
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+            className="object-cover"
           />
-        )}
-      </div>
-      <div className="p-6">
-        <h3 className="font-semibold text-lg mb-1">{name}</h3>
-        <p className="text-primary mb-3 text-sm">{role}</p>
-        <p className="text-muted-foreground text-sm">{description}</p>
-      </div>
+          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+        </Avatar>
+      )}
+      <h3 className="font-semibold text-lg mb-1">{name}</h3>
+      <p className="text-primary mb-3 text-sm">{role}</p>
+      <p className="text-muted-foreground text-sm">{description}</p>
     </Card>
   );
 
