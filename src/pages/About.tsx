@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -18,7 +19,8 @@ const About = () => {
   return (
     <Layout showBackButton backToHome title="About AMAA.pro">
       <div className="w-full bg-gradient-to-b from-background/50 to-background flex flex-col min-h-screen">
-        <div className="container mx-auto px-4 py-16 flex-1">
+        {/* Main content container without bottom padding */}
+        <div className="container mx-auto px-4 pt-16 pb-0 flex-1">
           <div className="max-w-[800px] mx-auto">
             {/* Hero Section */}
             <div className="flex flex-col items-center text-center space-y-6">
@@ -98,8 +100,8 @@ const About = () => {
               <PremiumComparison />
             </div>
 
-            {/* Meet the Team & Projects Section */}
-            <div className="mt-24 mb-0">
+            {/* Meet the Team & Projects Section - no bottom margin */}
+            <div className="mt-24">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
@@ -122,22 +124,23 @@ const About = () => {
             </div>
           </div>
         </div>
-      </div>
-      <footer className="footer-container">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center">
-            <div className="footer-nav">
-              <Link to="/" className="footer-link">Home</Link>
-              <Link to="/about" className="footer-link">About</Link>
-              <Link to="/terms" className="footer-link">Terms</Link>
-              <Link to="/privacy" className="footer-link">Privacy</Link>
-            </div>
-            <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+        {/* Footer with no top margin to eliminate gap */}
+        <footer className="footer-container mt-0 border-t-0">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center justify-center">
+              <div className="footer-nav">
+                <Link to="/" className="footer-link">Home</Link>
+                <Link to="/about" className="footer-link">About</Link>
+                <Link to="/terms" className="footer-link">Terms</Link>
+                <Link to="/privacy" className="footer-link">Privacy</Link>
+              </div>
+              <div className="copyright">
+                © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </Layout>
   );
 };
