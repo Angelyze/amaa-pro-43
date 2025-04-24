@@ -8,19 +8,22 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
+  // For large size, we'll use explicit width/height settings with !important to ensure they're applied
+  const isLarge = size === 'large';
+  
   return (
     <div className={cn(
       "flex flex-col items-center", 
-      size === 'large' && "w-[600px] min-w-[600px]", 
+      isLarge ? "w-[600px] min-w-[600px]" : "",
       className
     )}>
       <img 
         src="/AMAA.png" 
         alt="AMAA" 
         className={cn(
-          "h-16 md:h-24", 
-          size === 'large' && "w-[600px] min-w-[600px] h-auto object-contain"
+          isLarge ? "w-[600px] min-w-[600px] h-auto" : "h-16 md:h-24"
         )} 
+        style={isLarge ? { width: '600px', minWidth: '600px' } : undefined}
       />
     </div>
   );
