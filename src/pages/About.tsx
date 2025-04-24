@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -138,9 +139,11 @@ const About = () => {
               <div className="text-left text-muted-foreground space-y-2">
                 <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                 <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
-                <p className="<a href="https://freeaitools.wiki/AITools/post/amaa-pro-B6bfwWfPgB2J7Qp" class="text-primary hover:underline">AMAA.pro</a> is listed in the <a href="https://freeaitools.wiki/" class="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.</p>
+                <p>
+                  <a href="https://freeaitools.wiki/AITools/post/amaa-pro-B6bfwWfPgB2J7Qp" className="text-primary hover:underline">AMAA.pro</a> is listed in the <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.
+                </p>
+              </div>
             </div>
-            <br></br>
           </div>
         </div>
         {/* Footer with no top margin to eliminate gap */}
