@@ -198,7 +198,7 @@ const Subscribe = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
-                <li className="flex items-start mb-2 gap-2">
+                <li className="flex items-start mt-2 gap-2">
                   <Check size={18} className="text-teal mt-0.5" />
                   <span>Everything in Free Plan</span>
                 </li>
