@@ -52,7 +52,7 @@ const About = () => {
             {/* Empowering People Section */}
             <div className="mt-16 text-center">
               <h2 className="text-2xl font-bold mb-6">Empowering People with Advanced AI Tools</h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-left leading-relaxed">
                 AMAA.pro (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise. The mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience. Think of it as a Google 2.0!
               </p>
             </div>
