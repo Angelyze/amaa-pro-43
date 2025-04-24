@@ -50,7 +50,7 @@ const About = () => {
             </div>
 
             {/* Empowering People Section */}
-            <div className="mt-16 text-center">
+            <div className="mt-18 text-center">
               <h2 className="text-2xl font-bold mb-6">Empowering People with Advanced AI Tools</h2>
               <p className="text-muted-foreground text-left leading-relaxed">
                 AMAA.pro (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise. The mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience. Think of it as a Google 2.0!
@@ -58,12 +58,12 @@ const About = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="mt-16">
+            <div className="mt-18">
               <Stats />
             </div>
 
             {/* Use Cases Grid */}
-            <div className="mt-16">
+            <div className="mt-18">
               <h2 className="text-2xl font-bold text-center mb-12">What You Can Do with AMAA.pro</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
@@ -102,16 +102,16 @@ const About = () => {
             </div>
 
             {/* Premium Comparison Section */}
-            <div className="mt-16" id="premium">
+            <div className="mt-18" id="premium">
               <h2 className="text-2xl font-bold text-center mb-4">Choose Your Plan</h2>
               <p className="text-center text-muted-foreground mb-12">Unlock unlimited AI capabilities for just $6.99/month</p>
               <PremiumComparison />
             </div>
 
             {/* Meet the Team & Projects Section - no bottom margin */}
-            <div className="mt-16">
+            <div className="mt-18">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
-              <p className="text-foreground/80 leading-relaxed mb-12">
+              <p className="text-foreground/80 leading-relaxed mb-10">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
