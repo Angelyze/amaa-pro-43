@@ -142,7 +142,7 @@ const About = () => {
                     </p>
                   </div>
                 </div>
-                <img src="/AMAApp.png" alt="AMAA.pro Logo" className="w-20 h-20 object-contain" />
+                <img src="/AMAApp.png" alt="AMAA.pro Logo" className="w-40 h-40 object-contain" />
               </div>
             </div>
           </div>
