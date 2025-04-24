@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -19,10 +18,8 @@ const About = () => {
   return (
     <Layout showBackButton backToHome title="About AMAA.pro">
       <div className="w-full bg-gradient-to-b from-background/50 to-background flex flex-col min-h-screen">
-        {/* Main content container without bottom padding */}
         <div className="container mx-auto px-4 pt-16 pb-0 flex-1">
           <div className="max-w-[800px] mx-auto">
-            {/* Hero Section */}
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="animate-float">
                 <Logo />
@@ -49,7 +46,6 @@ const About = () => {
               </div>
             </div>
 
-            {/* Empowering People Section */}
             <div className="mt-20 text-center">
               <h2 className="text-2xl font-bold mb-6">Empowering People with Advanced AI Tools</h2>
               <p className="text-muted-foreground text-left leading-relaxed">
@@ -57,12 +53,10 @@ const About = () => {
               </p>
             </div>
 
-            {/* Stats Section */}
             <div className="mt-10">
               <Stats />
             </div>
 
-            {/* Use Cases Grid */}
             <div className="mt-20">
               <h2 className="text-2xl font-bold text-center mb-12">What You Can Do with AMAA.pro</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -101,54 +95,58 @@ const About = () => {
               </div>
             </div>
 
-            {/* Premium Comparison Section */}
             <div className="mt-20" id="premium">
               <h2 className="text-2xl font-bold text-center mb-4">Choose Your Plan</h2>
               <p className="text-center text-muted-foreground mb-12">Unlock unlimited AI capabilities for just $6.99/month</p>
               <PremiumComparison />
             </div>
 
-            {/* Meet the Team & Projects Section - no bottom margin */}
             <div className="mt-20">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
-              <p className="text-foreground/80 leading-relaxed mb-10">
-                Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
-              </p>
+              <div className="flex items-center gap-6 mb-10">
+                <img src="/Angelyze.png" alt="Angelyze Logo" className="w-20 h-20 object-contain" />
+                <p className="text-foreground/80 leading-relaxed">
+                  Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
+                </p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <ProjectCard 
                   name="Angelo Horvat"
                   role="CEO & Founder"
-                  image="/public/image.jpg"
+                  image="/image.jpg"
                   description="Driving innovation in AI accessibility and practical applications. Leading the development of intelligent solutions that make advanced technology available to everyone."
                   link="https://angelyze.org"
                 />
                 <ProjectCard 
                   name="Convert Lab"
                   role="File Conversion and Transcription"
-                  image="/public/Convert Lab Logo.png"
+                  image="/Convert Lab Logo.png"
                   description="Your all-in-one free solution for file conversion, transcription, and unit measurement. Free, secure, and powered by advanced AI technology - no login required."
                   link="https://convertlab.pro"
                 />
               </div>
             </div>
-            {/* Contact & Recognition Section */}
+
             <div className="mt-20 mb-0">
               <h2 className="text-2xl font-bold text-left mb-6">Contact & Recognition</h2>
-              <p className="text-left mb-6 text-muted-foreground">
-                Reach out for guidance, partnership, or support.
-              </p>
-              <div className="text-left text-muted-foreground space-y-2">
-                <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
-                <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
-                <p>
-                  <a href="https://freeaitools.wiki/AITools/post/amaa-pro-B6bfwWfPgB2J7Qp" className="text-primary hover:underline">AMAA.pro</a> is listed in the <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.
-                </p>
+              <div className="flex items-start gap-6">
+                <div className="flex-1">
+                  <p className="text-left mb-6 text-muted-foreground">
+                    Reach out for guidance, partnership, or support.
+                  </p>
+                  <div className="text-left text-muted-foreground space-y-2">
+                    <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
+                    <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
+                    <p>
+                      <a href="https://freeaitools.wiki/AITools/post/amaa-pro-B6bfwWfPgB2J7Qp" className="text-primary hover:underline">AMAA.pro</a> is listed in the <a href="https://freeaitools.wiki/" className="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.
+                    </p>
+                  </div>
+                </div>
+                <img src="/AMAApp.png" alt="AMAA.pro Logo" className="w-20 h-20 object-contain" />
               </div>
             </div>
-            <br></br>
           </div>
         </div>
-        {/* Footer with no top margin to eliminate gap */}
         <footer className="footer-container mt-0 border-t-0">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center">
