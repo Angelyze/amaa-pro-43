@@ -62,7 +62,7 @@ const About = () => {
             </div>
 
             {/* Use Cases Grid */}
-            <div className="mt-24">
+            <div className="mt-16">
               <h2 className="text-2xl font-bold text-center mb-12">What You Can Do with AMAA.pro</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
@@ -101,14 +101,14 @@ const About = () => {
             </div>
 
             {/* Premium Comparison Section */}
-            <div className="mt-24" id="premium">
+            <div className="mt-16" id="premium">
               <h2 className="text-2xl font-bold text-center mb-4">Choose Your Plan</h2>
               <p className="text-center text-muted-foreground mb-12">Unlock unlimited AI capabilities for just $6.99/month</p>
               <PremiumComparison />
             </div>
 
             {/* Meet the Team & Projects Section - no bottom margin */}
-            <div className="mt-24">
+            <div className="mt-16">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
@@ -130,7 +130,7 @@ const About = () => {
               </div>
             </div>
             {/* Contact & Recognition Section */}
-            <div className="mt-14 mb-0">
+            <div className="mt-16 mb-0">
               <h2 className="text-2xl font-bold text-left mb-6">Contact & Recognition</h2>
               <p className="text-left mb-6 text-muted-foreground">
                 Reach out for guidance, partnership, or support.
@@ -138,8 +138,7 @@ const About = () => {
               <div className="text-left text-muted-foreground space-y-2">
                 <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                 <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
-                <p className="mt-6">AMAA.pro is listed in the Free AI Tools Directory (Wikipedia)</p>
-              </div>
+                <p className="<a href="https://freeaitools.wiki/AITools/post/amaa-pro-B6bfwWfPgB2J7Qp" class="text-primary hover:underline">AMAA.pro</a> is listed in the <a href="https://freeaitools.wiki/" class="text-primary hover:underline">Free AI Tools Directory (Wikipedia)</a>.</p>
             </div>
             <br></br>
           </div>
