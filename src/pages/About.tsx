@@ -120,6 +120,7 @@ const About = () => {
                   role="CEO & Founder"
                   avatar="photo-1488590528505-98d2b5aba04b"
                   bio="Driving innovation in AI accessibility and practical applications. Leading the development of intelligent solutions that make advanced technology available to everyone."
+                  link="https://angelyze.org"
                 />
                 <ProjectCard 
                   name="Convert Lab"
