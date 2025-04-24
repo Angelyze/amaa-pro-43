@@ -12,16 +12,15 @@ interface ProjectCardProps {
 
 export function ProjectCard({ name, role, image, description, link }: ProjectCardProps) {
   const content = (
-    <Card className="overflow-hidden p-6 flex flex-col items-center text-center">
+    <Card className="overflow-hidden p-6 flex flex-col items-center text-center shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.01]">
       {image && (
-        <Avatar className="h-24 w-24 mb-6">
-          <AvatarImage
+        <div className="w-24 h-24 mb-6 overflow-hidden">
+          <img
             src={image}
             alt={name}
-            className="object-cover"
+            className="w-full h-full object-cover"
           />
-          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
-        </Avatar>
+        </div>
       )}
       <h3 className="font-semibold text-lg mb-1">{name}</h3>
       <p className="text-primary mb-3 text-sm">{role}</p>
@@ -35,7 +34,7 @@ export function ProjectCard({ name, role, image, description, link }: ProjectCar
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="block transition-transform hover:-translate-y-1 duration-300"
+        className="block"
       >
         {content}
       </a>
