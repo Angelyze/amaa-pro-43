@@ -132,12 +132,12 @@ const About = () => {
             </div>
 
             {/* Contact & Recognition Section */}
-            <div className="mt-24 mb-0">
-              <h2 className="text-2xl font-bold text-center mb-6">Contact & Recognition</h2>
-              <p className="text-center mb-6 text-muted-foreground">
+            <div className="mt-14 mb-0">
+              <h2 className="text-2xl font-bold text-left mb-6">Contact & Recognition</h2>
+              <p className="text-left mb-6 text-muted-foreground">
                 Reach out for guidance, partnership, or support.
               </p>
-              <div className="text-center text-muted-foreground space-y-2">
+              <div className="text-left text-muted-foreground space-y-2">
                 <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
                 <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
                 <p className="mt-6">AMAA.pro is listed in the Free AI Tools Directory (Wikipedia)</p>
