@@ -6,7 +6,10 @@ import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import { BarChart2, Shield, Users, Star, FileText, FileCheck, FileLock, CircleDollarSign, Award } from 'lucide-react';
+import { Star, CircleDollarSign, MessageSquare, FileText, Award, Sparkles } from 'lucide-react';
+import { Testimonial } from '@/components/about/Testimonial';
+import { JourneyTimeline } from '@/components/about/JourneyTimeline';
+import { Separator } from '@/components/ui/separator';
 
 const About = () => {
   const { isPremium } = useAuth();
@@ -14,22 +17,24 @@ const About = () => {
 
   return (
     <Layout showBackButton backToHome title="About AMAA.pro">
-      {/* Hero Section */}
       <div className="w-full bg-gradient-to-b from-background/50 to-background">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-[800px] mx-auto">
+            {/* Hero Section */}
             <div className="flex flex-col items-center text-center space-y-6">
-              <Logo />
+              <div className="animate-float">
+                <Logo />
+              </div>
               <h1 className="text-4xl font-bold tracking-tight">
                 Your AI Assistant for Every Task
               </h1>
               <p className="text-xl text-muted-foreground max-w-[600px]">
-                Join thousands of professionals who use AMAA.pro to enhance their productivity and streamline their workflow.
+                Join thousands of professionals who use AMAA.pro to enhance their productivity through intelligent conversations.
               </p>
               <div className="flex gap-4">
                 <Link to="/auth">
                   <Button size="lg" className="gap-2">
-                    Start Free <Star className="w-4 h-4" />
+                    Try for Free <Star className="w-4 h-4" />
                   </Button>
                 </Link>
                 {!isPremium && (
@@ -42,16 +47,12 @@ const About = () => {
               </div>
               <div className="flex items-center gap-8 pt-8 text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                  <MessageSquare className="w-5 h-5" />
                   <span>10K+ Users</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="w-5 h-5" />
                   <span>4.9/5 Rating</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  <span>Enterprise Ready</span>
                 </div>
               </div>
             </div>
@@ -60,47 +61,33 @@ const About = () => {
             <div className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <BarChart2 className="w-6 h-6 text-primary mt-1" />
+                  <MessageSquare className="w-6 h-6 text-primary mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold">Advanced Analytics</h3>
-                    <p className="text-muted-foreground">Comprehensive data analysis and visualization tools at your fingertips.</p>
+                    <h3 className="text-lg font-semibold">Smart Conversations</h3>
+                    <p className="text-muted-foreground">Engage in natural, context-aware conversations with our AI assistant.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <FileText className="w-6 h-6 text-primary mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold">Smart Content Creation</h3>
-                    <p className="text-muted-foreground">Generate professional content in seconds with our AI assistant.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <FileCheck className="w-6 h-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold">Automated Processing</h3>
-                    <p className="text-muted-foreground">Streamline your workflow with intelligent automation.</p>
+                    <h3 className="text-lg font-semibold">Content Creation</h3>
+                    <p className="text-muted-foreground">Generate professional content with intelligent assistance.</p>
                   </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <Shield className="w-6 h-6 text-primary mt-1" />
+                  <Star className="w-6 h-6 text-primary mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold">Enterprise Security</h3>
-                    <p className="text-muted-foreground">Bank-grade encryption and privacy protection for your data.</p>
+                    <h3 className="text-lg font-semibold">Premium Experience</h3>
+                    <p className="text-muted-foreground">Enjoy advanced features and priority processing with our premium plan.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <FileLock className="w-6 h-6 text-primary mt-1" />
+                  <Sparkles className="w-6 h-6 text-primary mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold">Premium Features</h3>
-                    <p className="text-muted-foreground">Unlock advanced capabilities with our premium subscription.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Users className="w-6 h-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold">Collaboration Tools</h3>
-                    <p className="text-muted-foreground">Work seamlessly with your team in real-time.</p>
+                    <h3 className="text-lg font-semibold">Voice Customization</h3>
+                    <p className="text-muted-foreground">Choose from various voices for text-to-speech conversion.</p>
                   </div>
                 </div>
               </div>
@@ -124,18 +111,8 @@ const About = () => {
                       <li>• Priority processing</li>
                       <li>• Advanced customization</li>
                       <li>• Premium support</li>
-                    </ul>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Award className="w-5 h-5 text-primary" />
-                      Enterprise Benefits
-                    </h3>
-                    <ul className="space-y-2 text-muted-foreground">
-                      <li>• Team collaboration</li>
-                      <li>• Custom integrations</li>
-                      <li>• Advanced security</li>
-                      <li>• Analytics dashboard</li>
+                      <li>• Save & manage conversations</li>
+                      <li>• Custom TTS voices</li>
                     </ul>
                   </div>
                 </div>
@@ -149,23 +126,54 @@ const About = () => {
               </div>
             )}
 
+            {/* Journey Section */}
+            <div className="mt-24">
+              <h2 className="text-2xl font-bold text-center mb-12">Our Journey</h2>
+              <JourneyTimeline />
+            </div>
+
+            {/* User Testimonials */}
+            <div className="mt-24">
+              <h2 className="text-2xl font-bold text-center mb-12">What Our Users Say</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Testimonial
+                  content="AMAA.pro has completely transformed how I interact with AI. The conversations feel natural and the responses are always on point."
+                  author="Sarah Chen"
+                  role="Content Creator"
+                />
+                <Testimonial
+                  content="The premium features are worth every penny. Being able to save conversations and customize voices has been incredibly useful."
+                  author="Marcus Rodriguez"
+                  role="Digital Marketer"
+                />
+              </div>
+            </div>
+
+            {/* Meet the Team */}
+            <div className="mt-24">
+              <h2 className="text-2xl font-bold text-center mb-12">Meet the Team</h2>
+              <p className="text-center text-muted-foreground mb-8">
+                We're a passionate team of AI experts and developers working to make artificial intelligence accessible to everyone.
+              </p>
+            </div>
+
             {/* Technical Section */}
             <div className="mt-24 space-y-12">
               <section>
-                <h2 className="text-xl font-semibold mb-3 text-primary">Cutting-Edge Enterprise Technology</h2>
+                <h2 className="text-xl font-semibold mb-3 text-primary">Advanced AI Technology</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  AMAA.pro leverages state-of-the-art AI technology and robust infrastructure to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols. We employ sophisticated processing algorithms to ensure accurate, relevant, and contextual responses to your queries.
+                  AMAA.pro leverages state-of-the-art AI technology to deliver consistent, reliable performance. Our system continuously evolves through advanced machine learning while maintaining strict data privacy and security protocols.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-xl font-semibold mb-3 text-primary">About Angelyze</h2>
                 <p className="text-foreground/80 leading-relaxed">
-                  <a href="https://angelyze.org/" className="text-primary hover:underline">Angelyze</a>, the company behind AMAA.pro, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence, user experience design, and enterprise software development. We're committed to advancing the field of AI assistance while maintaining the highest standards of ethical AI development and user privacy.
+                  <a href="https://angelyze.org/" className="text-primary hover:underline">Angelyze</a>, the company behind AMAA.pro, is a pioneering technology firm based in Croatia, EU. Our international team combines expertise in artificial intelligence and user experience design.
                 </p>
                 <br />
                 <p className="text-foreground/80 leading-relaxed">
-                  Discover the newest project: <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a> - a free file conversion, transcription, and unit calculation from Angelyze.
+                  Discover our newest project: <a href="https://convertlab.pro/" className="text-primary hover:underline">Convert Lab</a> - a free file conversion, transcription, and unit calculation tool from Angelyze.
                 </p>
               </section>
             </div>
@@ -185,22 +193,6 @@ const About = () => {
           </div>
         </div>
       </div>
-      
-      <footer className="footer-container mt-auto">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center">
-            <div className="footer-nav">
-              <Link to="/" className="footer-link">Home</Link>
-              <Link to="/about" className="footer-link">About</Link>
-              <Link to="/terms" className="footer-link">Terms</Link>
-              <Link to="/privacy" className="footer-link">Privacy</Link>
-            </div>
-            <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-primary mx-1.5 hover:text-primary/90 transition-colors">AMAA.pro</Link>. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
     </Layout>
   );
 };
