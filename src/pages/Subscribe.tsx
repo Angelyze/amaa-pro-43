@@ -102,7 +102,7 @@ const Subscribe = () => {
       
       <div className="w-full max-w-4xl">
         <div className="flex flex-col items-center mb-8">
-          <Link to="/" className="self-start mb-5">
+          <Link to="/" className="self-start mb-6">
             <Button variant="ghost" className="flex items-center gap-2">
               <ArrowLeft size={16} />
               <span>Back to App</span>
