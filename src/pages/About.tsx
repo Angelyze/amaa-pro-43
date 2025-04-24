@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -11,7 +10,6 @@ import { PremiumComparison } from '@/components/about/PremiumComparison';
 import { TeamMember } from '@/components/about/TeamMember';
 import { Stats } from '@/components/about/Stats';
 import { ProjectCard } from '@/components/about/ProjectCard';
-import { Footer } from '@/components/Footer';
 
 const About = () => {
   const { isPremium } = useAuth();
@@ -100,8 +98,8 @@ const About = () => {
               <PremiumComparison />
             </div>
 
-            {/* Meet the Team & Projects Section - Last section with padding to eliminate gap */}
-            <div className="mt-24 pb-24">
+            {/* Meet the Team & Projects Section */}
+            <div className="mt-24">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
@@ -125,7 +123,21 @@ const About = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <footer className="footer-container">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center">
+            <div className="footer-nav">
+              <Link to="/" className="footer-link">Home</Link>
+              <Link to="/about" className="footer-link">About</Link>
+              <Link to="/terms" className="footer-link">Terms</Link>
+              <Link to="/privacy" className="footer-link">Privacy</Link>
+            </div>
+            <div className="copyright">
+              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+            </div>
+          </div>
+        </div>
+      </footer>
     </Layout>
   );
 };
