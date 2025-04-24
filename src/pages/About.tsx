@@ -144,6 +144,7 @@ const About = () => {
                 </p>
               </div>
             </div>
+            <br></br>
           </div>
         </div>
         {/* Footer with no top margin to eliminate gap */}
