@@ -104,7 +104,7 @@ const About = () => {
             <div className="mt-20">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <div className="flex items-center gap-6 mb-10">
-                <img src="/Angelyze.png" alt="Angelyze Logo" className="w-30 h-30 object-contain" />
+                <img src="/Angelyze.png" alt="Angelyze Logo" className="w-25 h-25 object-contain" />
                 <p className="text-foreground/80 leading-relaxed">
                   Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
                 </p>
