@@ -1,12 +1,27 @@
 
 import React from 'react';
+import { cn } from "@/lib/utils";
 
-const Logo: React.FC = () => {
+interface LogoProps {
+  className?: string;
+  size?: 'default' | 'large';
+}
+
+const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
   return (
-    <div className="flex flex-col items-center">
-      <img src="/AMAA.png" alt="AMAA" className="h-16 md:h-24" />
+    <div className={cn("flex flex-col items-center", className)}>
+      <img 
+        src="/AMAA.png" 
+        alt="AMAA" 
+        className={cn(
+          "h-16 md:h-24", 
+          size === 'large' && "w-[500px] h-auto object-contain",
+          className
+        )} 
+      />
     </div>
   );
 };
 
 export default Logo;
+

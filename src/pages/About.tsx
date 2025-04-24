@@ -22,7 +22,7 @@ const About = () => {
           <div className="max-w-[800px] mx-auto">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="animate-float">
-                <Logo />
+                <Logo size="large" />
               </div>
               <h1 className="text-4xl font-bold tracking-tight">
                 Your AI Research Assistant for Coding, Content, and File Analysis
