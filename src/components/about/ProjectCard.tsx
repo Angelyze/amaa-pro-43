@@ -1,6 +1,5 @@
 
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface ProjectCardProps {
   name: string;
@@ -14,7 +13,7 @@ export function ProjectCard({ name, role, image, description, link }: ProjectCar
   const content = (
     <Card className="overflow-hidden p-6 flex flex-col items-center text-center shadow-sm transition-all duration-300 hover:shadow-md hover:scale-[1.01]">
       {image && (
-        <div className="w-24 h-24 mb-6 overflow-hidden">
+        <div className="w-24 h-24 mb-6 overflow-hidden rounded-lg">
           <img
             src={image}
             alt={name}
