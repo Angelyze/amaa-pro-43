@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -132,6 +131,9 @@ export default {
 				'glass': '0 8px 16px rgba(31, 38, 135, 0.1)',
 				'glass-sm': '0 4px 8px rgba(31, 38, 135, 0.07)',
 				'glass-lg': '0 12px 24px rgba(31, 38, 135, 0.15)'
+			},
+			transitionProperty: {
+				'hover-effects': 'transform, box-shadow',
 			}
 		}
 	},

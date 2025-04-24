@@ -17,7 +17,7 @@ export function ProjectCard({ name, role, image, description, link }: ProjectCar
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-lg"
           />
         </div>
       )}
