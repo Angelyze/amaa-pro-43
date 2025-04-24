@@ -22,11 +22,11 @@ const About = () => {
           <div className="max-w-[800px] mx-auto">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="animate-float w-full flex justify-center">
-                <div style={{ width: '600px', minWidth: '600px' }}>
+                <div style={{ width: '500px', minWidth: '500px' }}>
                   <img 
                     src="/AMAA.png" 
                     alt="AMAA" 
-                    style={{ width: '600px', minWidth: '600px', height: 'auto' }}
+                    style={{ width: '500px', minWidth: '500px', height: 'auto' }}
                     className="object-contain"
                   />
                 </div>
