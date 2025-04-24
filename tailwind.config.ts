@@ -133,7 +133,7 @@ export default {
 				'glass-lg': '0 12px 24px rgba(31, 38, 135, 0.15)'
 			},
 			transitionProperty: {
-				'hover-effects': 'transform, box-shadow',
+				'hover-effects': 'transform, box-shadow, brightness',
 			}
 		}
 	},
