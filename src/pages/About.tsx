@@ -123,7 +123,7 @@ const About = () => {
                 />
                 <ProjectCard 
                   name="Convert Lab"
-                  role="Conversion and Transcription"
+                  role="File Conversion and Transcription"
                   image="photo-1486312338219-ce68d2c6f44d"
                   description="Your all-in-one free solution for file conversion, transcription, and unit measurement. Free, secure, and powered by advanced AI technology - no login required."
                   link="https://convertlab.pro"
