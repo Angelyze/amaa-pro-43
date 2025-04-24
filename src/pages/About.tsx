@@ -100,13 +100,13 @@ const About = () => {
               <PremiumComparison />
             </div>
 
-            {/* Meet the Team & Projects Section */}
-            <div className="mt-24 mb-0">
+            {/* Meet the Team & Projects Section - Last section with padding to eliminate gap */}
+            <div className="mt-24 pb-24">
               <h2 className="text-2xl font-bold text-center mb-12">Meet the Team & Projects</h2>
               <p className="text-foreground/80 leading-relaxed mb-12">
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <TeamMember 
                   name="Angelo Horvat"
                   role="CEO & Founder"
