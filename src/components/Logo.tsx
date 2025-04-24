@@ -15,7 +15,7 @@ const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
         alt="AMAA" 
         className={cn(
           "h-16 md:h-24", 
-          size === 'large' && "w-[500px] h-auto object-contain",
+          size === 'large' && "w-[600px] h-auto object-contain",
           className
         )} 
       />
@@ -24,4 +24,3 @@ const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
 };
 
 export default Logo;
-
