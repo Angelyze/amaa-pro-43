@@ -115,11 +115,11 @@ const About = () => {
                 Angelyze is a pioneering technology company based in Croatia, EU, dedicated to making artificial intelligence accessible and practical for everyone. We combine cutting-edge AI technology with user-friendly interfaces to create tools that solve real-world problems. Our mission is to empower individuals and businesses with AI solutions that are not only powerful but also ethical and easy to use.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <TeamMember 
+                <ProjectCard 
                   name="Angelo Horvat"
                   role="CEO & Founder"
-                  avatar="photo-1488590528505-98d2b5aba04b"
-                  bio="Driving innovation in AI accessibility and practical applications. Leading the development of intelligent solutions that make advanced technology available to everyone."
+                  image="photo-1488590528505-98d2b5aba04b"
+                  description="Driving innovation in AI accessibility and practical applications. Leading the development of intelligent solutions that make advanced technology available to everyone."
                   link="https://angelyze.org"
                 />
                 <ProjectCard 
