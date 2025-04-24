@@ -9,14 +9,17 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
   return (
-    <div className={cn("flex flex-col items-center", className)}>
+    <div className={cn(
+      "flex flex-col items-center", 
+      size === 'large' && "w-[600px]", 
+      className
+    )}>
       <img 
         src="/AMAA.png" 
         alt="AMAA" 
         className={cn(
           "h-16 md:h-24", 
-          size === 'large' && "w-[600px] h-auto object-contain",
-          className
+          size === 'large' && "w-[600px] h-auto object-contain"
         )} 
       />
     </div>
@@ -24,4 +27,3 @@ const Logo: React.FC<LogoProps> = ({ className, size = 'default' }) => {
 };
 
 export default Logo;
-
