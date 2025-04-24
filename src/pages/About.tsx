@@ -17,7 +17,7 @@ const About = () => {
 
   return (
     <Layout showBackButton backToHome title="About AMAA.pro">
-      <div className="w-full bg-gradient-to-b from-background/50 to-background flex flex-col min-h-screen">
+      <div className="w-full bg-gradient-to-b from-background/30 to-background flex flex-col min-h-screen backdrop-blur-sm">
         <div className="container mx-auto px-4 pt-16 pb-0 flex-1">
           <div className="max-w-[800px] mx-auto">
             <div className="flex flex-col items-center text-center space-y-6">
