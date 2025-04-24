@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/ui/layout';
@@ -47,6 +46,14 @@ const About = () => {
                   </Link>
                 )}
               </div>
+            </div>
+
+            {/* Empowering People Section */}
+            <div className="mt-16 text-center">
+              <h2 className="text-2xl font-bold mb-6">Empowering People with Advanced AI Tools</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                AMAA.pro (Ask Me About Anything) is designed to make the power of artificial intelligence accessible to professionals, teams, and individuals across all industries. Our platform combines state-of-the-art AI capabilities, intuitive user experience, and robust security to help you streamline tasks, enhance productivity, and drive innovation—no matter your background or area of expertise. The mission is to make AI technology accessible, helpful, and user-friendly for everyone while providing a superior experience. Think of it as a Google 2.0!
+              </p>
             </div>
 
             {/* Stats Section */}
@@ -122,6 +129,19 @@ const About = () => {
                 />
               </div>
               <br></br>
+            </div>
+
+            {/* Contact & Recognition Section */}
+            <div className="mt-24 mb-0">
+              <h2 className="text-2xl font-bold text-center mb-6">Contact & Recognition</h2>
+              <p className="text-center mb-6 text-muted-foreground">
+                Reach out for guidance, partnership, or support.
+              </p>
+              <div className="text-center text-muted-foreground space-y-2">
+                <p>Email: <a href="mailto:info@amaa.pro" className="text-primary hover:underline">info@amaa.pro</a></p>
+                <p className="mt-4">Address: Angelyze, 10430 Samobor, Zagreb County, Croatia - EU</p>
+                <p className="mt-6">AMAA.pro is listed in the Free AI Tools Directory (Wikipedia)</p>
+              </div>
             </div>
           </div>
         </div>
