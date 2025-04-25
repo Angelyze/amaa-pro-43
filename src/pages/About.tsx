@@ -153,6 +153,7 @@ const About = () => {
               </div>
             </div>
             <br></br>
+            <br></br>
           </div>
         </div>
         <footer className="footer-container mt-0 border-t-0">
