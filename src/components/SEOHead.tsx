@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import CustomHelmet from './CustomHelmet';
 
 interface SEOProps {
   title?: string;
@@ -21,39 +21,78 @@ export const SEOHead: React.FC<SEOProps> = ({
   lang = 'en',
   schema
 }) => {
-  // Convert schema object to JSON string
-  const schemaJSON = schema ? JSON.stringify(schema) : '';
+  // Add schema and other meta tags using useEffect
+  React.useEffect(() => {
+    // Handle OG tags
+    const ogTags = [
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonicalUrl },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:image', content: ogImage },
+      { property: 'twitter:card', content: 'summary_large_image' },
+      { property: 'twitter:url', content: canonicalUrl },
+      { property: 'twitter:title', content: title },
+      { property: 'twitter:description', content: description },
+      { property: 'twitter:image', content: ogImage },
+    ];
+    
+    // Add keywords
+    const keywordsTag = document.querySelector('meta[name="keywords"]');
+    if (keywordsTag) {
+      keywordsTag.setAttribute('content', keywords);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('name', 'keywords');
+      meta.setAttribute('content', keywords);
+      document.head.appendChild(meta);
+    }
+    
+    // Add canonical link
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) {
+      canonicalLink.setAttribute('href', canonicalUrl);
+    } else {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      canonicalLink.setAttribute('href', canonicalUrl);
+      document.head.appendChild(canonicalLink);
+    }
+    
+    // Add all OG tags
+    ogTags.forEach(tag => {
+      let ogTag = document.querySelector(`meta[property="${tag.property}"]`);
+      if (ogTag) {
+        ogTag.setAttribute('content', tag.content);
+      } else {
+        ogTag = document.createElement('meta');
+        ogTag.setAttribute('property', tag.property);
+        ogTag.setAttribute('content', tag.content);
+        document.head.appendChild(ogTag);
+      }
+    });
+    
+    // Add schema if provided
+    if (schema) {
+      let scriptTag = document.querySelector('script[type="application/ld+json"]');
+      if (scriptTag) {
+        scriptTag.textContent = JSON.stringify(schema);
+      } else {
+        scriptTag = document.createElement('script');
+        scriptTag.setAttribute('type', 'application/ld+json');
+        scriptTag.textContent = JSON.stringify(schema);
+        document.head.appendChild(scriptTag);
+      }
+    }
+    
+  }, [title, description, keywords, ogImage, canonicalUrl, schema]);
 
   return (
-    <Helmet>
-      {/* Basic metadata */}
-      <html lang={lang} />
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      
-      {/* Canonical URL */}
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
-      
-      {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={canonicalUrl} />
-      <meta property="twitter:title" content={title} />
-      <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={ogImage} />
-      
-      {/* Schema.org structured data */}
-      {schema && (
-        <script type="application/ld+json">{schemaJSON}</script>
-      )}
-    </Helmet>
+    <CustomHelmet 
+      title={title}
+      description={description}
+      lang={lang}
+    />
   );
 };
 
