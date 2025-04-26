@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -17,12 +16,11 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import { initializeTheme } from "./themes/main";
 import { useEffect } from "react";
-import "./App.css"; // Make sure to import the App.css file
+import "./App.css";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Initialize theme on component mount
   useEffect(() => {
     initializeTheme();
   }, []);
