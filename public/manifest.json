@@ -1,0 +1,24 @@
+
+{
+  "name": "AMAA.pro - Your AI Research Assistant",
+  "short_name": "AMAA.pro",
+  "description": "AI-powered assistant for research, coding, and content generation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/AMAApp.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "lang": "en-US",
+  "dir": "ltr",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "business"]
+}

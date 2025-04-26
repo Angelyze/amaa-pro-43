@@ -10,6 +10,8 @@ import MessagesList from '../components/MessagesList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/hooks/useConversation';
 import { useMessageProcessor } from '@/hooks/useMessageProcessor';
+import SEOHead from '@/components/SEOHead';
+import { getAppSchema, getFaqSchema } from '@/utils/schemaData';
 import { 
   ExtendedMessage,
   getGuestMessages,
@@ -139,25 +141,62 @@ const Index = () => {
     savedAt: conv.created_at
   }));
 
+  // Combine schemas for homepage
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      getAppSchema(),
+      getFaqSchema()
+    ]
+  };
+
   return (
-    <div className="min-h-screen flex flex-col relative">
-      
-      <Header 
-        mainSearchVisible={mainSearchVisible}
-        onSendMessage={handleSendMessage}
-        onScrollToTop={scrollToTop}
-        isLoggedIn={!!user}
-        onLogin={signOut}
-        onStickyHeaderStateChange={setStickyHeader}
+    <>
+      <SEOHead 
+        title="AMAA.pro - Your AI Research Assistant for Coding, Content, and File Analysis"
+        description="Transform your workflow with AMAA.pro, an advanced AI assistant for research, code analysis, content generation, and file processing."
+        keywords="AI assistant, code analysis, content generation, research tool, file analysis, AMAA.pro, artificial intelligence"
+        canonicalUrl="https://amaa.pro/"
+        schema={schema}
       />
-      
-      <main className="container mx-auto px-4 pt-12 flex-grow">
-        <div className="relative">
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-            {user ? (
-              <>
-                <UserMenu onLogout={signOut} isPremium={isPremium} />
-                {!isPremium && (
+      <div className="min-h-screen flex flex-col relative">
+        
+        <Header 
+          mainSearchVisible={mainSearchVisible}
+          onSendMessage={handleSendMessage}
+          onScrollToTop={scrollToTop}
+          isLoggedIn={!!user}
+          onLogin={signOut}
+          onStickyHeaderStateChange={setStickyHeader}
+        />
+        
+        <main className="container mx-auto px-4 pt-12 flex-grow">
+          <div className="relative">
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+              {user ? (
+                <>
+                  <UserMenu onLogout={signOut} isPremium={isPremium} />
+                  {!isPremium && (
+                    <Link to="/subscribe">
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="bg-teal text-white hover:bg-teal-light flex items-center gap-2"
+                      >
+                        <CreditCard size={16} />
+                        <span>Premium</span>
+                      </Button>
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link to="/auth">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <LogIn size={16} />
+                      <span>Log in</span>
+                    </Button>
+                  </Link>
                   <Link to="/subscribe">
                     <Button 
                       variant="default" 
@@ -165,86 +204,67 @@ const Index = () => {
                       className="bg-teal text-white hover:bg-teal-light flex items-center gap-2"
                     >
                       <CreditCard size={16} />
-                      <span>Premium</span>
+                      <span>Subscribe</span>
                     </Button>
                   </Link>
-                )}
-              </>
-            ) : (
-              <>
-                <Link to="/auth">
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
-                    <LogIn size={16} />
-                    <span>Log in</span>
-                  </Button>
-                </Link>
-                <Link to="/subscribe">
-                  <Button 
-                    variant="default" 
-                    size="sm" 
-                    className="bg-teal text-white hover:bg-teal-light flex items-center gap-2"
-                  >
-                    <CreditCard size={16} />
-                    <span>Subscribe</span>
-                  </Button>
-                </Link>
-              </>
+                </>
+              )}
+            </div>
+            
+            <div ref={mainSearchRef}>
+              <MainSearch
+                onSendMessage={handleSendMessage}
+                onUploadFile={handleUploadFile}
+                onVoiceInput={() => setIsVoiceActive(!isVoiceActive)}
+                onNewConversation={handleNewConversation}
+                onSaveConversation={saveConversation}
+                onLoadConversation={(conv) => {
+                  setCurrentConversationId(conv.id);
+                  toast.success(`Loaded conversation: ${conv.title}`);
+                }}
+                onRenameConversation={renameConversation}
+                onDeleteConversation={deleteConversation}
+                savedConversations={savedConversations}
+                currentMessages={messages}
+                isDisabled={guestQueriesCount >= MAX_GUEST_QUERIES && !isPremium}
+                isPremium={isPremium}
+                isLoggedIn={!!user}
+              />
+            </div>
+            
+            {messages.length > 0 && (
+              <MessagesList 
+                messages={messages}
+                isLoading={isLoading}
+                onTopicClick={handleTopicClick}
+              />
             )}
           </div>
-          
-          <div ref={mainSearchRef}>
-            <MainSearch
-              onSendMessage={handleSendMessage}
-              onUploadFile={handleUploadFile}
-              onVoiceInput={() => setIsVoiceActive(!isVoiceActive)}
-              onNewConversation={handleNewConversation}
-              onSaveConversation={saveConversation}
-              onLoadConversation={(conv) => {
-                setCurrentConversationId(conv.id);
-                toast.success(`Loaded conversation: ${conv.title}`);
-              }}
-              onRenameConversation={renameConversation}
-              onDeleteConversation={deleteConversation}
-              savedConversations={savedConversations}
-              currentMessages={messages}
-              isDisabled={guestQueriesCount >= MAX_GUEST_QUERIES && !isPremium}
-              isPremium={isPremium}
-              isLoggedIn={!!user}
-            />
-          </div>
-          
-          {messages.length > 0 && (
-            <MessagesList 
-              messages={messages}
-              isLoading={isLoading}
-              onTopicClick={handleTopicClick}
-            />
-          )}
-        </div>
-      </main>
-      
-      <footer
-        className="footer-container"
-        style={{
-          marginBottom: stickyHeader.visible ? `${stickyHeader.height}px` : undefined,
-          transition: 'margin-bottom 300ms',
-        }}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center">
-            <div className="footer-nav">
-              <Link to="/" className="footer-link">Home</Link>
-              <Link to="/about" className="footer-link">About</Link>
-              <Link to="/terms" className="footer-link">Terms</Link>
-              <Link to="/privacy" className="footer-link">Privacy</Link>
-            </div>
-            <div className="copyright">
-              © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+        </main>
+        
+        <footer
+          className="footer-container"
+          style={{
+            marginBottom: stickyHeader.visible ? `${stickyHeader.height}px` : undefined,
+            transition: 'margin-bottom 300ms',
+          }}
+        >
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center justify-center">
+              <div className="footer-nav">
+                <Link to="/" className="footer-link">Home</Link>
+                <Link to="/about" className="footer-link">About</Link>
+                <Link to="/terms" className="footer-link">Terms</Link>
+                <Link to="/privacy" className="footer-link">Privacy</Link>
+              </div>
+              <div className="copyright">
+                © Copyright 2025 <Link to="/" className="text-teal mx-1.5 hover:text-teal-light transition-colors">AMAA.pro</Link>. Powered by AMAA.pro <Heart size={12} className="text-teal ml-1.5 animate-pulse-gentle" />
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </>
   );
 };
 

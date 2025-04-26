@@ -1,0 +1,49 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Main Pages -->
+  <url>
+    <loc>https://amaa.pro/</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amaa.pro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://amaa.pro/"/>
+  </url>
+  <url>
+    <loc>https://amaa.pro/about</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amaa.pro/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://amaa.pro/about"/>
+  </url>
+  <url>
+    <loc>https://amaa.pro/subscribe</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amaa.pro/subscribe"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://amaa.pro/subscribe"/>
+  </url>
+  <url>
+    <loc>https://amaa.pro/terms</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amaa.pro/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://amaa.pro/terms"/>
+  </url>
+  <url>
+    <loc>https://amaa.pro/privacy</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amaa.pro/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://amaa.pro/privacy"/>
+  </url>
+</urlset>
